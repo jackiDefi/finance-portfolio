@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Telecom &amp; IT — Coming soon | Togrul Mirzayev</title>
-  <meta name="description" content="Telecom &amp; IT operating model — coming soon.">
+  <title>Telecom &amp; IT — Operating Model | Togrul Mirzayev</title>
+  <meta name="description" content="Telecom &amp; IT industry primer, interactive 5-year operating model, and STC case study by Togrul Mirzayev.">
   <link rel="stylesheet" href="../../assets/css/styles.css">
   <script src="../../assets/js/main.js"></script>
 </head>
@@ -34,28 +34,353 @@
   </div>
 </div>
 
-<section class="coming-soon">
-  <div class="container-narrow">
-    <div class="eyebrow">01 &mdash; Connectivity &middot; In progress</div>
-    <h1>Telecom &amp; IT</h1>
-    <p>Subscriber economics, ARPU, churn, and capex intensity in a converging mobile, fixed, and cloud landscape. Full deep-dive and interactive model coming soon.</p>
-
-    <div class="scope">
-      <h3>What this page will cover</h3>
-      <ul>
-        <li>Industry primer: revenue drivers, cost structure, capex cycle</li>
-        <li>Interactive 5-year operating model (subscribers &times; ARPU &times; (1 &minus; churn))</li>
-        <li>DCF valuation with adjustable WACC and terminal growth</li>
-        <li>Real-company case study against FY2024 reported figures</li>
-        <li>Downloadable Excel model</li>
-      </ul>
-    </div>
-
-    <p style="margin-top: 2.5rem;">
-      <a class="btn btn-outline" href="../index.html">Back to industries</a>
-    </p>
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">01 &mdash; Connectivity &middot; Live</div>
+    <h1>Telecom &amp; IT: the rent collected on connectivity.</h1>
+    <p class="subtitle">How operators actually make money, what moves the margin, where the capex goes, and what a defensible 5-year model looks like &mdash; applied to Saudi Telecom (STC).</p>
   </div>
 </section>
+
+<!-- =============================================================
+     SECTION 1 - INDUSTRY PRIMER
+============================================================== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 1 &middot; Primer</div>
+      <h2 class="section-title">How the business works</h2>
+    </div>
+
+    <div class="prose">
+      <p>Telecom is the rent collected on connectivity. Customers &mdash; consumer, business, government &mdash; pay monthly (postpaid) or up front (prepaid) for access to a network the operator finances, builds, maintains, and increasingly resells software services through. Every month a portion of the base churns; every month the operator spends to acquire and retain the next cohort. The economics are subscription-business economics, dressed in capital-intensive plumbing.</p>
+
+      <p>The reported P&amp;L mixes two distinct businesses: <strong>service revenue</strong> (connectivity, billed recurring) and <strong>equipment revenue</strong> (handset sales, one-off, low or negative gross margin, used to subsidise customer acquisition). Service revenue is what compounds; equipment revenue is a flow-through. Sell-side notes that talk about &ldquo;revenue growth&rdquo; without isolating service revenue tend to miss the signal.</p>
+
+      <h3>Revenue drivers</h3>
+      <p>For the consumer business, the identity is:</p>
+      <div class="value-prop" style="margin: 1.5rem 0;">
+        <p>Service revenue &asymp; subscribers &times; ARPU &times; (1 &minus; churn rate)</p>
+      </div>
+      <p>Three levers, three different reflexes. <strong>Subscribers</strong> is the volume game &mdash; market share in a relatively fixed addressable market (often 110-130% mobile penetration in mature markets because of dual-SIM). <strong>ARPU</strong> is monetisation per subscriber, where mix shifts (prepaid&rarr;postpaid, voice&rarr;data, mobile&rarr;convergent bundles, B2C&rarr;B2B) live. <strong>Churn</strong> is the leakage rate &mdash; postpaid churn of 0.5-1.5% per month is healthy in mature markets; prepaid churn of 3-5% is normal. A one-point reduction in monthly churn moves the steady-state base by a multiple.</p>
+      <p>For enterprise and wholesale, the drivers shift to <strong>connections &times; ARPU + ICT services revenue</strong> (cloud, cybersecurity, managed services, IoT). This is where the modern integrated telco &mdash; STC, du, Telkom Indonesia &mdash; increasingly competes. The economics are different: lower asset intensity, higher margin volatility, longer sales cycles.</p>
+
+      <h3>Cost structure</h3>
+      <p>The big lines, roughly in P&amp;L order:</p>
+      <ul>
+        <li><strong>Cost of goods / interconnect</strong> &mdash; handset COGS, interconnect to other operators, content. Variable.</li>
+        <li><strong>Network opex</strong> &mdash; site lease, tower rent, energy, transmission, maintenance. Mostly fixed once built.</li>
+        <li><strong>Employee costs</strong> &mdash; technical, retail, back office. Quasi-fixed; hard to flex down quickly.</li>
+        <li><strong>Customer acquisition</strong> &mdash; handset subsidies, dealer commissions, churn-prevention spend. Lumpy.</li>
+        <li><strong>D&amp;A</strong> &mdash; typically 15-20% of revenue, reflecting fibre, towers, core, and spectrum amortisation.</li>
+      </ul>
+      <p>EBITDA margins post-IFRS&nbsp;16 sit in the <strong>35-45%</strong> band for mature operators; pre-IFRS&nbsp;16 numbers are usually 5-7 points lower because operating leases hit opex rather than D&amp;A and interest. Always check which the operator reports.</p>
+
+      <h3>Capex cycle</h3>
+      <p>Telecom is one of the more capital-intensive sectors in services. Maintenance capex is high-single-digit % of revenue. Total intensity has run <strong>14-18%</strong> in steady state and pushed to <strong>18-25%</strong> during the 4G build (2013-2018), the 5G rollout (2020-2025), and large fibre programmes. Spectrum auctions are episodic and large &mdash; multi-billion cash outflows in the year of payment, then amortised over 15-30 years. DCFs that treat spectrum as opex understate the front-loaded cash hit.</p>
+
+      <h3>Working capital</h3>
+      <p>Postpaid creates DSO of 60-90 days. Prepaid is cash-positive &mdash; money in before service is rendered. Enterprise contracts carry 90-180-day DSOs on managed services. Inventory matters when handsets are subsidised. WC is rarely the swing factor in valuation but can mask or amplify FCF in any given year.</p>
+
+      <h3>KPIs analysts watch</h3>
+      <ul>
+        <li><strong>Service revenue growth (organic, FX-neutral)</strong> &mdash; 0-3% mature, 3-6% growth markets</li>
+        <li><strong>EBITDA margin (post-leases)</strong> &mdash; 35-45% target band</li>
+        <li><strong>Capex intensity</strong> &mdash; 14-18% steady state, higher during build cycles</li>
+        <li><strong>FCF conversion (FCF / EBITDA)</strong> &mdash; 25-40% healthy</li>
+        <li><strong>Net debt / EBITDA</strong> &mdash; 1.5-3.0x typical; covenants usually 3.5-4.0x</li>
+        <li><strong>Postpaid share of base</strong> &mdash; proxy for ARPU stickiness</li>
+        <li><strong>ARPU trajectory</strong> &mdash; leading indicator on mix shift and pricing power</li>
+      </ul>
+
+      <h3>Valuation</h3>
+      <p>EV/EBITDA is the working tool. Mature integrated telcos trade at <strong>5-7x forward EV/EBITDA</strong>; growth-market and digital-services-heavy names get <strong>6-9x</strong>. DCF is the cross-check, with WACCs at 7-10% in emerging markets, 5-7% in EU mature. Dividend yield is often the cleanest frame &mdash; mature telcos are run as bond proxies, with <strong>5-7% yields</strong> and progressive payouts. EV per subscriber is used in M&amp;A.</p>
+
+      <h3>Common analyst pitfalls</h3>
+      <ol>
+        <li><strong>Mixing service and equipment revenue</strong> in growth analysis. Handset cycles distort year-on-year comps; only service revenue compounds.</li>
+        <li><strong>Ignoring the IFRS&nbsp;16 step-change in EBITDA</strong> (effective 2019). Reported EBITDA jumped 5-10 points with no underlying change. Comparisons across the 2018-2019 boundary need normalisation.</li>
+        <li><strong>Treating spectrum payments as opex or smoothing them.</strong> Spectrum is real, large, lumpy cash. Models that spread it evenly overstate FCF in auction years.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     SECTION 2 - INTERACTIVE OPERATING MODEL
+============================================================== -->
+<section style="background: var(--bg-elevated); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 2 &middot; Interactive model</div>
+      <h2 class="section-title">5-year forecast &amp; DCF</h2>
+      <p class="section-lede">Move the sliders. Every number on the right recalculates live. Defaults are calibrated to roughly approximate STC; change them to flex the model to any operator.</p>
+    </div>
+
+    <div class="model">
+
+      <aside class="model-inputs">
+        <h3>Drivers</h3>
+
+        <div class="input-section-label">Operating</div>
+
+        <div class="input-group">
+          <label for="rev0">Service revenue (Y0) <span class="value-display" id="rev0-val">75.0</span></label>
+          <input type="range" id="rev0" min="20" max="150" step="0.5" value="75">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">SAR billion</div>
+        </div>
+
+        <div class="input-group">
+          <label for="growth">Revenue growth <span class="value-display"><span id="growth-val">6.0</span>%</span></label>
+          <input type="range" id="growth" min="-2" max="15" step="0.1" value="6">
+        </div>
+
+        <div class="input-group">
+          <label for="ebitda">EBITDA margin <span class="value-display"><span id="ebitda-val">36.0</span>%</span></label>
+          <input type="range" id="ebitda" min="20" max="50" step="0.1" value="36">
+        </div>
+
+        <div class="input-group">
+          <label for="da">D&amp;A / revenue <span class="value-display"><span id="da-val">16.0</span>%</span></label>
+          <input type="range" id="da" min="8" max="25" step="0.1" value="16">
+        </div>
+
+        <div class="input-group">
+          <label for="capex">Capex intensity <span class="value-display"><span id="capex-val">18.0</span>%</span></label>
+          <input type="range" id="capex" min="8" max="30" step="0.1" value="18">
+        </div>
+
+        <div class="input-divider"></div>
+        <div class="input-section-label">Financial</div>
+
+        <div class="input-group">
+          <label for="tax">Tax / zakat rate <span class="value-display"><span id="tax-val">15.0</span>%</span></label>
+          <input type="range" id="tax" min="0" max="35" step="0.5" value="15">
+        </div>
+
+        <div class="input-group">
+          <label for="wacc">WACC <span class="value-display"><span id="wacc-val">9.0</span>%</span></label>
+          <input type="range" id="wacc" min="5" max="15" step="0.1" value="9">
+        </div>
+
+        <div class="input-group">
+          <label for="g">Terminal growth <span class="value-display"><span id="g-val">3.0</span>%</span></label>
+          <input type="range" id="g" min="0" max="5" step="0.1" value="3">
+        </div>
+
+        <div class="input-divider"></div>
+        <div class="input-section-label">Balance sheet</div>
+
+        <div class="input-group">
+          <label for="netdebt">Net debt (Y0) <span class="value-display" id="netdebt-val">15.0</span></label>
+          <input type="range" id="netdebt" min="-20" max="80" step="0.5" value="15">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">SAR billion</div>
+        </div>
+
+        <div class="input-group">
+          <label for="shares">Shares outstanding <span class="value-display" id="shares-val">5,000</span></label>
+          <input type="range" id="shares" min="1000" max="10000" step="50" value="5000">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">millions</div>
+        </div>
+
+        <button type="button" class="btn-reset" id="reset-btn">Reset to defaults</button>
+      </aside>
+
+      <div class="model-outputs">
+
+        <table class="fin-table" id="forecast-table">
+          <caption>5-year forecast &mdash; SAR billion</caption>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Y1</th>
+              <th>Y2</th>
+              <th>Y3</th>
+              <th>Y4</th>
+              <th>Y5</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Service revenue</td><td id="rev-1"></td><td id="rev-2"></td><td id="rev-3"></td><td id="rev-4"></td><td id="rev-5"></td></tr>
+            <tr><td>EBITDA</td><td id="ebt-1"></td><td id="ebt-2"></td><td id="ebt-3"></td><td id="ebt-4"></td><td id="ebt-5"></td></tr>
+            <tr><td>D&amp;A</td><td id="dep-1"></td><td id="dep-2"></td><td id="dep-3"></td><td id="dep-4"></td><td id="dep-5"></td></tr>
+            <tr class="subtotal"><td>EBIT</td><td id="ebi-1"></td><td id="ebi-2"></td><td id="ebi-3"></td><td id="ebi-4"></td><td id="ebi-5"></td></tr>
+            <tr><td>Interest</td><td id="int-1"></td><td id="int-2"></td><td id="int-3"></td><td id="int-4"></td><td id="int-5"></td></tr>
+            <tr><td>Tax</td><td id="txp-1"></td><td id="txp-2"></td><td id="txp-3"></td><td id="txp-4"></td><td id="txp-5"></td></tr>
+            <tr class="subtotal"><td>Net income</td><td id="ni-1"></td><td id="ni-2"></td><td id="ni-3"></td><td id="ni-4"></td><td id="ni-5"></td></tr>
+            <tr><td>Capex</td><td id="cpx-1"></td><td id="cpx-2"></td><td id="cpx-3"></td><td id="cpx-4"></td><td id="cpx-5"></td></tr>
+            <tr><td>&Delta;Working capital</td><td id="wc-1"></td><td id="wc-2"></td><td id="wc-3"></td><td id="wc-4"></td><td id="wc-5"></td></tr>
+            <tr class="subtotal"><td>FCFF</td><td id="fcf-1"></td><td id="fcf-2"></td><td id="fcf-3"></td><td id="fcf-4"></td><td id="fcf-5"></td></tr>
+          </tbody>
+        </table>
+
+        <table class="fin-table" id="ratio-table">
+          <caption>Key ratios</caption>
+          <thead>
+            <tr>
+              <th></th><th>Y1</th><th>Y2</th><th>Y3</th><th>Y4</th><th>Y5</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>EBITDA margin</td><td id="mar-1"></td><td id="mar-2"></td><td id="mar-3"></td><td id="mar-4"></td><td id="mar-5"></td></tr>
+            <tr><td>FCF / revenue</td><td id="fcm-1"></td><td id="fcm-2"></td><td id="fcm-3"></td><td id="fcm-4"></td><td id="fcm-5"></td></tr>
+            <tr><td>Capex / revenue</td><td id="cap-1"></td><td id="cap-2"></td><td id="cap-3"></td><td id="cap-4"></td><td id="cap-5"></td></tr>
+            <tr><td>Net debt / EBITDA</td><td id="lev-1"></td><td id="lev-2"></td><td id="lev-3"></td><td id="lev-4"></td><td id="lev-5"></td></tr>
+          </tbody>
+        </table>
+
+        <div class="chart-row">
+          <div class="chart-container">
+            <h4>Revenue &amp; EBITDA (SAR bn)</h4>
+            <div class="canvas-wrap"><canvas id="chart-bars"></canvas></div>
+          </div>
+          <div class="chart-container">
+            <h4>Margins (%)</h4>
+            <div class="canvas-wrap"><canvas id="chart-lines"></canvas></div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin: 1.5rem 0 0.75rem; font-weight: 600; font-family: 'Inter', sans-serif;">DCF Valuation</h3>
+        <div class="dcf-summary">
+          <div class="dcf-cell">
+            <div class="label">Enterprise value</div>
+            <div class="figure" id="ev-val">&mdash;</div>
+            <span class="unit">SAR billion</span>
+          </div>
+          <div class="dcf-cell">
+            <div class="label">Equity value</div>
+            <div class="figure" id="eq-val">&mdash;</div>
+            <span class="unit">SAR billion</span>
+          </div>
+          <div class="dcf-cell">
+            <div class="label">Per-share value</div>
+            <div class="figure" id="ps-val">&mdash;</div>
+            <span class="unit">SAR</span>
+          </div>
+          <div class="dcf-cell">
+            <div class="label">Implied FY+1 EV/EBITDA</div>
+            <div class="figure" id="mult-val">&mdash;</div>
+            <span class="unit">multiple</span>
+          </div>
+        </div>
+
+        <p style="font-size: 0.8125rem; color: var(--text-subtle); margin-top: 0.5rem;">FCFF&nbsp;=&nbsp;NOPAT&nbsp;+&nbsp;D&amp;A&nbsp;&minus;&nbsp;capex&nbsp;&minus;&nbsp;&Delta;working&nbsp;capital. Working capital assumed to absorb 2% of incremental revenue. Interest expense uses 5% on average net debt. Terminal value via Gordon growth, discounted at WACC.</p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     SECTION 3 - STC CASE STUDY
+============================================================== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 3 &middot; Case study</div>
+      <h2 class="section-title">Saudi Telecom Company (Tadawul: 7010)</h2>
+      <p class="section-lede">Applying the model to the integrated incumbent in the GCC&rsquo;s largest economy &mdash; neutral analytical stance, no recommendation.</p>
+    </div>
+
+    <div class="prose">
+      <p>STC is the right test case because the company looks like a generation-ahead version of the operator I work for: a state-anchored incumbent that has moved from pure mobile/fixed into an integrated telco-plus-digital posture, with growing enterprise and cloud revenues sitting alongside a still-significant consumer base. The KSA consumer market is also one of the few in the region where ARPU is still rising, helped by Vision 2030 spending, expat inflows, and a postpaid mix that&rsquo;s structurally above regional peers.</p>
+
+      <p><strong>Setting the drivers.</strong> The defaults in the model above are my central case for STC, calibrated as follows:</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th>Driver</th><th>Default</th><th>Source / basis</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Service revenue Y0 (SAR bn)</td><td>~75</td><td>Approximate FY2024 service revenue per consolidated income statement <span class="tag tag-source">disclosure</span></td></tr>
+          <tr><td>Revenue growth</td><td>6%</td><td>Mid-single-digits: KSA enterprise digital spend, B2B/cloud ramp, mobile ARPU stable <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>EBITDA margin</td><td>36%</td><td>Recent reported band, post-IFRS&nbsp;16; allows mild compression from Egypt integration <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>D&amp;A / revenue</td><td>16%</td><td>Long-run telco range; STC capex base has lengthened with fibre and 5G <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Capex intensity</td><td>18%</td><td>Reflects continued 5G + fibre buildout; declines structurally post-2027 in a typical telco cycle <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Tax / zakat</td><td>15%</td><td>KSA zakat + corporate-tax blend for mixed shareholder base; simplified <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>WACC</td><td>9%</td><td>SAR risk-free + equity risk premium + beta-adjusted; consistent with sell-side range <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Terminal growth</td><td>3%</td><td>Long-run KSA nominal GDP growth, below explicit-period rate <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Net debt Y0 (SAR bn)</td><td>~15</td><td>Modest leverage post-Vodafone Egypt acquisition and recent dividend cycle <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Shares outstanding</td><td>~5,000m</td><td>Per latest registered share count <span class="tag tag-source">disclosure</span></td></tr>
+        </tbody>
+      </table>
+
+      <p style="font-size: 0.875rem; color: var(--text-subtle); margin-top: -0.5rem;">Figures marked <span class="tag tag-source" style="margin-left:0;">disclosure</span> are approximated from STC&rsquo;s FY2024 Annual Report (available at <a href="https://www.stc.com.sa/" target="_blank" rel="noopener">stc.com.sa</a> Investor Relations) and should be verified against the source document before publication. Values marked <span class="tag tag-assume" style="margin-left:0;">assumption</span> are my own.</p>
+
+      <h3>What falls out</h3>
+      <p>At the defaults above, the model lands at:</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th></th><th>My model</th><th>Market (approx.)</th><th>Comment</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Enterprise value (SAR bn)</td><td>~218</td><td>~215</td><td>Within rounding</td></tr>
+          <tr><td>Equity value (SAR bn)</td><td>~203</td><td>~200</td><td>Net debt assumed at 15</td></tr>
+          <tr><td>Implied per-share (SAR)</td><td>~40.5</td><td>~40</td><td>Close to recent trading price</td></tr>
+          <tr><td>Implied FY+1 EV/EBITDA</td><td>~7.6x</td><td>~7.5x</td><td>Consistent with integrated GCC peers</td></tr>
+        </tbody>
+      </table>
+
+      <p style="font-size: 0.875rem; color: var(--text-subtle); margin-top: -0.5rem;">Market figures are illustrative, drawn from recent trading levels; not point-in-time accurate.</p>
+
+      <p>The result is deliberately uneventful. With a defensible set of drivers, the model converges to roughly where the market already is &mdash; which is what you&rsquo;d expect for a large, well-covered incumbent in a developed-information market. The interesting work is in where the central case is wrong.</p>
+
+      <h3>Where the case study could break</h3>
+      <p><strong>Bull case &mdash; what gets the stock to a premium:</strong> Vision 2030 enterprise capex accelerates B2B / cloud revenue (STC Solutions) at double-digit rates while consumer mobile holds. EBITDA margin re-rates to 38-40% as cloud scales and Egypt integration synergies land. Capex intensity normalises to 15% post-2027 as 5G coverage matures. In that world, FCF expands meaningfully and the multiple is more like 8.5-9x.</p>
+
+      <p><strong>Bear case &mdash; what compresses it:</strong> ARPU compression in mobile from prepaid competition; Egypt asset underperforms; spectrum and fibre obligations keep capex sticky at 18-20% for longer than expected; KSA rate environment lifts WACC by 100bps. EBITDA margin slips to 34%, FCF conversion weakens, multiple drifts to 6.5x. Equity value 25-30% lower.</p>
+
+      <p><strong>Why the central case sits where it does:</strong> STC&rsquo;s ROCE has historically been well above WACC, leverage is manageable, and the dividend policy (progressive, with special distributions) underpins a yield floor. The integrated digital story is real but not yet at the scale where it changes the multiple in a binary way. A market that priced STC like a 4-5% yielding utility, with mild B2B-led growth, would land roughly where it trades today. The model agrees.</p>
+
+      <p><strong>What I&rsquo;d do differently in a deeper write-up:</strong> split the consumer and enterprise segments and model B2B/cloud on its own growth and margin profile (currently mixed in service revenue); explicitly separate spectrum cash from maintenance capex; build a working-capital schedule from DSO/DPO trends rather than the simplifying 2%-of-incremental-revenue rule used here.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     SECTION 4 - DOWNLOADABLE EXCEL
+============================================================== -->
+<section style="background: var(--bg-elevated); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 4 &middot; Excel</div>
+      <h2 class="section-title">Take the model offline</h2>
+      <p class="section-lede">Same drivers, same math, in a properly-built workbook. Inputs in blue, formulas in black, outputs in bold &mdash; the convention every recruiter testing your modeling skill will check for.</p>
+    </div>
+
+    <div class="prose">
+      <p>The downloadable file mirrors the interactive model above:</p>
+      <ul>
+        <li><strong>Cover</strong> &mdash; title, author, date, colour legend, notes</li>
+        <li><strong>Inputs</strong> &mdash; every driver in one place, hard-coded blue</li>
+        <li><strong>Forecast</strong> &mdash; 5-year P&amp;L and FCF build, fully formula-driven</li>
+        <li><strong>Valuation</strong> &mdash; DCF, terminal value, EV, equity, per-share</li>
+      </ul>
+      <p>Change any input on the <em>Inputs</em> sheet; the rest of the workbook recalculates. Default values reproduce the interactive model exactly.</p>
+
+      <p style="margin-top: 2rem;">
+        <a class="btn" href="telecom-model.xlsx" download>Download Excel model (.xlsx)</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     PREV / NEXT INDUSTRY NAVIGATION
+============================================================== -->
+<div class="container">
+  <nav class="industry-nav" aria-label="Industry navigation">
+    <div class="disabled">
+      <div class="direction">&larr; Previous</div>
+      <div class="label">&mdash;</div>
+    </div>
+    <a href="../oil-gas/index.html" class="next">
+      <div class="direction">Next &rarr;</div>
+      <div class="label">Oil &amp; Gas</div>
+    </a>
+  </nav>
+</div>
 
 <footer class="site-footer">
   <div class="container">
@@ -68,6 +393,257 @@
     <div>Last updated May 2026</div>
   </div>
 </footer>
+
+<!-- Chart.js for the two charts in the model -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---- Defaults ----------------------------------------------- */
+  const DEFAULTS = {
+    rev0:    75,   // SAR bn, service revenue Y0
+    growth:  6,    // % annual
+    ebitda:  36,   // % EBITDA margin
+    da:      16,   // % D&A / revenue
+    capex:   18,   // % capex / revenue
+    tax:     15,   // % tax / zakat
+    wacc:    9,    // % WACC
+    g:       3,    // % terminal growth
+    netdebt: 15,   // SAR bn
+    shares:  5000  // millions
+  };
+
+  const COST_OF_DEBT = 0.05;     // assumption: 5% interest on average net debt
+  const WC_PCT       = 0.02;     // 2% of incremental revenue absorbed in WC
+
+  /* ---- Formatting helpers ------------------------------------- */
+  const fmtBn   = v => (v >= 0 ? '' : '−') + Math.abs(v).toFixed(1);
+  const fmtPct  = v => (v >= 0 ? '' : '−') + Math.abs(v).toFixed(1) + '%';
+  const fmtX    = v => v.toFixed(2) + 'x';
+  const fmtInt  = v => Math.round(v).toLocaleString('en-US');
+
+  function setCell(id, value, fmt, allowNegativeStyle) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = fmt(value);
+    el.classList.toggle('negative', allowNegativeStyle && value < 0);
+  }
+
+  /* ---- Compute forecast and DCF ------------------------------- */
+  function compute(p) {
+    const years = [1, 2, 3, 4, 5];
+    const g = p.growth / 100;
+    const m = p.ebitda / 100;
+    const da = p.da / 100;
+    const cx = p.capex / 100;
+    const tx = p.tax / 100;
+    const wacc = p.wacc / 100;
+    const gT = p.g / 100;
+
+    const rev = years.map(t => p.rev0 * Math.pow(1 + g, t));
+    const revPrev = years.map(t => (t === 1 ? p.rev0 : rev[t - 2]));
+
+    const ebitda = rev.map(r => r * m);
+    const dep    = rev.map(r => r * da);
+    const ebit   = ebitda.map((e, i) => e - dep[i]);
+    const interest = years.map(() => p.netdebt * COST_OF_DEBT);  // simplified: held at Y0 level
+    const pretax = ebit.map((e, i) => e - interest[i]);
+    const taxp   = pretax.map(e => (e > 0 ? e * tx : 0));
+    const ni     = pretax.map((e, i) => e - taxp[i]);
+    const capex  = rev.map(r => r * cx);
+    const dwc    = rev.map((r, i) => (r - revPrev[i]) * WC_PCT);
+    const nopat  = ebit.map(e => e * (1 - tx));
+    const fcff   = nopat.map((n, i) => n + dep[i] - capex[i] - dwc[i]);
+
+    // DCF
+    const pvFcff = fcff.map((f, i) => f / Math.pow(1 + wacc, i + 1));
+    const tv = (fcff[4] * (1 + gT)) / (wacc - gT);
+    const pvTv = tv / Math.pow(1 + wacc, 5);
+    const ev = pvFcff.reduce((a, b) => a + b, 0) + pvTv;
+    const equity = ev - p.netdebt;
+    const perShare = equity * 1000 / p.shares;          // SAR bn -> SAR mm; shares in mm -> SAR / share
+    const impliedMult = ev / ebitda[0];
+
+    return { rev, ebitda, dep, ebit, interest, taxp, ni, capex, dwc, fcff, ev, equity, perShare, impliedMult };
+  }
+
+  /* ---- Render to the page ------------------------------------- */
+  let barsChart, linesChart;
+
+  function render(p) {
+    const r = compute(p);
+    const years = [1, 2, 3, 4, 5];
+
+    years.forEach((t, i) => {
+      setCell('rev-' + t, r.rev[i],    fmtBn);
+      setCell('ebt-' + t, r.ebitda[i], fmtBn);
+      setCell('dep-' + t, r.dep[i],    fmtBn);
+      setCell('ebi-' + t, r.ebit[i],   fmtBn);
+      setCell('int-' + t, r.interest[i], fmtBn);
+      setCell('txp-' + t, r.taxp[i],   fmtBn);
+      setCell('ni-'  + t, r.ni[i],     fmtBn, true);
+      setCell('cpx-' + t, r.capex[i],  fmtBn);
+      setCell('wc-'  + t, r.dwc[i],    fmtBn, true);
+      setCell('fcf-' + t, r.fcff[i],   fmtBn, true);
+
+      setCell('mar-' + t, (r.ebitda[i] / r.rev[i]) * 100, fmtPct);
+      setCell('fcm-' + t, (r.fcff[i]   / r.rev[i]) * 100, fmtPct, true);
+      setCell('cap-' + t, (r.capex[i]  / r.rev[i]) * 100, fmtPct);
+      setCell('lev-' + t, p.netdebt / r.ebitda[i],         fmtX);
+    });
+
+    setCell('ev-val',   r.ev,         fmtBn);
+    setCell('eq-val',   r.equity,     fmtBn);
+    setCell('ps-val',   r.perShare,   v => v.toFixed(1));
+    setCell('mult-val', r.impliedMult, fmtX);
+
+    // Charts
+    if (barsChart)  updateBars(r);  else  initBars(r);
+    if (linesChart) updateLines(r); else  initLines(r);
+  }
+
+  /* ---- Charts ------------------------------------------------- */
+  function getColors() {
+    const styles = getComputedStyle(document.documentElement);
+    return {
+      text: styles.getPropertyValue('--text').trim(),
+      muted: styles.getPropertyValue('--text-muted').trim(),
+      accent: styles.getPropertyValue('--accent').trim(),
+      border: styles.getPropertyValue('--border').trim(),
+      navy: '#0a1828'
+    };
+  }
+  function years() { return ['Y1', 'Y2', 'Y3', 'Y4', 'Y5']; }
+
+  function initBars(r) {
+    const c = getColors();
+    barsChart = new Chart(document.getElementById('chart-bars'), {
+      type: 'bar',
+      data: {
+        labels: years(),
+        datasets: [
+          { label: 'Revenue', data: r.rev.slice(),    backgroundColor: c.navy,   borderWidth: 0 },
+          { label: 'EBITDA',  data: r.ebitda.slice(), backgroundColor: c.accent, borderWidth: 0 }
+        ]
+      },
+      options: chartOpts(false)
+    });
+  }
+  function updateBars(r) {
+    barsChart.data.datasets[0].data = r.rev.slice();
+    barsChart.data.datasets[1].data = r.ebitda.slice();
+    const c = getColors();
+    barsChart.data.datasets[0].backgroundColor = c.navy;
+    barsChart.data.datasets[1].backgroundColor = c.accent;
+    refreshAxes(barsChart);
+    barsChart.update('none');
+  }
+
+  function initLines(r) {
+    const c = getColors();
+    linesChart = new Chart(document.getElementById('chart-lines'), {
+      type: 'line',
+      data: {
+        labels: years(),
+        datasets: [
+          { label: 'EBITDA margin', data: marginSeries(r, 'ebitda'), borderColor: c.accent, backgroundColor: c.accent, tension: 0.25, borderWidth: 2, pointRadius: 3 },
+          { label: 'FCF margin',    data: marginSeries(r, 'fcff'),   borderColor: c.navy,   backgroundColor: c.navy,   tension: 0.25, borderWidth: 2, pointRadius: 3 }
+        ]
+      },
+      options: chartOpts(true)
+    });
+  }
+  function updateLines(r) {
+    linesChart.data.datasets[0].data = marginSeries(r, 'ebitda');
+    linesChart.data.datasets[1].data = marginSeries(r, 'fcff');
+    const c = getColors();
+    linesChart.data.datasets[0].borderColor = c.accent;
+    linesChart.data.datasets[1].borderColor = c.navy;
+    refreshAxes(linesChart);
+    linesChart.update('none');
+  }
+  function marginSeries(r, k) {
+    return r.rev.map((v, i) => (r[k][i] / v) * 100);
+  }
+
+  function chartOpts(isPct) {
+    const c = getColors();
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: c.muted, font: { family: 'Inter', size: 11 }, boxWidth: 10, boxHeight: 10 } },
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + (isPct ? ctx.parsed.y.toFixed(1) + '%' : ctx.parsed.y.toFixed(1)) } }
+      },
+      scales: {
+        x: { ticks: { color: c.muted, font: { family: 'Inter', size: 11 } }, grid: { display: false }, border: { color: c.border } },
+        y: { ticks: { color: c.muted, font: { family: 'Inter', size: 11 }, callback: v => isPct ? v + '%' : v }, grid: { color: c.border }, border: { display: false }, beginAtZero: isPct ? false : true }
+      }
+    };
+  }
+  function refreshAxes(chart) {
+    const c = getColors();
+    chart.options.scales.x.ticks.color = c.muted;
+    chart.options.scales.y.ticks.color = c.muted;
+    chart.options.scales.x.border.color = c.border;
+    chart.options.scales.y.grid.color = c.border;
+    chart.options.plugins.legend.labels.color = c.muted;
+  }
+
+  /* ---- Wiring ------------------------------------------------- */
+  function read() {
+    return {
+      rev0:    +document.getElementById('rev0').value,
+      growth:  +document.getElementById('growth').value,
+      ebitda:  +document.getElementById('ebitda').value,
+      da:      +document.getElementById('da').value,
+      capex:   +document.getElementById('capex').value,
+      tax:     +document.getElementById('tax').value,
+      wacc:    +document.getElementById('wacc').value,
+      g:       +document.getElementById('g').value,
+      netdebt: +document.getElementById('netdebt').value,
+      shares:  +document.getElementById('shares').value
+    };
+  }
+  function updateLabels(p) {
+    document.getElementById('rev0-val').textContent    = p.rev0.toFixed(1);
+    document.getElementById('growth-val').textContent  = p.growth.toFixed(1);
+    document.getElementById('ebitda-val').textContent  = p.ebitda.toFixed(1);
+    document.getElementById('da-val').textContent      = p.da.toFixed(1);
+    document.getElementById('capex-val').textContent   = p.capex.toFixed(1);
+    document.getElementById('tax-val').textContent     = p.tax.toFixed(1);
+    document.getElementById('wacc-val').textContent    = p.wacc.toFixed(1);
+    document.getElementById('g-val').textContent       = p.g.toFixed(1);
+    document.getElementById('netdebt-val').textContent = p.netdebt.toFixed(1);
+    document.getElementById('shares-val').textContent  = fmtInt(p.shares);
+  }
+  function tick() {
+    const p = read();
+    updateLabels(p);
+    render(p);
+  }
+  function reset() {
+    Object.keys(DEFAULTS).forEach(k => { document.getElementById(k).value = DEFAULTS[k]; });
+    tick();
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    Object.keys(DEFAULTS).forEach(k => {
+      document.getElementById(k).addEventListener('input', tick);
+    });
+    document.getElementById('reset-btn').addEventListener('click', reset);
+
+    // Redraw charts when theme toggles so colours pick up the new palette.
+    const themeBtn = document.querySelector('.theme-toggle');
+    if (themeBtn) themeBtn.addEventListener('click', function () {
+      setTimeout(function () { if (barsChart) updateBars(compute(read())); if (linesChart) updateLines(compute(read())); }, 50);
+    });
+
+    tick();
+  });
+})();
+</script>
 
 </body>
 </html>
