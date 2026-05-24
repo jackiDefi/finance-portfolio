@@ -160,6 +160,68 @@ D = {
     "scen_margin":       [0.33, 0.36, 0.38],
     "scen_capex":        [0.20, 0.18, 0.16],
 
+    # =========================================================================
+    # PHASE 1 — Multi-segment revenue & detailed IS
+    # =========================================================================
+
+    # ---- Segment 1: Mobile postpaid ----
+    "postpaid_subs_y0":    11.0,    # millions
+    "postpaid_arpu_y0":   140.0,    # SAR / month
+    "postpaid_gross_adds":  0.12,    # gross adds / opening base (annual)
+    "postpaid_churn":       0.12,    # annual churn
+    "postpaid_arpu_g":      0.020,
+    "postpaid_cm":          0.50,    # contribution margin
+
+    # ---- Segment 2: Mobile prepaid ----
+    "prepaid_subs_y0":     27.0,
+    "prepaid_arpu_y0":      42.0,
+    "prepaid_gross_adds":    0.30,
+    "prepaid_churn":         0.28,
+    "prepaid_arpu_g":        0.010,
+    "prepaid_cm":            0.35,
+
+    # ---- Segment 3: Fixed broadband ----
+    "fixed_subs_y0":          1.8,
+    "fixed_arpu_y0":        420.0,
+    "fixed_gross_adds":       0.15,
+    "fixed_churn":            0.10,
+    "fixed_arpu_g":           0.020,
+    "fixed_cm":               0.40,
+
+    # ---- Segments 4-6: modeled directly as revenue (no subs proxy) ----
+    "b2b_rev_y0":            18.0,
+    "b2b_growth":             0.08,
+    "b2b_cm":                 0.45,
+
+    "ict_rev_y0":             8.0,
+    "ict_growth":             0.15,
+    "ict_cm":                 0.30,
+
+    "wholesale_rev_y0":       8.0,
+    "wholesale_growth":       0.02,
+    "wholesale_cm":           0.25,
+
+    # ---- Equipment / handset (separate from service revenue) ----
+    "equipment_rev_y0":       5.0,
+    "equipment_growth":       0.03,
+    "equipment_cm":           0.05,
+
+    # ---- Detailed cost ratios (% of total revenue) ----
+    # Calibrated so opex sum + equipment COGS ≈ 64% → EBITDA margin ≈ 36%.
+    "interconnect_pct":       0.08,
+    "content_pct":            0.04,
+    "energy_lease_pct":       0.09,
+    "other_network_pct":      0.10,
+    "commercial_other_pct":   0.04,
+    "ga_pct":                 0.07,
+    "fx_loss_pct":            0.005,
+
+    # ---- Below-EBITDA IS additions ----
+    "intangible_amort_pct":   0.005,  # amortisation of intangibles ex-spectrum (% of revenue)
+    "associates_y0":          0.05,   # share of associate profit, SAR bn
+    "associates_growth":      0.05,
+    "minority_share_ni":      0.05,   # % of group NI attributable to minority
+
     # ---- Budget seasonality (Q1, Q2, Q3, Q4 monthly weights sum to 1) ----
     # Telecom revenue is fairly flat with slight Q4 uplift from device sales.
     "month_weights": [
@@ -188,6 +250,7 @@ D["re_y0"] = round(RE_Y0_PLUG, 2)
 SH_COVER  = "Cover"
 SH_ASSUM  = "Assumptions"
 SH_DRIV   = "Drivers"
+SH_SEG    = "Segments"   # Phase 1 — segment P&L
 SH_IS     = "IS"
 SH_BS     = "BS"
 SH_CFS    = "CFS"
@@ -446,6 +509,74 @@ def build_assumptions(ws):
         # ---- Scenarios ----
         (61, None,              "Scenario selector",                  None,                NUM_BN,  None),
         (62, "scen_default",    "Active scenario (1=Down, 2=Base, 3=Up)", D["scen_default"], NUM_INT, "Drives the Scenarios sheet."),
+
+        # ---- Phase 1: Segment 1 — Mobile postpaid ----
+        (64, None,              "SEGMENT 1 — Mobile postpaid",        None,                NUM_BN,  None),
+        (65, "postpaid_subs_y0",   "Subscribers Y0 (millions)",       D["postpaid_subs_y0"],   '#,##0.0', "Opening base."),
+        (66, "postpaid_arpu_y0",   "ARPU Y0 (SAR / month)",           D["postpaid_arpu_y0"],   '#,##0',   "Voice + data + content."),
+        (67, "postpaid_gross_adds","Gross adds / opening base",       D["postpaid_gross_adds"],NUM_PCT,   "Annual; subscriber acquisition rate."),
+        (68, "postpaid_churn",     "Churn (annual)",                  D["postpaid_churn"],     NUM_PCT,   "Annual blended churn."),
+        (69, "postpaid_arpu_g",    "ARPU growth (annual)",            D["postpaid_arpu_g"],    NUM_PCT,   None),
+        (70, "postpaid_cm",        "Contribution margin",             D["postpaid_cm"],        NUM_PCT,   "Segment EBITDA / segment revenue."),
+
+        # ---- Segment 2 — Mobile prepaid ----
+        (72, None,              "SEGMENT 2 — Mobile prepaid",         None,                NUM_BN,  None),
+        (73, "prepaid_subs_y0",    "Subscribers Y0 (millions)",       D["prepaid_subs_y0"],   '#,##0.0', None),
+        (74, "prepaid_arpu_y0",    "ARPU Y0 (SAR / month)",           D["prepaid_arpu_y0"],   '#,##0',   None),
+        (75, "prepaid_gross_adds", "Gross adds / opening base",       D["prepaid_gross_adds"],NUM_PCT,   "Prepaid runs hot — high gross adds, high churn."),
+        (76, "prepaid_churn",      "Churn (annual)",                  D["prepaid_churn"],     NUM_PCT,   None),
+        (77, "prepaid_arpu_g",     "ARPU growth (annual)",            D["prepaid_arpu_g"],    NUM_PCT,   None),
+        (78, "prepaid_cm",         "Contribution margin",             D["prepaid_cm"],        NUM_PCT,   None),
+
+        # ---- Segment 3 — Fixed broadband ----
+        (80, None,              "SEGMENT 3 — Fixed broadband",        None,                NUM_BN,  None),
+        (81, "fixed_subs_y0",      "Subscribers Y0 (millions)",       D["fixed_subs_y0"],     '#,##0.0', "Households + SMB."),
+        (82, "fixed_arpu_y0",      "ARPU Y0 (SAR / month)",           D["fixed_arpu_y0"],     '#,##0',   "Broadband + IPTV + voice bundle."),
+        (83, "fixed_gross_adds",   "Gross adds / opening base",       D["fixed_gross_adds"],  NUM_PCT,   None),
+        (84, "fixed_churn",        "Churn (annual)",                  D["fixed_churn"],       NUM_PCT,   None),
+        (85, "fixed_arpu_g",       "ARPU growth (annual)",            D["fixed_arpu_g"],      NUM_PCT,   None),
+        (86, "fixed_cm",           "Contribution margin",             D["fixed_cm"],          NUM_PCT,   None),
+
+        # ---- Segment 4 — B2B connectivity ----
+        (88, None,              "SEGMENT 4 — B2B connectivity",       None,                NUM_BN,  None),
+        (89, "b2b_rev_y0",         "Revenue Y0 (SAR bn)",             D["b2b_rev_y0"],        NUM_BN,    "Enterprise & government managed connectivity."),
+        (90, "b2b_growth",         "Growth (annual)",                 D["b2b_growth"],        NUM_PCT,   None),
+        (91, "b2b_cm",             "Contribution margin",             D["b2b_cm"],            NUM_PCT,   None),
+
+        # ---- Segment 5 — ICT / cloud ----
+        (93, None,              "SEGMENT 5 — ICT / cloud services",   None,                NUM_BN,  None),
+        (94, "ict_rev_y0",         "Revenue Y0 (SAR bn)",             D["ict_rev_y0"],        NUM_BN,    "STC Solutions: cloud, cybersecurity, system integration."),
+        (95, "ict_growth",         "Growth (annual)",                 D["ict_growth"],        NUM_PCT,   "Highest segment growth."),
+        (96, "ict_cm",             "Contribution margin",             D["ict_cm"],            NUM_PCT,   "Lower margin (heavy COGS in resold hyperscaler capacity)."),
+
+        # ---- Segment 6 — Wholesale ----
+        (98, None,              "SEGMENT 6 — Wholesale / carrier",    None,                NUM_BN,  None),
+        (99, "wholesale_rev_y0",   "Revenue Y0 (SAR bn)",             D["wholesale_rev_y0"],  NUM_BN,    "Domestic interconnect + international."),
+        (100,"wholesale_growth",   "Growth (annual)",                 D["wholesale_growth"],  NUM_PCT,   None),
+        (101,"wholesale_cm",       "Contribution margin",             D["wholesale_cm"],      NUM_PCT,   "Margin pressure from declining voice minutes."),
+
+        # ---- Equipment / handset (separate from service revenue) ----
+        (103, None,             "EQUIPMENT — handset sales (separate from service)", None,   NUM_BN,  None),
+        (104,"equipment_rev_y0",   "Revenue Y0 (SAR bn)",             D["equipment_rev_y0"],  NUM_BN,    None),
+        (105,"equipment_growth",   "Growth (annual)",                 D["equipment_growth"],  NUM_PCT,   None),
+        (106,"equipment_cm",       "Contribution margin",             D["equipment_cm"],      NUM_PCT,   "Near-breakeven — drives mobile postpaid acquisition."),
+
+        # ---- Detailed cost ratios ----
+        (108, None,             "Detailed cost ratios (% of total revenue)", None,           NUM_BN,  None),
+        (109,"interconnect_pct",   "Interconnect & roaming",          D["interconnect_pct"],  NUM_PCT,   "Paid to other operators per minute / GB."),
+        (110,"content_pct",        "Content / OTT licensing",         D["content_pct"],       NUM_PCT,   "Sports rights, IPTV content."),
+        (111,"energy_lease_pct",   "Network energy + site lease",     D["energy_lease_pct"],  NUM_PCT,   "Per-site fixed-ish opex; sensitive to tower lease structure."),
+        (112,"other_network_pct",  "Other network opex",              D["other_network_pct"], NUM_PCT,   "Maintenance, transmission, regulatory fees."),
+        (113,"commercial_other_pct","Other commercial / marketing",   D["commercial_other_pct"],NUM_PCT, "Brand spend, retention programmes."),
+        (114,"ga_pct",             "G&A / overhead",                  D["ga_pct"],            NUM_PCT,   None),
+        (115,"fx_loss_pct",        "FX losses (net)",                 D["fx_loss_pct"],       NUM_PCT,   "EGP / KWD / BHD translation drag."),
+
+        # ---- Below-EBITDA items ----
+        (117, None,             "Below-EBITDA items",                 None,                   NUM_BN,  None),
+        (118,"intangible_amort_pct","Intangibles amortisation",       D["intangible_amort_pct"],NUM_PCT, "Ex-spectrum (spectrum schedule comes in Phase 2)."),
+        (119,"associates_y0",      "Share of associate profit Y0",    D["associates_y0"],     NUM_BN,    "Equity-accounted minority stakes."),
+        (120,"associates_growth",  "Associates growth",               D["associates_growth"], NUM_PCT,   None),
+        (121,"minority_share_ni",  "Minority share of NI",            D["minority_share_ni"], NUM_PCT,   "Vodafone Egypt 49% non-controlling interest."),
     ]
 
     for row, key, label, value, fmt, note in rows:
@@ -464,107 +595,382 @@ def build_assumptions(ws):
 # =============================================================================
 
 def build_drivers(ws):
-    ws.column_dimensions["A"].width = 34
+    """Six-segment revenue buildup with proper subscriber dynamics.
+
+    Subs-based segments (postpaid, prepaid, fixed): opening base + gross adds
+    − churn × average base = closing base. ARPU rolls forward at its own rate.
+    Direct-revenue segments (B2B, ICT, wholesale): single growth %.
+    """
+    ws.column_dimensions["A"].width = 38
     for c in range(2, 8):
         ws.column_dimensions[get_column_letter(c)].width = 13
 
     ws["A1"] = "REVENUE & SUBSCRIBER DRIVERS"
     ws["A1"].font = section_font
-    ws["A2"] = "Illustrative segment buildup. Segment revenues scale to match the total service revenue on Assumptions."
+    ws["A2"] = "Six service segments + handset revenue. Subs / ARPU / churn dynamics for consumer mobile and fixed; direct-revenue modeling for B2B, ICT and wholesale."
     ws["A2"].font = sub_font
 
     year_header(ws, 4, 0, 5)
-
-    # --- Subscribers (millions) ---
     r = 6
-    section_header(ws, r, "Subscribers (millions)"); r += 1
 
-    seg_subs_y0 = {
-        "Mobile consumer": 35.0,
-        "Fixed broadband":  1.5,
-        "B2B connections":  0.5,
-    }
-    seg_arpu_y0 = {
-        "Mobile consumer":  80.0,    # SAR / month
-        "Fixed broadband": 400.0,
-        "B2B connections":3000.0,
-    }
-    # Sub growth assumptions (annual %)
-    seg_sub_growth = {"Mobile consumer": 0.02, "Fixed broadband": 0.04, "B2B connections": 0.06}
-    seg_arpu_growth = {"Mobile consumer": 0.03, "Fixed broadband": 0.02, "B2B connections": 0.04}
+    # ============================================================
+    # PART 1 — SUBSCRIBER DYNAMICS (3 segments)
+    # ============================================================
+    section_header(ws, r, "SUBSCRIBER DYNAMICS  (millions)"); r += 1
 
-    sub_rows = {}
-    for name, sub_y0 in seg_subs_y0.items():
-        write_label(ws, r, name)
-        write_input(ws, r, 2, sub_y0, NUM_BN)  # blue, since input
-        g_pct = seg_sub_growth[name]
-        for t in range(1, 6):
-            prev = ws.cell(row=r, column=2 + t - 1).coordinate
-            write_formula(ws, r, 2 + t, f"={prev}*(1+{g_pct})", NUM_BN)
-        sub_rows[name] = r
-        r += 1
+    # For each subs segment, build:  opening → gross adds → churn → closing
+    subs_segments = [
+        ("Mobile postpaid", "postpaid"),
+        ("Mobile prepaid",  "prepaid"),
+        ("Fixed broadband", "fixed"),
+    ]
 
-    # ---- ARPU (SAR/month) ----
-    r += 1
-    section_header(ws, r, "ARPU (SAR / month)"); r += 1
+    closing_rows = {}  # closing subs row by segment key
     arpu_rows = {}
-    for name, a in seg_arpu_y0.items():
-        write_label(ws, r, name)
-        write_input(ws, r, 2, a, '#,##0')
-        g_pct = seg_arpu_growth[name]
+
+    for label, key in subs_segments:
+        # Sub-section header
+        write_label(ws, r, label, bold=True); r += 1
+
+        # Opening subs
+        write_label(ws, r, "Opening subscribers", indent=1)
+        write_formula(ws, r, 2, '""', '@')  # Y0 has no opening
         for t in range(1, 6):
-            prev = ws.cell(row=r, column=2 + t - 1).coordinate
-            write_formula(ws, r, 2 + t, f"={prev}*(1+{g_pct})", '#,##0')
-        arpu_rows[name] = r
-        r += 1
+            col = get_column_letter(2 + t)
+            if t == 1:
+                # Opening Y1 = Y0 closing = a.{key}_subs_y0
+                write_formula(ws, r, 2 + t, f"={C(f'a.{key}_subs_y0')}", '#,##0.0')
+            else:
+                prev_col = get_column_letter(2 + t - 1)
+                write_formula(ws, r, 2 + t, f"={prev_col}{r + 3}", '#,##0.0')
+        opening_row = r; r += 1
 
-    # ---- Implied revenue (SAR bn) ----
-    r += 1
-    section_header(ws, r, "Implied revenue (SAR bn)"); r += 1
-    imp_rows = {}
-    for name in seg_subs_y0.keys():
-        write_label(ws, r, name)
+        # Gross adds = % × opening
+        write_label(ws, r, "+ Gross adds", indent=1)
+        for t in range(1, 6):
+            col = get_column_letter(2 + t)
+            write_formula(ws, r, 2 + t, f"={C(f'a.{key}_gross_adds')}*{col}{opening_row}", '#,##0.0')
+        gross_row = r; r += 1
+
+        # Churn = − churn% × (opening + closing)/2  →  but to avoid circular, use opening
+        write_label(ws, r, "− Churn (× opening base)", indent=1)
+        for t in range(1, 6):
+            col = get_column_letter(2 + t)
+            write_formula(ws, r, 2 + t, f"=-{C(f'a.{key}_churn')}*{col}{opening_row}", '#,##0.0')
+        churn_row = r; r += 1
+
+        # Closing subs (Y0 = input; Y1+ = opening + gross − churn)
+        write_label(ws, r, "Closing subscribers", indent=1, bold=True, banded=True)
+        write_formula(ws, r, 2, f"={C(f'a.{key}_subs_y0')}", '#,##0.0', bold=True, banded=True)
+        for t in range(1, 6):
+            col = get_column_letter(2 + t)
+            formula = f"={col}{opening_row}+{col}{gross_row}+{col}{churn_row}"
+            write_formula(ws, r, 2 + t, formula, '#,##0.0', bold=True, banded=True)
+        closing_rows[key] = r
         for t in range(0, 6):
-            sub_cell = ws.cell(row=sub_rows[name], column=2 + t).coordinate
-            arpu_cell = ws.cell(row=arpu_rows[name], column=2 + t).coordinate
-            # subs (mm) * ARPU (SAR/mo) * 12 / 1000 = SAR bn
-            write_formula(ws, r, 2 + t, f"={sub_cell}*{arpu_cell}*12/1000", NUM_BN)
-        imp_rows[name] = r
+            col = get_column_letter(2 + t)
+            reg(f"dr.{key}_subs_t{t}", SH_DRIV, col, r)
+        r += 2
+
+    # ============================================================
+    # PART 2 — ARPU ROLLFORWARD
+    # ============================================================
+    section_header(ws, r, "ARPU  (SAR / month)"); r += 1
+
+    for label, key in subs_segments:
+        write_label(ws, r, label, indent=1)
+        # Y0 = input ARPU
+        write_formula(ws, r, 2, f"={C(f'a.{key}_arpu_y0')}", '#,##0')
+        for t in range(1, 6):
+            col = get_column_letter(2 + t)
+            prev_col = get_column_letter(2 + t - 1)
+            write_formula(ws, r, 2 + t, f"={prev_col}{r}*(1+{C(f'a.{key}_arpu_g')})", '#,##0.0')
+        arpu_rows[key] = r
+        for t in range(0, 6):
+            col = get_column_letter(2 + t)
+            reg(f"dr.{key}_arpu_t{t}", SH_DRIV, col, r)
         r += 1
 
-    # Sum of subs-driven segments
-    subs_total_row = r
-    write_label(ws, r, "Subs-driven revenue", bold=True, banded=True)
-    for t in range(0, 6):
-        col = get_column_letter(2 + t)
-        cells = [f"{col}{imp_rows[n]}" for n in seg_subs_y0]
-        write_formula(ws, r, 2 + t, "=" + "+".join(cells), NUM_BN, bold=True, banded=True)
-    r += 2
-
-    # ---- Other revenue lines (ICT/cloud + wholesale + equipment) ----
-    section_header(ws, r, "Other revenue (residual)"); r += 1
-    write_label(ws, r, "ICT / cloud / wholesale (plug)")
-    # Plug so total = service revenue from Assumptions
-    for t in range(0, 6):
-        col = get_column_letter(2 + t)
-        if t == 0:
-            target = C("a.rev0")
-        else:
-            target = f"{C('a.rev0')}*(1+{C('a.growth')})^{t}"
-        plug = f"={target}-{col}{subs_total_row}"
-        write_formula(ws, r, 2 + t, plug, NUM_BN)
-    other_row = r
     r += 1
 
-    # ---- TOTAL service revenue (ties to Assumptions × growth) ----
+    # ============================================================
+    # PART 3 — IMPLIED SEGMENT REVENUE
+    # ============================================================
+    section_header(ws, r, "IMPLIED SEGMENT REVENUE  (SAR bn)"); r += 1
+
+    seg_rev_rows = {}
+
+    for label, key in subs_segments:
+        write_label(ws, r, label, indent=1)
+        for t in range(0, 6):
+            col = get_column_letter(2 + t)
+            # subs (mm) × ARPU (SAR/mo) × 12 / 1000 = SAR bn
+            # For consumer mobile (postpaid + prepaid) average subs across the year matters,
+            # but to avoid circular and keep clean we use closing subs.
+            formula = f"={col}{closing_rows[key]}*{col}{arpu_rows[key]}*12/1000"
+            write_formula(ws, r, 2 + t, formula, NUM_BN)
+            reg(f"dr.{key}_rev_t{t}", SH_DRIV, col, r)
+        seg_rev_rows[key] = r
+        r += 1
+
+    # Direct-revenue segments
+    direct_segments = [
+        ("B2B connectivity", "b2b"),
+        ("ICT / cloud",      "ict"),
+        ("Wholesale",        "wholesale"),
+    ]
+    for label, key in direct_segments:
+        write_label(ws, r, label, indent=1)
+        # Y0 from input
+        write_formula(ws, r, 2, f"={C(f'a.{key}_rev_y0')}", NUM_BN)
+        for t in range(1, 6):
+            col = get_column_letter(2 + t)
+            prev_col = get_column_letter(2 + t - 1)
+            write_formula(ws, r, 2 + t, f"={prev_col}{r}*(1+{C(f'a.{key}_growth')})", NUM_BN)
+        seg_rev_rows[key] = r
+        for t in range(0, 6):
+            col = get_column_letter(2 + t)
+            reg(f"dr.{key}_rev_t{t}", SH_DRIV, col, r)
+        r += 1
+
     r += 1
+
+    # ============================================================
+    # PART 4 — TOTAL SERVICE REVENUE + EQUIPMENT + TOTAL REVENUE
+    # ============================================================
     write_label(ws, r, "TOTAL SERVICE REVENUE", bold=True, banded=True)
     for t in range(0, 6):
         col = get_column_letter(2 + t)
-        formula = f"={col}{subs_total_row}+{col}{other_row}"
-        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+        cells = [f"{col}{seg_rev_rows[k]}" for _, k in subs_segments + direct_segments]
+        write_formula(ws, r, 2 + t, "=" + "+".join(cells), NUM_BN, bold=True, banded=True)
+        # Maintain backward-compat key: dr.rev_t{t} = total service revenue
         reg(f"dr.rev_t{t}", SH_DRIV, col, r)
-    total_row = r
+        reg(f"dr.service_rev_t{t}", SH_DRIV, col, r)
+    r += 1
+
+    # Equipment revenue (separate line)
+    write_label(ws, r, "Equipment / handset revenue")
+    write_formula(ws, r, 2, f"={C('a.equipment_rev_y0')}", NUM_BN)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        prev_col = get_column_letter(2 + t - 1)
+        write_formula(ws, r, 2 + t, f"={prev_col}{r}*(1+{C('a.equipment_growth')})", NUM_BN)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        reg(f"dr.equipment_rev_t{t}", SH_DRIV, col, r)
+    eq_row = r; r += 1
+
+    # Total revenue
+    service_rev_row = r - 2  # the "TOTAL SERVICE REVENUE" row
+    write_label(ws, r, "TOTAL REVENUE  (service + equipment)", bold=True, banded=True)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{service_rev_row}+{col}{eq_row}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+        reg(f"dr.total_rev_t{t}", SH_DRIV, col, r)
+    r += 2
+
+    # ============================================================
+    # PART 5 — OPERATIONAL KPIs
+    # ============================================================
+    section_header(ws, r, "OPERATIONAL KPIs"); r += 1
+
+    # Total mobile subs (postpaid + prepaid)
+    write_label(ws, r, "Total mobile subscribers (mm)", indent=1)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{closing_rows['postpaid']}+{col}{closing_rows['prepaid']}"
+        write_formula(ws, r, 2 + t, formula, '#,##0.0')
+    total_mob_row = r; r += 1
+
+    # Postpaid mix
+    write_label(ws, r, "Postpaid mix (% of mobile base)", indent=1)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{closing_rows['postpaid']}/{col}{total_mob_row}"
+        write_formula(ws, r, 2 + t, formula, NUM_PCT)
+    r += 1
+
+    # Blended mobile ARPU
+    write_label(ws, r, "Blended mobile ARPU (SAR / month)", indent=1)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        pp_rev = f"{col}{seg_rev_rows['postpaid']}"
+        pre_rev = f"{col}{seg_rev_rows['prepaid']}"
+        total_subs = f"{col}{total_mob_row}"
+        formula = f"=({pp_rev}+{pre_rev})*1000/{total_subs}/12"
+        write_formula(ws, r, 2 + t, formula, '#,##0')
+    r += 1
+
+    # B2B / total mix
+    write_label(ws, r, "B2B + ICT mix (% of service rev)", indent=1)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        b2b = f"{col}{seg_rev_rows['b2b']}"
+        ict = f"{col}{seg_rev_rows['ict']}"
+        total_serv = f"{col}{service_rev_row}"
+        write_formula(ws, r, 2 + t, f"=({b2b}+{ict})/{total_serv}", NUM_PCT)
+    r += 1
+
+    # Service revenue growth
+    write_label(ws, r, "Service revenue growth (yoy)", indent=1)
+    write_formula(ws, r, 2, '""', '@')
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        prev = get_column_letter(2 + t - 1)
+        write_formula(ws, r, 2 + t, f"={col}{service_rev_row}/{prev}{service_rev_row}-1", NUM_PCT)
+
+
+# =============================================================================
+# 8B. SEGMENTS P&L  (Phase 1)
+# =============================================================================
+
+SEG_ROWS = {}
+
+def build_segments(ws):
+    """Per-segment P&L — revenue, direct costs (from contribution margin %),
+    and segment contribution. Reconciliation to IS EBITDA appears at the
+    bottom (sum of segment contributions vs IS EBITDA = unallocated overhead).
+    """
+    ws.column_dimensions["A"].width = 34
+    for c in range(2, 8):
+        ws.column_dimensions[get_column_letter(c)].width = 13
+
+    ws["A1"] = "SEGMENT P&L  (contribution margin view)"
+    ws["A1"].font = section_font
+    ws["A2"] = ("Each segment carries its own contribution margin (segment revenue × CM%). "
+                "Difference vs. IS EBITDA = unallocated group overhead.")
+    ws["A2"].font = sub_font
+
+    year_header(ws, 4, 0, 5)
+    r = 6
+
+    seg_defs = [
+        ("Mobile postpaid",  "postpaid"),
+        ("Mobile prepaid",   "prepaid"),
+        ("Fixed broadband",  "fixed"),
+        ("B2B connectivity", "b2b"),
+        ("ICT / cloud",      "ict"),
+        ("Wholesale",        "wholesale"),
+        ("Equipment",        "equipment"),
+    ]
+
+    # ===== Block 1: Revenue =====
+    section_header(ws, r, "REVENUE"); r += 1
+    rev_rows = {}
+    for label, key in seg_defs:
+        write_label(ws, r, label, indent=1)
+        for t in range(0, 6):
+            col = get_column_letter(2 + t)
+            # Pull from Drivers
+            if key == "equipment":
+                src = C(f"dr.equipment_rev_t{t}")
+            else:
+                src = C(f"dr.{key}_rev_t{t}")
+            write_formula(ws, r, 2 + t, f"={src}", NUM_BN)
+        rev_rows[key] = r
+        r += 1
+
+    # Service revenue subtotal
+    write_label(ws, r, "Total service revenue", bold=True)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        cells = [f"{col}{rev_rows[k]}" for _, k in seg_defs if k != "equipment"]
+        write_formula(ws, r, 2 + t, "=" + "+".join(cells), NUM_BN, bold=True)
+    SEG_ROWS["service_rev"] = r; r += 1
+
+    write_label(ws, r, "Total revenue (incl. equipment)", bold=True, banded=True)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        cells = [f"{col}{rev_rows[k]}" for _, k in seg_defs]
+        write_formula(ws, r, 2 + t, "=" + "+".join(cells), NUM_BN, bold=True, banded=True)
+    SEG_ROWS["total_rev"] = r
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        reg(f"sg.total_rev_t{t}", SH_SEG, col, r)
+    r += 2
+
+    # ===== Block 2: Direct costs (segment-level) =====
+    section_header(ws, r, "DIRECT COSTS  (= revenue × (1 − CM%))"); r += 1
+    cost_rows = {}
+    for label, key in seg_defs:
+        write_label(ws, r, label, indent=1)
+        for t in range(0, 6):
+            col = get_column_letter(2 + t)
+            rev_cell = f"{col}{rev_rows[key]}"
+            formula = f"=-{rev_cell}*(1-{C(f'a.{key}_cm')})"
+            write_formula(ws, r, 2 + t, formula, NUM_BN)
+        cost_rows[key] = r
+        r += 1
+
+    write_label(ws, r, "Total direct costs", bold=True)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        cells = [f"{col}{cost_rows[k]}" for _, k in seg_defs]
+        write_formula(ws, r, 2 + t, "=" + "+".join(cells), NUM_BN, bold=True)
+    SEG_ROWS["total_direct"] = r; r += 2
+
+    # ===== Block 3: Segment contribution =====
+    section_header(ws, r, "SEGMENT CONTRIBUTION"); r += 1
+    contrib_rows = {}
+    for label, key in seg_defs:
+        write_label(ws, r, label, indent=1)
+        for t in range(0, 6):
+            col = get_column_letter(2 + t)
+            formula = f"={col}{rev_rows[key]}+{col}{cost_rows[key]}"
+            write_formula(ws, r, 2 + t, formula, NUM_BN)
+        contrib_rows[key] = r
+        r += 1
+
+    write_label(ws, r, "Aggregate segment contribution", bold=True, banded=True)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        cells = [f"{col}{contrib_rows[k]}" for _, k in seg_defs]
+        write_formula(ws, r, 2 + t, "=" + "+".join(cells), NUM_BN, bold=True, banded=True)
+    SEG_ROWS["agg_contrib"] = r
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        reg(f"sg.agg_contrib_t{t}", SH_SEG, col, r)
+    r += 2
+
+    # ===== Block 4: Contribution margin % =====
+    section_header(ws, r, "CONTRIBUTION MARGIN %"); r += 1
+    for label, key in seg_defs:
+        write_label(ws, r, label, indent=1)
+        for t in range(0, 6):
+            col = get_column_letter(2 + t)
+            formula = f"=IF({col}{rev_rows[key]}=0,0,{col}{contrib_rows[key]}/{col}{rev_rows[key]})"
+            write_formula(ws, r, 2 + t, formula, NUM_PCT)
+        r += 1
+
+    write_label(ws, r, "Blended CM %", bold=True)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{SEG_ROWS['agg_contrib']}/{col}{SEG_ROWS['total_rev']}"
+        write_formula(ws, r, 2 + t, formula, NUM_PCT, bold=True)
+    r += 2
+
+    # ===== Block 5: Reconciliation to group EBITDA =====
+    section_header(ws, r, "RECONCILIATION TO GROUP EBITDA"); r += 1
+    write_label(ws, r, "Aggregate segment contribution")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={col}{SEG_ROWS['agg_contrib']}", NUM_BN)
+    r += 1
+
+    write_label(ws, r, "− IS EBITDA (group)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"=-{C(f'is.ebitda_t{t}')}", NUM_BN)
+    r += 1
+
+    write_label(ws, r, "= Unallocated / shared overhead", bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        prev2 = get_column_letter(2 + t)
+        formula = f"={prev2}{r-2}+{prev2}{r-1}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+    r += 1
 
 
 # =============================================================================
@@ -1006,14 +1412,18 @@ def build_tax(ws):
 # =============================================================================
 
 def build_is_v2(ws):
-    """Built after Debt/Tax exist, so we can wire real cross-sheet refs."""
-    ws.column_dimensions["A"].width = 34
+    """Detailed P&L — segment revenue breakdown, 10-line cost split, full
+    finance items, attributable NI to equity / minority, basic EPS, margin memos.
+    Layout is deterministic so other sheets can reference cells before this is built
+    (see PRE_IS_LAYOUT in main)."""
+    ws.column_dimensions["A"].width = 42
     for c in range(2, 8):
         ws.column_dimensions[get_column_letter(c)].width = 13
 
     ws["A1"] = "INCOME STATEMENT"
     ws["A1"].font = section_font
-    ws["A2"] = "All figures in SAR billion. Five-year explicit forecast."
+    ws["A2"] = ("Segment-disclosed revenue + 10-line cost split + finance items + "
+                "tax + attributable NI + EPS. All figures SAR billion, EPS in SAR.")
     ws["A2"].font = sub_font
 
     ws.cell(row=4, column=1).fill = header_fill
@@ -1021,121 +1431,271 @@ def build_is_v2(ws):
         c = ws.cell(row=4, column=2 + t, value=f"Y{t}")
         c.font = header_font; c.fill = header_fill; c.alignment = right
 
-    r = 5
-    # Service revenue
-    write_label(ws, r, "Service revenue", bold=True)
-    for t in range(1, 6):
-        col = get_column_letter(2 + t)
-        write_formula(ws, r, 2 + t, f"={C(f'dr.rev_t{t}')}", NUM_BN, bold=True)
-        reg(f"is.revenue_t{t}", SH_IS, col, r)
-    IS_ROWS["revenue"] = r
-    r += 2
+    # ============================================================
+    # SECTION 1 — REVENUE (rows 5-14)
+    # ============================================================
+    section_header(ws, 5, "REVENUE")
 
-    write_label(ws, r, "Cost lines (% of revenue)"); r += 1
-
-    cost_defs = [
-        ("COGS / interconnect / content",     "cogs_pct",         "cogs"),
-        ("Network operating costs",           "network_opex_pct", "network"),
-        ("Employee costs",                    "employee_pct",     "emp"),
-        ("Customer acquisition / commercial", "cust_acq_pct",     "cust_acq"),
-        ("Other opex / G&A",                  "other_opex_pct",   "other"),
+    seg_defs = [
+        ("Mobile postpaid",  "postpaid"),
+        ("Mobile prepaid",   "prepaid"),
+        ("Fixed broadband",  "fixed"),
+        ("B2B connectivity", "b2b"),
+        ("ICT / cloud",      "ict"),
+        ("Wholesale",        "wholesale"),
     ]
-    for label, akey, ikey in cost_defs:
+    for i, (label, key) in enumerate(seg_defs):
+        r = 6 + i
         write_label(ws, r, label, indent=1)
         for t in range(1, 6):
             col = get_column_letter(2 + t)
-            rev_cell = f"{col}{IS_ROWS['revenue']}"
-            write_formula(ws, r, 2 + t, f"=-{C('a.' + akey)}*{rev_cell}", NUM_BN)
-            reg(f"is.{ikey}_t{t}", SH_IS, col, r)
-        IS_ROWS[ikey] = r
-        r += 1
+            write_formula(ws, r, 2 + t, f"={C(f'dr.{key}_rev_t{t}')}", NUM_BN)
+            reg(f"is.seg_{key}_t{t}", SH_IS, col, r)
+        IS_ROWS[f"seg_{key}"] = r
 
-    r += 1
-    write_label(ws, r, "EBITDA", bold=True, banded=True)
-    cost_rows = [IS_ROWS[k] for _, _, k in cost_defs]
+    # Total service revenue at row 12
+    r = 12
+    write_label(ws, r, "Total service revenue", bold=True)
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        terms = [f"{col}{IS_ROWS['revenue']}"] + [f"{col}{cr}" for cr in cost_rows]
-        write_formula(ws, r, 2 + t, "=" + "+".join(terms), NUM_BN, bold=True, banded=True)
+        cells = [f"{col}{IS_ROWS[f'seg_{k}']}" for _, k in seg_defs]
+        write_formula(ws, r, 2 + t, "=" + "+".join(cells), NUM_BN, bold=True)
+        reg(f"is.service_revenue_t{t}", SH_IS, col, r)
+    IS_ROWS["service_revenue"] = r
+
+    # Equipment revenue at row 13
+    r = 13
+    write_label(ws, r, "Equipment / handset revenue")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'dr.equipment_rev_t{t}')}", NUM_BN)
+        reg(f"is.equipment_revenue_t{t}", SH_IS, col, r)
+    IS_ROWS["equipment_revenue"] = r
+
+    # TOTAL REVENUE at row 14
+    r = 14
+    write_label(ws, r, "TOTAL REVENUE", bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{IS_ROWS['service_revenue']}+{col}{IS_ROWS['equipment_revenue']}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+        reg(f"is.revenue_t{t}", SH_IS, col, r)
+        reg(f"is.total_revenue_t{t}", SH_IS, col, r)
+    IS_ROWS["revenue"] = r
+    IS_ROWS["total_revenue"] = r
+
+    # ============================================================
+    # SECTION 2 — OPERATING COSTS (rows 16-27)
+    # ============================================================
+    section_header(ws, 16, "OPERATING COSTS")
+
+    cost_lines = [
+        # (label, assumption_key OR special, internal_key)
+        (17, "Interconnect & roaming",        "interconnect_pct",     "interconnect"),
+        (18, "Content / OTT licensing",       "content_pct",          "content"),
+        (19, "Equipment COGS",                "_EQ_COGS_",            "equipment_cogs"),
+        (20, "Network energy + site lease",   "energy_lease_pct",     "energy_lease"),
+        (21, "Other network opex",            "other_network_pct",    "other_network"),
+        (22, "Employee costs",                "employee_pct",         "employee"),
+        (23, "Customer acquisition (commissions, subsidies)", "cust_acq_pct", "cust_acq"),
+        (24, "Other commercial / marketing",  "commercial_other_pct", "commercial_other"),
+        (25, "G&A / overhead",                "ga_pct",               "ga"),
+        (26, "FX losses (net)",               "fx_loss_pct",          "fx"),
+    ]
+    for row, label, akey, ikey in cost_lines:
+        write_label(ws, row, label, indent=1)
+        for t in range(1, 6):
+            col = get_column_letter(2 + t)
+            if akey == "_EQ_COGS_":
+                # = -equipment revenue × (1 - equipment_cm)
+                eq_rev = f"{col}{IS_ROWS['equipment_revenue']}"
+                formula = f"=-{eq_rev}*(1-{C('a.equipment_cm')})"
+            else:
+                tot_rev = f"{col}{IS_ROWS['revenue']}"
+                formula = f"=-{C('a.' + akey)}*{tot_rev}"
+            write_formula(ws, row, 2 + t, formula, NUM_BN)
+            reg(f"is.{ikey}_t{t}", SH_IS, col, row)
+        IS_ROWS[ikey] = row
+
+    # Total operating costs at row 27
+    r = 27
+    write_label(ws, r, "Total operating costs", bold=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        cells = [f"{col}{IS_ROWS[k]}" for _, _, _, k in cost_lines]
+        write_formula(ws, r, 2 + t, "=" + "+".join(cells), NUM_BN, bold=True)
+    IS_ROWS["total_opex"] = r
+
+    # EBITDA at row 28
+    r = 28
+    write_label(ws, r, "EBITDA", bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{IS_ROWS['revenue']}+{col}{IS_ROWS['total_opex']}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
         reg(f"is.ebitda_t{t}", SH_IS, col, r)
     IS_ROWS["ebitda"] = r
-    r += 2
 
-    write_label(ws, r, "Depreciation & amortisation")
+    # ============================================================
+    # SECTION 3 — DEPRECIATION & AMORTISATION (rows 30-32)
+    # ============================================================
+    r = 30
+    write_label(ws, r, "Depreciation")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
         write_formula(ws, r, 2 + t, f"={C(f'p.da_t{t}')}", NUM_BN)
+        reg(f"is.depreciation_t{t}", SH_IS, col, r)
         reg(f"is.da_t{t}", SH_IS, col, r)
+    IS_ROWS["depreciation"] = r
     IS_ROWS["da"] = r
-    r += 1
 
-    r += 1
-    write_label(ws, r, "EBIT (operating profit)", bold=True, banded=True)
+    r = 31
+    write_label(ws, r, "Amortisation (intangibles ex-spectrum)")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        formula = f"={col}{IS_ROWS['ebitda']}+{col}{IS_ROWS['da']}"
+        formula = f"=-{C('a.intangible_amort_pct')}*{col}{IS_ROWS['revenue']}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
+        reg(f"is.amortisation_t{t}", SH_IS, col, r)
+    IS_ROWS["amortisation"] = r
+
+    r = 32
+    write_label(ws, r, "EBIT", bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        cells = [IS_ROWS["ebitda"], IS_ROWS["depreciation"], IS_ROWS["amortisation"]]
+        formula = "=" + "+".join(f"{col}{x}" for x in cells)
         write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
         reg(f"is.ebit_t{t}", SH_IS, col, r)
     IS_ROWS["ebit"] = r
-    r += 2
 
+    # ============================================================
+    # SECTION 4 — FINANCE ITEMS & PBT (rows 34-37)
+    # ============================================================
+    r = 34
     write_label(ws, r, "Finance income")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        formula = f"={C('a.finance_income_pct')}*{col}{IS_ROWS['revenue']}"
-        write_formula(ws, r, 2 + t, formula, NUM_BN)
-        reg(f"is.fin_inc_t{t}", SH_IS, col, r)
+        write_formula(ws, r, 2 + t, f"={C('a.finance_income_pct')}*{col}{IS_ROWS['revenue']}", NUM_BN)
+        reg(f"is.finance_income_t{t}", SH_IS, col, r)
+        reg(f"is.fin_inc_t{t}", SH_IS, col, r)  # back-compat
+    IS_ROWS["finance_income"] = r
     IS_ROWS["fin_inc"] = r
-    r += 1
 
-    write_label(ws, r, "Interest expense")
+    r = 35
+    write_label(ws, r, "Finance costs (interest expense)")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
         write_formula(ws, r, 2 + t, f"=-{C(f'd.interest_t{t}')}", NUM_BN)
-        reg(f"is.interest_t{t}", SH_IS, col, r)
+        reg(f"is.finance_costs_t{t}", SH_IS, col, r)
+        reg(f"is.interest_t{t}", SH_IS, col, r)  # back-compat
+    IS_ROWS["finance_costs"] = r
     IS_ROWS["interest"] = r
-    r += 1
 
-    r += 1
-    write_label(ws, r, "Pre-tax income", bold=True)
+    r = 36
+    write_label(ws, r, "Share of associates / JVs")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        formula = f"={col}{IS_ROWS['ebit']}+{col}{IS_ROWS['fin_inc']}+{col}{IS_ROWS['interest']}"
+        formula = f"={C('a.associates_y0')}*(1+{C('a.associates_growth')})^{t}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
+        reg(f"is.associates_t{t}", SH_IS, col, r)
+    IS_ROWS["associates"] = r
+
+    r = 37
+    write_label(ws, r, "Profit before tax", bold=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        cells = [IS_ROWS[k] for k in ("ebit", "finance_income", "finance_costs", "associates")]
+        formula = "=" + "+".join(f"{col}{x}" for x in cells)
         write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True)
         reg(f"is.pretax_t{t}", SH_IS, col, r)
     IS_ROWS["pretax"] = r
-    r += 1
 
-    write_label(ws, r, "Income tax")
+    # ============================================================
+    # SECTION 5 — TAX & NET INCOME (rows 38-40)
+    # ============================================================
+    r = 38
+    write_label(ws, r, "Current tax expense")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
         write_formula(ws, r, 2 + t, f"=-{C(f't.expense_t{t}')}", NUM_BN)
-        reg(f"is.tax_t{t}", SH_IS, col, r)
+        reg(f"is.current_tax_t{t}", SH_IS, col, r)
+        reg(f"is.tax_t{t}", SH_IS, col, r)  # back-compat = current tax (deferred = 0 in Phase 1)
+    IS_ROWS["current_tax"] = r
     IS_ROWS["tax"] = r
-    r += 1
 
-    r += 1
+    r = 39
+    write_label(ws, r, "Deferred tax (movement)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, "=0", NUM_BN)
+        reg(f"is.deferred_tax_t{t}", SH_IS, col, r)
+    IS_ROWS["deferred_tax"] = r
+
+    r = 40
     write_label(ws, r, "NET INCOME", bold=True, banded=True)
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        formula = f"={col}{IS_ROWS['pretax']}+{col}{IS_ROWS['tax']}"
+        cells = [IS_ROWS[k] for k in ("pretax", "current_tax", "deferred_tax")]
+        formula = "=" + "+".join(f"{col}{x}" for x in cells)
         write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
         reg(f"is.ni_t{t}", SH_IS, col, r)
     IS_ROWS["ni"] = r
-    r += 2
 
-    section_header(ws, r, "MEMO"); r += 1
-    for label, key, top in [
-        ("EBITDA margin", "ebitda_margin", IS_ROWS["ebitda"]),
-        ("EBIT margin",   "ebit_margin",   IS_ROWS["ebit"]),
-        ("Net margin",    "net_margin",    IS_ROWS["ni"]),
+    # ============================================================
+    # SECTION 6 — ATTRIBUTION & EPS (rows 42-45)
+    # ============================================================
+    r = 42
+    write_label(ws, r, "Attributable to equity holders of the parent")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{IS_ROWS['ni']}*(1-{C('a.minority_share_ni')})"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
+        reg(f"is.attr_equity_t{t}", SH_IS, col, r)
+    IS_ROWS["attr_equity"] = r
+
+    r = 43
+    write_label(ws, r, "Attributable to minority interest")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{IS_ROWS['ni']}*{C('a.minority_share_ni')}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
+        reg(f"is.attr_minority_t{t}", SH_IS, col, r)
+    IS_ROWS["attr_minority"] = r
+
+    r = 45
+    write_label(ws, r, "Basic EPS (SAR / share)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        # EPS = attributable NI (SAR bn) × 1000 / shares (millions) = SAR/share
+        formula = f"={col}{IS_ROWS['attr_equity']}*1000/{C('a.shares')}"
+        write_formula(ws, r, 2 + t, formula, '#,##0.00')
+        reg(f"is.eps_t{t}", SH_IS, col, r)
+    IS_ROWS["eps"] = r
+
+    # ============================================================
+    # SECTION 7 — MEMO (rows 47-51)
+    # ============================================================
+    section_header(ws, 47, "MEMO")
+
+    for r, label, key, top_key in [
+        (48, "EBITDA margin",        "ebitda_margin", "ebitda"),
+        (49, "EBIT margin",          "ebit_margin",   "ebit"),
+        (50, "Net margin",           "net_margin",    "ni"),
     ]:
-        write_label(ws, r, label)
+        write_label(ws, r, label, indent=1)
         for t in range(1, 6):
             col = get_column_letter(2 + t)
-            write_formula(ws, r, 2 + t, f"={col}{top}/{col}{IS_ROWS['revenue']}", NUM_PCT)
+            formula = f"={col}{IS_ROWS[top_key]}/{col}{IS_ROWS['revenue']}"
+            write_formula(ws, r, 2 + t, formula, NUM_PCT)
         IS_ROWS[key] = r
-        r += 1
+
+    r = 51
+    write_label(ws, r, "Effective tax rate", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"=-({col}{IS_ROWS['current_tax']}+{col}{IS_ROWS['deferred_tax']})/{col}{IS_ROWS['pretax']}"
+        write_formula(ws, r, 2 + t, formula, NUM_PCT)
+    IS_ROWS["etr"] = r
 
 
 # =============================================================================
@@ -1324,11 +1884,13 @@ def build_bs(ws):
         write_formula(ws, r, 2 + t, f"={prev}{r}", NUM_BN)
     BS_ROWS["goodwill"] = r; r += 1
 
-    write_label(ws, r, "Intangibles (flat)")
+    write_label(ws, r, "Intangibles (less amortisation)")
     write_formula(ws, r, 2, f"={C('a.intangibles_y0')}", NUM_BN)
     for t in range(1, 6):
+        col = get_column_letter(2 + t)
         prev = get_column_letter(2 + t - 1)
-        write_formula(ws, r, 2 + t, f"={prev}{r}", NUM_BN)
+        # IS amortisation is recorded negative; adding it = subtracting magnitude
+        write_formula(ws, r, 2 + t, f"={prev}{r}+{C(f'is.amortisation_t{t}')}", NUM_BN)
     BS_ROWS["intangibles"] = r; r += 1
 
     write_label(ws, r, "Investments / associates (flat)")
@@ -1511,12 +2073,18 @@ def build_cfs(ws):
         write_formula(ws, r, 2 + t, f"={C(f'is.ni_t{t}')}", NUM_BN)
     CFS_ROWS["ni"] = r; r += 1
 
-    write_label(ws, r, "+ D&A (non-cash addback)")
+    write_label(ws, r, "+ Depreciation (non-cash addback)")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        # da on IS is negative; we add back the absolute value
-        write_formula(ws, r, 2 + t, f"=-{C(f'is.da_t{t}')}", NUM_BN)
+        # depreciation on IS is negative; we add back the absolute value
+        write_formula(ws, r, 2 + t, f"=-{C(f'is.depreciation_t{t}')}", NUM_BN)
     CFS_ROWS["da"] = r; r += 1
+
+    write_label(ws, r, "+ Amortisation (non-cash addback)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"=-{C(f'is.amortisation_t{t}')}", NUM_BN)
+    CFS_ROWS["amort"] = r; r += 1
 
     write_label(ws, r, "+/− Δ working capital")
     for t in range(1, 6):
@@ -1527,7 +2095,8 @@ def build_cfs(ws):
     write_label(ws, r, "Cash from operations (CFO)", bold=True, banded=True)
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        formula = f"={col}{CFS_ROWS['ni']}+{col}{CFS_ROWS['da']}+{col}{CFS_ROWS['dwc']}"
+        formula = (f"={col}{CFS_ROWS['ni']}+{col}{CFS_ROWS['da']}"
+                   f"+{col}{CFS_ROWS['amort']}+{col}{CFS_ROWS['dwc']}")
         write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
         reg(f"c.cfo_t{t}", SH_CFS, col, r)
     CFS_ROWS["cfo"] = r; r += 2
@@ -1641,16 +2210,26 @@ def build_budget(ws):
     section_header(ws, r, "P&L lines (SAR bn)"); r += 1
 
     line_defs = [
-        ("Service revenue",         f"={C('is.revenue_t1')}"),
-        ("COGS / interconnect",     f"={C('is.cogs_t1')}"),
-        ("Network opex",            f"={C('is.network_t1')}"),
-        ("Employee costs",          f"={C('is.emp_t1')}"),
-        ("Customer acquisition",    f"={C('is.cust_acq_t1')}"),
-        ("Other opex / G&A",        f"={C('is.other_t1')}"),
-        ("EBITDA",                  f"={C('is.ebitda_t1')}"),
-        ("D&A",                     f"={C('is.da_t1')}"),
-        ("EBIT",                    f"={C('is.ebit_t1')}"),
-        ("Net income",              f"={C('is.ni_t1')}"),
+        ("Total revenue",             f"={C('is.total_revenue_t1')}"),
+        ("  Service revenue",         f"={C('is.service_revenue_t1')}"),
+        ("  Equipment revenue",       f"={C('is.equipment_revenue_t1')}"),
+        ("Interconnect & roaming",    f"={C('is.interconnect_t1')}"),
+        ("Content / OTT",             f"={C('is.content_t1')}"),
+        ("Equipment COGS",            f"={C('is.equipment_cogs_t1')}"),
+        ("Network energy + lease",    f"={C('is.energy_lease_t1')}"),
+        ("Other network opex",        f"={C('is.other_network_t1')}"),
+        ("Employee costs",            f"={C('is.employee_t1')}"),
+        ("Customer acquisition",      f"={C('is.cust_acq_t1')}"),
+        ("Other commercial",          f"={C('is.commercial_other_t1')}"),
+        ("G&A",                       f"={C('is.ga_t1')}"),
+        ("FX losses",                 f"={C('is.fx_t1')}"),
+        ("EBITDA",                    f"={C('is.ebitda_t1')}"),
+        ("Depreciation",              f"={C('is.depreciation_t1')}"),
+        ("Amortisation",              f"={C('is.amortisation_t1')}"),
+        ("EBIT",                      f"={C('is.ebit_t1')}"),
+        ("Net income",                f"={C('is.ni_t1')}"),
+        ("  Attributable to parent",  f"={C('is.attr_equity_t1')}"),
+        ("  Minority interest",       f"={C('is.attr_minority_t1')}"),
     ]
     for label, y1_formula in line_defs:
         bold = label in ("EBITDA", "EBIT", "Net income")
@@ -1838,11 +2417,17 @@ def build_valuation(ws):
         write_formula(ws, r, 2 + t, f"={col}{VAL_ROWS['ebit']}*(1-{C('a.tax')})", NUM_BN)
     VAL_ROWS["nopat"] = r; r += 1
 
-    write_label(ws, r, "+ D&A (non-cash addback)")
+    write_label(ws, r, "+ Depreciation (non-cash)")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        write_formula(ws, r, 2 + t, f"=-{C(f'is.da_t{t}')}", NUM_BN)
+        write_formula(ws, r, 2 + t, f"=-{C(f'is.depreciation_t{t}')}", NUM_BN)
     VAL_ROWS["da"] = r; r += 1
+
+    write_label(ws, r, "+ Amortisation (non-cash)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"=-{C(f'is.amortisation_t{t}')}", NUM_BN)
+    VAL_ROWS["amort"] = r; r += 1
 
     write_label(ws, r, "− Capex")
     for t in range(1, 6):
@@ -1859,7 +2444,8 @@ def build_valuation(ws):
     write_label(ws, r, "FCFF", bold=True, banded=True)
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        formula = f"={col}{VAL_ROWS['nopat']}+{col}{VAL_ROWS['da']}+{col}{VAL_ROWS['capex']}+{col}{VAL_ROWS['dwc']}"
+        formula = (f"={col}{VAL_ROWS['nopat']}+{col}{VAL_ROWS['da']}"
+                   f"+{col}{VAL_ROWS['amort']}+{col}{VAL_ROWS['capex']}+{col}{VAL_ROWS['dwc']}")
         write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
     VAL_ROWS["fcff"] = r; r += 2
 
@@ -2012,26 +2598,56 @@ def main():
     cover.title = SH_COVER
     build_cover(cover)
 
-    # Pre-register IS rows so any downstream sheet (PPE, WC, Tax) can reference them.
-    # build_is_v2 verifies that actual rows match this pre-registration.
+    # Pre-register IS rows so downstream sheets (PPE, WC, Tax, Segments) can
+    # reference them before the IS itself is constructed. build_is_v2 verifies
+    # that actual rows match — if not, the script raises and refuses to write.
     PRE_IS_LAYOUT = {
-        "revenue":  5,
-        "cogs":     8,
-        "network":  9,
-        "emp":     10,
-        "cust_acq":11,
-        "other":   12,
-        "ebitda":  14,
-        "da":      16,
-        "ebit":    18,
-        "fin_inc": 20,
-        "interest":21,
-        "pretax":  23,
-        "tax":     24,
-        "ni":      26,
-        "ebitda_margin": 29,
-        "ebit_margin":   30,
-        "net_margin":    31,
+        # Revenue block (rows 5-14)
+        "seg_postpaid":      6,
+        "seg_prepaid":       7,
+        "seg_fixed":         8,
+        "seg_b2b":           9,
+        "seg_ict":          10,
+        "seg_wholesale":    11,
+        "service_revenue":  12,
+        "equipment_revenue":13,
+        "revenue":          14,   # = TOTAL revenue (service + equipment)
+        "total_revenue":    14,
+        # Cost block (rows 16-27)
+        "interconnect":     17,
+        "content":          18,
+        "equipment_cogs":   19,
+        "energy_lease":     20,
+        "other_network":    21,
+        "employee":         22,
+        "cust_acq":         23,
+        "commercial_other": 24,
+        "ga":               25,
+        "fx":               26,
+        "total_opex":       27,
+        # EBITDA & below
+        "ebitda":           28,
+        "depreciation":     30,
+        "da":               30,   # back-compat alias = depreciation
+        "amortisation":     31,
+        "ebit":             32,
+        "finance_income":   34,
+        "fin_inc":          34,   # back-compat
+        "finance_costs":    35,
+        "interest":         35,   # back-compat
+        "associates":       36,
+        "pretax":           37,
+        "current_tax":      38,
+        "tax":              38,   # back-compat = current tax (deferred = 0)
+        "deferred_tax":     39,
+        "ni":               40,
+        "attr_equity":      42,
+        "attr_minority":    43,
+        "eps":              45,
+        "ebitda_margin":    48,
+        "ebit_margin":      49,
+        "net_margin":       50,
+        "etr":              51,
     }
     for key, row in PRE_IS_LAYOUT.items():
         for t in range(1, 6):
@@ -2057,6 +2673,9 @@ def main():
         if actual is not None and actual != predicted:
             raise RuntimeError(f"IS layout drift: '{key}' predicted row {predicted}, "
                                f"actual row {actual}. Update PRE_IS_LAYOUT.")
+
+    # Segments — requires IS EBITDA to reconcile (build after IS).
+    build_segments(wb.create_sheet(SH_SEG))
 
     build_equity(wb.create_sheet(SH_EQ))
     build_bs(wb.create_sheet(SH_BS))

@@ -352,34 +352,52 @@
     <div class="prose">
       <p>The downloadable workbook is a full three-statement model — not a summary. Sixteen sheets, fully formula-linked, with integrity checks that flag any breakage in red.</p>
 
-      <table class="compare-table">
+      <p style="margin-top: 1rem;">The workbook is being built in <strong>five phases</strong>, with each phase adding depth that a senior practitioner (CPA, ACCA, CFA-charterholder) would expect. <strong>Phase 1 is live now</strong>; phases 2-5 are listed below with their planned content.</p>
+
+      <table class="compare-table" style="margin-top: 1.25rem;">
         <thead>
-          <tr><th>Sheet</th><th>What it does</th></tr>
+          <tr><th>Sheet</th><th>What it does</th><th style="width: 90px;">Phase</th></tr>
         </thead>
         <tbody>
-          <tr><td>Cover</td><td>Model map, colour legend, conventions, data disclaimer</td></tr>
-          <tr><td>Assumptions</td><td>Every input in one place &mdash; blue cells, change freely</td></tr>
-          <tr><td>Drivers</td><td>Subscribers, ARPU, segment revenue buildup</td></tr>
-          <tr><td>IS</td><td>Income statement, full P&amp;L, Y1-Y5</td></tr>
-          <tr><td>BS</td><td>Balance sheet, Y0 opening + Y1-Y5; balances every period</td></tr>
-          <tr><td>CFS</td><td>Cash flow statement, indirect method; ties to BS cash</td></tr>
-          <tr><td>Equity</td><td>Equity rollforward (share capital, RE, OCI, minority)</td></tr>
-          <tr><td>Debt</td><td>Debt schedule &mdash; gross debt, interest, net debt</td></tr>
-          <tr><td>PPE</td><td>PP&amp;E rollforward &mdash; opening + capex &minus; D&amp;A = closing</td></tr>
-          <tr><td>WC</td><td>Working capital from DSO / DIO / DPO ratios</td></tr>
-          <tr><td>Tax</td><td>Tax expense schedule (current tax, effective rate)</td></tr>
-          <tr><td>Budget</td><td>Y1 monthly view with seasonality and quarterly subtotals</td></tr>
-          <tr><td>Scenarios</td><td>Downside / base / upside switcher for the key drivers</td></tr>
-          <tr><td>Sensitivity</td><td>Two-way data tables: WACC&times;g &rarr; per-share; growth&times;margin &rarr; EV</td></tr>
-          <tr><td>Valuation</td><td>FCFF, DCF, terminal value, EV, equity, per-share + multiple cross-checks</td></tr>
-          <tr><td>Checks</td><td>BS balance, CFS reconciliation, cash positivity &mdash; all green at defaults</td></tr>
+          <tr><td>Cover</td><td>Model map, conventions, data disclaimer</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>Assumptions</td><td>Every input in one place &mdash; ~120 cells, segmented by section</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>Drivers</td><td>6-segment revenue buildup: subs (opening + gross adds &minus; churn = closing), ARPU rollforward, blended KPIs (postpaid mix, ARPU, B2B share)</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>Segments</td><td>Per-segment P&amp;L &mdash; revenue, direct costs, contribution margin, blended CM%, plus reconciliation to group EBITDA</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>IS</td><td>Detailed income statement &mdash; segment revenue breakdown, 10-line cost split, separate D&amp;A vs amortisation, finance items, share of associates, current + deferred tax, attributable NI to parent / minority, basic EPS, margin memos</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>BS</td><td>Balance sheet, Y0 opening + Y1-Y5; balances every period; intangibles amortise through</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>CFS</td><td>Indirect-method cash flow; D&amp;A and amortisation as separate non-cash addbacks</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>Equity</td><td>Equity rollforward (share capital, RE, OCI, minority)</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>Debt</td><td>ST / LT / lease debt + interest expense</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>PPE</td><td>Net PP&amp;E rollforward</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>WC</td><td>Working capital from DSO / DIO / DPO ratios</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>Tax</td><td>Current tax schedule (deferred-tax build deferred to Phase 3)</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>Budget</td><td>Y1 monthly P&amp;L with seasonality and quarterly subtotals</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>Scenarios</td><td>Downside / base / upside reference table</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>Sensitivity</td><td>Two-way tables: WACC&times;g &rarr; per-share; growth&times;margin &rarr; EV</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>Valuation</td><td>FCFF (NOPAT + D + A &minus; capex &minus; &Delta;WC), DCF, terminal value, EV, equity, per-share + EV/EBITDA, EV/EBIT, P/E cross-checks</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td>Checks</td><td>BS balance, CFS reconciliation, cash positivity, NI positivity</td><td><span class="status status-live">1 &middot; Live</span></td></tr>
+          <tr><td colspan="3" style="background: var(--bg-elevated); font-weight: 600;">Phase 2 &mdash; Asset schedules</td></tr>
+          <tr><td>PPE (deep)</td><td>Split by asset class (network, towers, buildings, IT, vehicles) with separate useful lives; maintenance vs growth capex</td><td><span class="status status-progress">In progress</span></td></tr>
+          <tr><td>Spectrum</td><td>Spectrum licences by cohort, amortisation over license term, separate cash payments</td><td><span class="status status-progress">In progress</span></td></tr>
+          <tr><td>Leases (IFRS 16)</td><td>Right-of-use asset rollforward + lease liability amortisation schedule</td><td><span class="status status-progress">In progress</span></td></tr>
+          <tr><td colspan="3" style="background: var(--bg-elevated); font-weight: 600;">Phase 3 &mdash; Debt & tax depth</td></tr>
+          <tr><td>Debt (waterfall)</td><td>Tranche-by-tranche: Sukuk 1, Sukuk 2, term loan, RCF, lease liabilities with maturity, coupon, repayment schedule</td><td><span class="status status-progress">In progress</span></td></tr>
+          <tr><td>Tax (deferred)</td><td>Current + deferred tax build, temporary differences, NOL utilisation, ETR reconciliation</td><td><span class="status status-progress">In progress</span></td></tr>
+          <tr><td colspan="3" style="background: var(--bg-elevated); font-weight: 600;">Phase 4 &mdash; Valuation toolkit</td></tr>
+          <tr><td>Comparable companies</td><td>Trading multiples (EV/EBITDA, P/E, P/B, dividend yield) for sector peers; median &amp; quartiles</td><td><span class="status status-progress">In progress</span></td></tr>
+          <tr><td>Sum-of-parts</td><td>Separate valuations for Consumer, B2B, Tower / Infrastructure, Fintech; implied conglomerate discount</td><td><span class="status status-progress">In progress</span></td></tr>
+          <tr><td>Multi-method summary</td><td>DCF + comps + DDM + EV/subscriber, range and central case</td><td><span class="status status-progress">In progress</span></td></tr>
+          <tr><td colspan="3" style="background: var(--bg-elevated); font-weight: 600;">Phase 5 &mdash; Returns, KPI & risk</td></tr>
+          <tr><td>Returns</td><td>ROIC, NOPAT, invested capital, EVA, ROIC-WACC spread, DuPont decomposition</td><td><span class="status status-progress">In progress</span></td></tr>
+          <tr><td>KPI dashboard</td><td>Operational (subs, ARPU, churn, postpaid mix), financial (FCF margin, leverage), per-share (EPS, DPS, BVPS)</td><td><span class="status status-progress">In progress</span></td></tr>
+          <tr><td>Covenants</td><td>Net debt/EBITDA, interest cover, distance-to-covenant tracking</td><td><span class="status status-progress">In progress</span></td></tr>
         </tbody>
       </table>
 
-      <p style="margin-top: 1.25rem;">Convention: <strong>blue inputs</strong>, <strong>black formulas</strong>, <strong>bold</strong> outputs and subtotals, light-cream fill on key rollups. The model is intentionally pre-financing simple (interest = cost-of-debt &times; opening gross debt, no revolving credit, deferred tax held flat) to keep cross-references one-directional and easy to audit. A real publication build would add scenario-driven inputs, working-capital seasonality, and spectrum amortisation cohorts.</p>
+      <p style="margin-top: 1.25rem;">Convention: <strong>blue inputs</strong>, <strong>black formulas</strong>, <strong>bold</strong> outputs and subtotals, light-cream fill on key rollups. <strong>~1,400 formula cells</strong> in Phase 1; expected ~3,000 by Phase 5.</p>
 
       <p style="font-size: 0.875rem; color: var(--text-subtle); margin-top: 1.25rem;">
-        Build script: <a href="build_excel.py">build_excel.py</a> (Python, openpyxl). Run it to regenerate the workbook locally after editing defaults.
+        Build script: <a href="build_excel.py">build_excel.py</a> (Python, openpyxl). Default values approximate STC; all balance-sheet starting positions are illustrative &mdash; replace blue input cells with audited figures before publication.
       </p>
 
       <p style="margin-top: 2rem;">
