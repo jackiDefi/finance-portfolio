@@ -280,6 +280,35 @@ D = {
     # ---- Deferred tax (book vs tax depreciation timing) ----
     "tax_dep_rate":           0.15,   # accelerated tax depreciation vs book 10%
 
+    # =========================================================================
+    # PHASE 3+ — PP&E split by 5 asset classes
+    # =========================================================================
+    # Each class: Y0 NBV, useful life (yrs), capex allocation %.
+    # Sum of NBVs must equal a.ppe_y0 = 62; sum of capex shares must equal 1.
+
+    # Class 1 — Network & infrastructure (largest, 12-yr life)
+    "ppe_c1_nbv_y0":         38.0,
+    "ppe_c1_life":           12,
+    "ppe_c1_capex_share":     0.55,
+    # Class 2 — Towers & sites (long-life, low share)
+    "ppe_c2_nbv_y0":         10.0,
+    "ppe_c2_life":           25,
+    "ppe_c2_capex_share":     0.05,
+    # Class 3 — Buildings & land
+    "ppe_c3_nbv_y0":          6.0,
+    "ppe_c3_life":           35,
+    "ppe_c3_capex_share":     0.03,
+    # Class 4 — IT & equipment (short life, high share)
+    "ppe_c4_nbv_y0":          5.0,
+    "ppe_c4_life":            4,
+    "ppe_c4_capex_share":     0.25,
+    # Class 5 — Vehicles & other
+    "ppe_c5_nbv_y0":          3.0,
+    "ppe_c5_life":            6,
+    "ppe_c5_capex_share":     0.12,
+    # Y0 NBV total: 38+10+6+5+3 = 62 = a.ppe_y0 ✓
+    # Capex shares total: 0.55+0.05+0.03+0.25+0.12 = 1.00 ✓
+
     # ---- Budget seasonality (Q1, Q2, Q3, Q4 monthly weights sum to 1) ----
     # Telecom revenue is fairly flat with slight Q4 uplift from device sales.
     "month_weights": [
@@ -688,6 +717,33 @@ def build_assumptions(ws):
         # ---- Phase 3: Deferred tax ----
         (163, None,             "PHASE 3 — Deferred tax",             None,                   NUM_BN,  None),
         (164,"tax_dep_rate",       "Tax depreciation rate",           D["tax_dep_rate"],      NUM_PCT,   "Accelerated vs book 10% → creates DTL."),
+
+        # ---- Phase 3+: PP&E split by 5 asset classes ----
+        (166, None,             "PHASE 3+ — PP&E by asset class",     None,                   NUM_BN,  None),
+        (167, None,             "Class 1 — Network & infrastructure", None,                   NUM_BN,  None),
+        (168,"ppe_c1_nbv_y0",      "  NBV Y0 (SAR bn)",               D["ppe_c1_nbv_y0"],     NUM_BN,    "Largest asset class — radio, transmission, core."),
+        (169,"ppe_c1_life",        "  Useful life (years)",           D["ppe_c1_life"],       NUM_INT,   None),
+        (170,"ppe_c1_capex_share", "  Capex allocation",              D["ppe_c1_capex_share"],NUM_PCT,   None),
+
+        (172, None,             "Class 2 — Towers & sites",           None,                   NUM_BN,  None),
+        (173,"ppe_c2_nbv_y0",      "  NBV Y0",                        D["ppe_c2_nbv_y0"],     NUM_BN,    "Long-life, low capex share."),
+        (174,"ppe_c2_life",        "  Useful life",                   D["ppe_c2_life"],       NUM_INT,   None),
+        (175,"ppe_c2_capex_share", "  Capex allocation",              D["ppe_c2_capex_share"],NUM_PCT,   None),
+
+        (177, None,             "Class 3 — Buildings & land",         None,                   NUM_BN,  None),
+        (178,"ppe_c3_nbv_y0",      "  NBV Y0",                        D["ppe_c3_nbv_y0"],     NUM_BN,    None),
+        (179,"ppe_c3_life",        "  Useful life",                   D["ppe_c3_life"],       NUM_INT,   None),
+        (180,"ppe_c3_capex_share", "  Capex allocation",              D["ppe_c3_capex_share"],NUM_PCT,   None),
+
+        (182, None,             "Class 4 — IT & equipment",           None,                   NUM_BN,  None),
+        (183,"ppe_c4_nbv_y0",      "  NBV Y0",                        D["ppe_c4_nbv_y0"],     NUM_BN,    "Short life, frequent refresh cycle."),
+        (184,"ppe_c4_life",        "  Useful life",                   D["ppe_c4_life"],       NUM_INT,   None),
+        (185,"ppe_c4_capex_share", "  Capex allocation",              D["ppe_c4_capex_share"],NUM_PCT,   None),
+
+        (187, None,             "Class 5 — Vehicles & other",         None,                   NUM_BN,  None),
+        (188,"ppe_c5_nbv_y0",      "  NBV Y0",                        D["ppe_c5_nbv_y0"],     NUM_BN,    None),
+        (189,"ppe_c5_life",        "  Useful life",                   D["ppe_c5_life"],       NUM_INT,   None),
+        (190,"ppe_c5_capex_share", "  Capex allocation",              D["ppe_c5_capex_share"],NUM_PCT,   None),
     ]
 
     for row, key, label, value, fmt, note in rows:
@@ -1801,61 +1857,144 @@ BS_PLACEHOLDER_CASH = 0   # patched below by build_bs writing the actual row
 PPE_ROWS = {}
 
 def build_ppe(ws):
-    ws.column_dimensions["A"].width = 32
+    """PP&E split by 5 asset classes. Each class has its own useful life
+    (drives depreciation rate) and its own share of total capex. Aggregate
+    rollups feed the IS depreciation, BS PP&E line, and CFS capex line."""
+    ws.column_dimensions["A"].width = 38
     for c in range(2, 8):
         ws.column_dimensions[get_column_letter(c)].width = 13
 
-    ws["A1"] = "PP&E ROLLFORWARD"
+    ws["A1"] = "PP&E ROLLFORWARD — by asset class"
     ws["A1"].font = section_font
-    ws["A2"] = "Opening PP&E + capex − depreciation = closing PP&E. Net basis (no gross / accumulated split)."
+    ws["A2"] = ("Five classes: network/infrastructure, towers/sites, buildings/land, "
+                "IT/equipment, vehicles/other. Each has its own useful life and capex share. "
+                "Class capex = capex_share × total capex (where total = capex_pct × revenue).")
     ws["A2"].font = sub_font
 
     year_header(ws, 4, 0, 5)
-
     r = 6
-    # Opening PP&E
-    write_label(ws, r, "Opening PP&E")
-    write_formula(ws, r, 2, '""', '@')  # Y0 blank
+
+    classes = [
+        ("Class 1 — Network & infrastructure", "ppe_c1"),
+        ("Class 2 — Towers & sites",           "ppe_c2"),
+        ("Class 3 — Buildings & land",         "ppe_c3"),
+        ("Class 4 — IT & equipment",           "ppe_c4"),
+        ("Class 5 — Vehicles & other",         "ppe_c5"),
+    ]
+
+    class_rows = []   # (closing_row, capex_row, dep_row) per class
+
+    for label, prefix in classes:
+        section_header(ws, r, label); r += 1
+
+        # Opening NBV
+        write_label(ws, r, "Opening NBV", indent=1)
+        write_formula(ws, r, 2, '""', '@')
+        for t in range(1, 6):
+            col = get_column_letter(2 + t)
+            if t == 1:
+                write_formula(ws, r, 2 + t, f"={C(f'a.{prefix}_nbv_y0')}", NUM_BN)
+            else:
+                prev_col = get_column_letter(2 + t - 1)
+                # opening = prev year's closing (row r+3)
+                write_formula(ws, r, 2 + t, f"={prev_col}{r + 3}", NUM_BN)
+        opening = r; r += 1
+
+        # + Capex (= class_share × total capex)
+        write_label(ws, r, "+ Capex (share × total)", indent=1)
+        for t in range(1, 6):
+            col = get_column_letter(2 + t)
+            rev_cell = C(f'is.revenue_t{t}')
+            formula = f"={C(f'a.{prefix}_capex_share')}*{C('a.capex_pct')}*{rev_cell}"
+            write_formula(ws, r, 2 + t, formula, NUM_BN)
+        capex_row = r; r += 1
+
+        # − Depreciation (= opening NBV / useful life)
+        write_label(ws, r, "− Depreciation (NBV / life)", indent=1)
+        for t in range(1, 6):
+            col = get_column_letter(2 + t)
+            opening_cell = f"{col}{opening}"
+            formula = f"=-{opening_cell}/{C(f'a.{prefix}_life')}"
+            write_formula(ws, r, 2 + t, formula, NUM_BN)
+        dep_row = r; r += 1
+
+        # Closing NBV
+        write_label(ws, r, "Closing NBV", indent=1, bold=True, banded=True)
+        write_formula(ws, r, 2, f"={C(f'a.{prefix}_nbv_y0')}", NUM_BN, bold=True, banded=True)
+        for t in range(1, 6):
+            col = get_column_letter(2 + t)
+            formula = f"={col}{opening}+{col}{capex_row}+{col}{dep_row}"
+            write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+        closing = r; r += 2
+
+        class_rows.append((closing, capex_row, dep_row))
+
+    # ----- AGGREGATE TOTALS -----
+    section_header(ws, r, "TOTAL PP&E"); r += 1
+
+    # Total opening = sum of class openings
+    write_label(ws, r, "Total opening NBV", bold=True)
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        prev_col = get_column_letter(2 + t - 1)
-        if t == 1:
-            write_formula(ws, r, 2 + t, f"={C('a.ppe_y0')}", NUM_BN)
-        else:
-            write_formula(ws, r, 2 + t, f"={prev_col}{r + 3}", NUM_BN)  # prev closing
+        # Opening rows are at closing_row - 3 for each class
+        terms = [f"{col}{cls[0] - 3}" for cls in class_rows]
+        write_formula(ws, r, 2 + t, "=" + "+".join(terms), NUM_BN, bold=True)
     PPE_ROWS["opening"] = r; r += 1
 
-    write_label(ws, r, "+ Capex")
+    # Total capex
+    write_label(ws, r, "+ Total capex", bold=True)
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        formula = f"={C('a.capex_pct')}*{C(f'is.revenue_t{t}')}"
-        write_formula(ws, r, 2 + t, formula, NUM_BN)
+        terms = [f"{col}{cls[1]}" for cls in class_rows]
+        write_formula(ws, r, 2 + t, "=" + "+".join(terms), NUM_BN, bold=True)
         reg(f"p.capex_t{t}", SH_PPE, col, r)
     PPE_ROWS["capex"] = r; r += 1
 
-    write_label(ws, r, "− Depreciation (PP&E only)")
+    # Total depreciation
+    write_label(ws, r, "− Total depreciation", bold=True)
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        # PPE dep based on opening NBV × ppe_dep_rate (NBV-based, not % of revenue)
-        prev_col = get_column_letter(2 + t - 1)
-        # Opening NBV for this year = previous year's closing PPE.
-        # For Y1 the "opening row" in PPE schedule still points to a.ppe_y0 indirectly,
-        # but the simplest formula here is: -opening × ppe_dep_rate.
-        opening_cell = f"{col}{PPE_ROWS['opening']}"
-        formula = f"=-{opening_cell}*{C('a.ppe_dep_rate')}"
-        write_formula(ws, r, 2 + t, formula, NUM_BN)
+        terms = [f"{col}{cls[2]}" for cls in class_rows]
+        write_formula(ws, r, 2 + t, "=" + "+".join(terms), NUM_BN, bold=True)
         reg(f"p.da_t{t}", SH_PPE, col, r)
     PPE_ROWS["da"] = r; r += 1
 
-    write_label(ws, r, "Closing PP&E", bold=True, banded=True)
+    # Total closing
+    write_label(ws, r, "Total closing PP&E", bold=True, banded=True)
     write_formula(ws, r, 2, f"={C('a.ppe_y0')}", NUM_BN, bold=True, banded=True)
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        formula = f"={col}{PPE_ROWS['opening']}+{col}{PPE_ROWS['capex']}+{col}{PPE_ROWS['da']}"
-        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+        terms = [f"{col}{cls[0]}" for cls in class_rows]
+        write_formula(ws, r, 2 + t, "=" + "+".join(terms), NUM_BN, bold=True, banded=True)
         reg(f"p.closing_t{t}", SH_PPE, col, r)
     reg("p.closing_y0", SH_PPE, "B", r)
-    PPE_ROWS["closing"] = r
+    PPE_ROWS["closing"] = r; r += 2
+
+    # ----- MAINTENANCE vs GROWTH CAPEX -----
+    section_header(ws, r, "CAPEX SPLIT — maintenance vs growth"); r += 1
+
+    write_label(ws, r, "Maintenance capex")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{PPE_ROWS['capex']}*{C('a.capex_maintenance_pct')}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
+    r += 1
+
+    write_label(ws, r, "Growth capex")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{PPE_ROWS['capex']}*(1-{C('a.capex_maintenance_pct')})"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
+    r += 1
+
+    # ----- IMPLIED USEFUL LIFE -----
+    write_label(ws, r, "Implied blended dep rate (memo)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        # Total dep / opening NBV
+        formula = f"=-{col}{PPE_ROWS['da']}/{col}{PPE_ROWS['opening']}"
+        write_formula(ws, r, 2 + t, formula, NUM_PCT)
+    r += 1
 
 
 # =============================================================================
