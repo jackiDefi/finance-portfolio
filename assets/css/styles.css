@@ -5,40 +5,55 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap');
 
+/* DEFAULT = DARK — premium finance terminal aesthetic.
+   Light theme is opt-in via .theme-toggle (sets data-theme="light"). */
+
 :root {
-  --bg: #fafaf7;
-  --bg-elevated: #ffffff;
-  --text: #0a1828;
-  --text-muted: #5a6573;
-  --text-subtle: #8a96a8;
-  --accent: #b87333;
-  --accent-hover: #a16429;
-  --border: #e5e3dc;
-  --border-strong: #d4d2c8;
-  --hover-bg: #f1efe6;
-  --status-progress-bg: #ebe8e0;
-  --status-progress-text: #5a6573;
-  --status-live-bg: #f3e4d3;
-  --status-live-text: #8a5524;
-  --negative: #c0392b;
+  --bg:                  #0a0e15;   /* very dark — slight blue tint, not pure black */
+  --bg-elevated:         #11161f;
+  --bg-card:             #0f141c;
+  --text:                #e8ecf2;   /* off-white — easier on eyes than pure white */
+  --text-muted:          #8a96a8;
+  --text-subtle:         #5a6373;
+  --accent:              #d49254;   /* warm copper — Bloomberg-ish, sophisticated */
+  --accent-bright:       #e8a866;
+  --accent-hover:        #e0a468;
+  --accent-muted:        #8a5e34;
+  --accent-secondary:    #6fb3ff;   /* subtle blue for links / chart accents */
+  --border:              #1a2230;
+  --border-strong:       #243144;
+  --hover-bg:            #131b27;
+  --status-progress-bg:  #1a2230;
+  --status-progress-text:#8a96a8;
+  --status-live-bg:      #3a2a18;
+  --status-live-text:    #e0a468;
+  --negative:            #f87171;
+  --positive:            #4ade80;
+  --grid-line:           #161e2a;   /* very subtle grid for canvas backgrounds */
 }
 
-[data-theme="dark"] {
-  --bg: #0a1828;
-  --bg-elevated: #0f2138;
-  --text: #fafaf7;
-  --text-muted: #9aa5b5;
-  --text-subtle: #6a7585;
-  --accent: #d49254;
-  --accent-hover: #e0a468;
-  --border: #1f2d40;
-  --border-strong: #2a3a52;
-  --hover-bg: #14243a;
-  --status-progress-bg: #1f2d40;
-  --status-progress-text: #9aa5b5;
-  --status-live-bg: #3a2a18;
-  --status-live-text: #e0a468;
-  --negative: #e57363;
+[data-theme="light"] {
+  --bg:                  #fafaf7;
+  --bg-elevated:         #ffffff;
+  --bg-card:             #ffffff;
+  --text:                #0a1828;
+  --text-muted:          #5a6573;
+  --text-subtle:         #8a96a8;
+  --accent:              #b87333;
+  --accent-bright:       #c98441;
+  --accent-hover:        #a16429;
+  --accent-muted:        #d4a47a;
+  --accent-secondary:    #2563eb;
+  --border:              #e5e3dc;
+  --border-strong:       #d4d2c8;
+  --hover-bg:            #f1efe6;
+  --status-progress-bg:  #ebe8e0;
+  --status-progress-text:#5a6573;
+  --status-live-bg:      #f3e4d3;
+  --status-live-text:    #8a5524;
+  --negative:            #c0392b;
+  --positive:            #2c7a3e;
+  --grid-line:           #ece9df;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -80,11 +95,16 @@ a:hover { color: var(--accent-hover); }
 /* ----- Header ----- */
 .site-header {
   border-bottom: 1px solid var(--border);
-  padding: 1.25rem 0;
-  background: var(--bg);
+  padding: 1.125rem 0;
+  background: rgba(10, 14, 21, 0.85);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
   position: sticky;
   top: 0;
   z-index: 10;
+}
+[data-theme="light"] .site-header {
+  background: rgba(250, 250, 247, 0.85);
 }
 .site-header .container {
   display: flex;
@@ -139,16 +159,58 @@ a:hover { color: var(--accent-hover); }
 
 /* ----- Hero ----- */
 .hero {
-  padding: 5.5rem 0 4rem;
+  position: relative;
+  padding: 6.5rem 0 5rem;
   border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  isolation: isolate;
+}
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.hero .container {
+  position: relative;
+  z-index: 1;
+}
+.hero .eyebrow {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.hero .eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(1.4); }
 }
 .hero h1 {
-  font-size: clamp(2.25rem, 5.5vw, 3.75rem);
-  margin-bottom: 1.25rem;
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  margin-bottom: 1.5rem;
   max-width: 22ch;
+  letter-spacing: -0.025em;
+  font-weight: 700;
 }
 .hero .headline {
-  font-size: clamp(1.0625rem, 1.8vw, 1.25rem);
+  font-size: clamp(1.0625rem, 1.8vw, 1.3125rem);
   color: var(--accent);
   font-weight: 500;
   margin-bottom: 2rem;
@@ -159,12 +221,14 @@ a:hover { color: var(--accent-hover); }
   font-size: 1.0625rem;
   color: var(--text-muted);
   max-width: 42rem;
+  line-height: 1.7;
 }
 .value-prop {
   border-left: 3px solid var(--accent);
   padding: 0.5rem 0 0.5rem 1.5rem;
   margin-top: 2.5rem;
   max-width: 44rem;
+  background: linear-gradient(90deg, rgba(212, 146, 84, 0.06), transparent 50%);
 }
 .value-prop p {
   font-family: 'Source Serif 4', Georgia, serif;
@@ -172,6 +236,56 @@ a:hover { color: var(--accent-hover); }
   font-style: italic;
   color: var(--text);
   line-height: 1.5;
+}
+
+/* ----- Stats bar (under hero) ----- */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.stat {
+  background: var(--bg);
+  padding: 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+.stat-value {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.stat-value .unit {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-subtle);
+  margin-left: 0.25rem;
+  vertical-align: super;
+}
+.stat-label {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-subtle);
+  font-weight: 600;
+}
+.stat-trend {
+  font-size: 0.75rem;
+  color: var(--positive);
+  font-variant-numeric: tabular-nums;
+  margin-top: 0.125rem;
+}
+@media (max-width: 768px) {
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* ----- Section ----- */
@@ -206,47 +320,64 @@ section { padding: 4.5rem 0; }
 }
 .industry-card {
   background: var(--bg);
-  padding: 2.25rem 1.75rem;
+  padding: 2.5rem 2rem;
   color: inherit;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 200px;
-  transition: background 0.15s ease;
+  min-height: 220px;
+  transition: background 0.2s ease, border-color 0.2s ease;
   position: relative;
+  overflow: hidden;
+}
+.industry-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(212, 146, 84, 0.04) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 .industry-card:hover { background: var(--hover-bg); color: inherit; }
+.industry-card:hover::before { opacity: 1; }
 .industry-card h3 {
-  font-size: 1.375rem;
+  font-size: 1.5rem;
   margin-bottom: 0.625rem;
+  letter-spacing: -0.015em;
+  position: relative;
 }
 .industry-card .sector {
   font-size: 0.6875rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.2em;
   color: var(--text-subtle);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.875rem;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  position: relative;
 }
 .industry-card p {
   color: var(--text-muted);
   font-size: 0.9375rem;
   margin-bottom: 1.5rem;
-  line-height: 1.55;
+  line-height: 1.6;
+  position: relative;
 }
 .industry-card .card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: auto;
+  position: relative;
 }
 .industry-card .arrow {
   color: var(--text-subtle);
   font-size: 1.125rem;
-  transition: transform 0.15s ease, color 0.15s ease;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 .industry-card:hover .arrow {
-  transform: translateX(4px);
+  transform: translateX(6px);
   color: var(--accent);
 }
 
