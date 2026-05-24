@@ -246,6 +246,7 @@ a:hover { color: var(--accent-hover); }
   background: var(--border);
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
+  padding: 0;       /* override section { padding: 4.5rem 0 } */
 }
 .stat {
   background: var(--bg);
