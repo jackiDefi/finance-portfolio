@@ -333,6 +333,30 @@ D = {
     # Y0 NBV total: 30 + 1 + 4.3 + 6 + 2 = 43.3 = a.ppe_y0 ✓
     # Capex shares total: 0.65 + 0.02 + 0.05 + 0.22 + 0.06 = 1.00 ✓
 
+    # =========================================================================
+    # PHASE 4 — Comparable companies & Sum-of-parts
+    # =========================================================================
+    # Peer trading multiples (FY+1 forward, approximate values for illustration —
+    # in practice these are pulled from Bloomberg / Refinitiv at the analysis date).
+    # Peers selected: GCC integrated telcos + APAC / EU references.
+
+    # SOTP segment multiples (EV/EBITDA forward, by segment)
+    "sotp_mult_postpaid":     6.5,    # Consumer mobile postpaid — sticky ARPU
+    "sotp_mult_prepaid":      5.0,    # Consumer mobile prepaid — high churn
+    "sotp_mult_fixed":        7.5,    # Fixed broadband — infrastructure proxy
+    "sotp_mult_b2b":          6.5,    # B2B connectivity
+    "sotp_mult_ict":          9.0,    # ICT / cloud — growth premium
+    "sotp_mult_wholesale":    5.0,    # Wholesale — declining
+    "sotp_mult_equipment":    3.0,    # Equipment / handset — low margin
+    "sotp_investments_y0":   34.3,    # Carry value of investments / associates (book value used)
+
+    # =========================================================================
+    # PHASE 5 — Covenant thresholds (illustrative for STC)
+    # =========================================================================
+    "cov_leverage_max":       3.5,    # Net debt / EBITDA covenant ceiling
+    "cov_leverage_warn":      3.0,    # Internal early-warning threshold
+    "cov_int_cover_min":      4.0,    # Interest cover floor
+
     # ---- Budget seasonality (Q1, Q2, Q3, Q4 monthly weights sum to 1) ----
     # Telecom revenue is fairly flat with slight Q4 uplift from device sales.
     "month_weights": [
@@ -378,6 +402,11 @@ SH_SENS   = "Sensitivity"
 SH_SPEC   = "Spectrum"   # Phase 2 — spectrum cohort amortisation
 SH_LEASE  = "Leases"     # Phase 2 — IFRS 16 right-of-use schedule
 SH_VAL    = "Valuation"
+SH_COMPS  = "Comps"      # Phase 4 — comparable companies
+SH_SOTP   = "SOTP"       # Phase 4 — sum-of-parts
+SH_RETURNS= "Returns"    # Phase 5 — ROIC / NOPAT / EVA / DuPont
+SH_KPI    = "KPI"        # Phase 5 — operational + financial dashboard
+SH_COV    = "Covenants"  # Phase 5 — covenant tracking
 SH_CHK    = "Checks"
 
 
@@ -775,6 +804,23 @@ def build_assumptions(ws):
         (188,"ppe_c5_nbv_y0",      "  NBV Y0",                        D["ppe_c5_nbv_y0"],     NUM_BN,    None),
         (189,"ppe_c5_life",        "  Useful life",                   D["ppe_c5_life"],       NUM_INT,   None),
         (190,"ppe_c5_capex_share", "  Capex allocation",              D["ppe_c5_capex_share"],NUM_PCT,   None),
+
+        # ---- Phase 4: Sum-of-parts segment multiples ----
+        (192, None,             "PHASE 4 — Sum-of-parts EV/EBITDA",   None,                   NUM_BN,  None),
+        (193,"sotp_mult_postpaid", "Postpaid (mobile)",               D["sotp_mult_postpaid"],NUM_X,     "Sticky ARPU, high churn cost."),
+        (194,"sotp_mult_prepaid",  "Prepaid (mobile)",                D["sotp_mult_prepaid"], NUM_X,     "High churn."),
+        (195,"sotp_mult_fixed",    "Fixed broadband",                 D["sotp_mult_fixed"],   NUM_X,     "Infrastructure-like."),
+        (196,"sotp_mult_b2b",      "B2B connectivity",                D["sotp_mult_b2b"],     NUM_X,     None),
+        (197,"sotp_mult_ict",      "ICT / cloud",                     D["sotp_mult_ict"],     NUM_X,     "Growth premium."),
+        (198,"sotp_mult_wholesale","Wholesale",                       D["sotp_mult_wholesale"],NUM_X,    "Declining segment."),
+        (199,"sotp_mult_equipment","Equipment / handset",             D["sotp_mult_equipment"],NUM_X,    "Low margin, low multiple."),
+        (200,"sotp_investments_y0","Investments (book value)",        D["sotp_investments_y0"],NUM_BN,   "Vodafone Egypt + TAWAL residual + cash held as investments."),
+
+        # ---- Phase 5: Covenant thresholds ----
+        (202, None,             "PHASE 5 — Covenant thresholds",      None,                   NUM_BN,  None),
+        (203,"cov_leverage_max",   "Net debt / EBITDA — max (covenant)", D["cov_leverage_max"],NUM_X,   "Typical EMEA telco covenant."),
+        (204,"cov_leverage_warn",  "Net debt / EBITDA — warning",     D["cov_leverage_warn"], NUM_X,    "Internal early-warning level."),
+        (205,"cov_int_cover_min",  "Interest cover — min (covenant)", D["cov_int_cover_min"], NUM_X,    "EBITDA / interest floor."),
     ]
 
     for row, key, label, value, fmt, note in rows:
@@ -3402,6 +3448,636 @@ def build_valuation(ws):
     r += 1
     write_label(ws, r, "Implied FY+1 P/E")
     write_formula(ws, r, 2, f"=B{VAL_ROWS['equity']}/{C('is.ni_t1')}", NUM_X)
+    r += 1
+    # Register DCF outputs for the Multi-method summary (built last, references this sheet)
+    reg("v.dcf_equity", SH_VAL, "B", VAL_ROWS["equity"])
+    reg("v.dcf_per_share", SH_VAL, "B", VAL_ROWS["per_share"])
+    reg("v.dcf_ev", SH_VAL, "B", VAL_ROWS["ev"])
+    r += 2
+
+    # =====================================================================
+    # MULTI-METHOD SUMMARY  (Phase 4 — references Comps and SOTP)
+    # =====================================================================
+    section_header(ws, r, "MULTI-METHOD VALUATION SUMMARY"); r += 1
+
+    # Header
+    for col_idx, h in enumerate(["Method", "Equity value (SAR bn)", "Per share (SAR)", "Note"], start=1):
+        c = ws.cell(row=r, column=col_idx, value=h)
+        c.font = header_font; c.fill = header_fill
+        c.alignment = right if col_idx > 1 else left
+    ws.column_dimensions["C"].width = 16
+    ws.column_dimensions["D"].width = 40
+    r += 1
+
+    methods = [
+        ("DCF (Gordon growth)",        C("v.dcf_equity"),      "Base-case from this sheet"),
+        ("Comparable cos. — EV/EBITDA",f"={C('cp.equity_ev')}",     "Median peer EV/EBITDA × FY+1 EBITDA"),
+        ("Comparable cos. — P/E",      f"={C('cp.equity_pe')}",     "Median peer P/E × FY+1 NI"),
+        ("Comparable cos. — P/B",      f"={C('cp.equity_pb')}",     "Median peer P/B × book value"),
+        ("Sum-of-parts",               f"={C('sotp.equity')}",      "Segment-level EV at differentiated multiples"),
+    ]
+    summary_rows = []
+    for label, equity_ref, note in methods:
+        write_label(ws, r, label)
+        if equity_ref.startswith("="):
+            write_formula(ws, r, 2, equity_ref, NUM_BN, bold=True)
+        else:
+            write_formula(ws, r, 2, f"={equity_ref}", NUM_BN, bold=True)
+        # Per share
+        write_formula(ws, r, 3, f"=B{r}*1000/{C('a.shares')}", '#,##0.00')
+        ws.cell(row=r, column=4, value=note).font = sub_font
+        summary_rows.append(r)
+        r += 1
+
+    r += 1
+    # Summary stats
+    for label, agg in [("Mean", "AVERAGE"), ("Median", "MEDIAN"), ("Min", "MIN"), ("Max", "MAX")]:
+        ws.cell(row=r, column=1, value=label).font = output_font if label == "Median" else formula_font
+        write_formula(ws, r, 2, f"={agg}(B{summary_rows[0]}:B{summary_rows[-1]})", NUM_BN, bold=(label == "Median"), banded=(label == "Median"))
+        write_formula(ws, r, 3, f"=B{r}*1000/{C('a.shares')}", '#,##0.00', bold=(label == "Median"), banded=(label == "Median"))
+        r += 1
+
+
+# =============================================================================
+# 21B. COMPARABLE COMPANIES  (Phase 4)
+# =============================================================================
+
+COMPS_ROWS = {}
+
+def build_comps(ws):
+    """Peer trading-multiple summary. Median multiples applied to STC FY+1
+    metrics to derive comparable-companies-implied valuation."""
+    ws.column_dimensions["A"].width = 26
+    for c in range(2, 8):
+        ws.column_dimensions[get_column_letter(c)].width = 13
+
+    ws["A1"] = "COMPARABLE COMPANIES"
+    ws["A1"].font = section_font
+    ws["A2"] = ("Peer trading multiples (forward FY+1, illustrative). "
+                "In practice pulled from Bloomberg/Refinitiv at the analysis date — "
+                "replace blue cells below with real-time values before using.")
+    ws["A2"].font = sub_font
+
+    # Header
+    headers = ["Peer", "EV/EBITDA", "P/E", "P/B", "Div yield", "EBITDA margin"]
+    for i, h in enumerate(headers):
+        c = ws.cell(row=4, column=1 + i, value=h)
+        c.font = header_font; c.fill = header_fill; c.alignment = right if i > 0 else left
+
+    # Hardcoded peer data (illustrative)
+    peers = [
+        ("Mobily (KSA)",            5.5, 15.0, 1.8, 0.045, 0.380),
+        ("Zain KSA",                5.0, 16.0, 1.9, 0.040, 0.370),
+        ("e& (Etisalat UAE)",       6.5, 16.5, 2.5, 0.045, 0.500),
+        ("du (EITC, UAE)",          7.5, 17.0, 3.0, 0.040, 0.500),
+        ("Ooredoo (Qatar)",         4.5, 11.0, 1.2, 0.070, 0.380),
+        ("Vodafone Group",          4.5, 13.0, 0.7, 0.090, 0.330),
+        ("Singtel (APAC)",          6.5, 19.0, 1.6, 0.045, 0.250),
+    ]
+    r = 5
+    for name, ev_ebitda, pe, pb, dy, em in peers:
+        ws.cell(row=r, column=1, value=name).font = formula_font
+        for i, val in enumerate([ev_ebitda, pe, pb, dy, em], start=2):
+            fmt = NUM_X if i in (2, 3, 4) else NUM_PCT
+            write_input(ws, r, i, val, fmt)
+        r += 1
+
+    # Summary stats
+    r += 1
+    first_peer = 5
+    last_peer = 4 + len(peers)
+    section_header(ws, r, "PEER SUMMARY"); r += 1
+
+    for label, agg in [("Mean", "AVERAGE"), ("Median", "MEDIAN"), ("Min", "MIN"), ("Max", "MAX")]:
+        ws.cell(row=r, column=1, value=label).font = output_font if label == "Median" else formula_font
+        for col_idx in range(2, 7):
+            col = get_column_letter(col_idx)
+            fmt = NUM_X if col_idx in (2, 3, 4) else NUM_PCT
+            formula = f"={agg}({col}{first_peer}:{col}{last_peer})"
+            write_formula(ws, r, col_idx, formula, fmt, bold=(label == "Median"), banded=(label == "Median"))
+        if label == "Median":
+            COMPS_ROWS["median"] = r
+        r += 1
+
+    r += 1
+    # Apply median multiples to STC FY+1 metrics
+    section_header(ws, r, "IMPLIED VALUATION — apply median to STC FY+1"); r += 1
+
+    # STC FY+1 metrics
+    ws.cell(row=r, column=1, value="STC FY+1 EBITDA (SAR bn)").font = formula_font
+    write_formula(ws, r, 2, f"={C('is.ebitda_t1')}", NUM_BN)
+    r_ebitda = r; r += 1
+
+    ws.cell(row=r, column=1, value="STC FY+1 Net income (SAR bn)").font = formula_font
+    write_formula(ws, r, 2, f"={C('is.attr_equity_t1')}", NUM_BN)
+    r_ni = r; r += 1
+
+    ws.cell(row=r, column=1, value="STC Book value of equity (SAR bn)").font = formula_font
+    write_formula(ws, r, 2, f"={C(f'b.total_equity_t0')}", NUM_BN)
+    r_bv = r; r += 2
+
+    # Implied EV from median EV/EBITDA
+    write_label(ws, r, "Implied EV (median EV/EBITDA × FY+1 EBITDA)", bold=True, banded=True)
+    write_formula(ws, r, 2, f"=B{COMPS_ROWS['median']}*B{r_ebitda}", NUM_BN, bold=True, banded=True)
+    reg("cp.ev", SH_COMPS, "B", r); r += 1
+
+    write_label(ws, r, "Less: net debt (Y0)")
+    write_formula(ws, r, 2, f"=-{C('d.net_y0')}", NUM_BN)
+    r += 1
+
+    write_label(ws, r, "Implied equity (from EV/EBITDA)", bold=True)
+    write_formula(ws, r, 2, f"=B{r-2}+B{r-1}", NUM_BN, bold=True)
+    reg("cp.equity_ev", SH_COMPS, "B", r); r += 2
+
+    write_label(ws, r, "Implied equity (median P/E × NI)", bold=True)
+    write_formula(ws, r, 2, f"=C{COMPS_ROWS['median']}*B{r_ni}", NUM_BN, bold=True)
+    reg("cp.equity_pe", SH_COMPS, "B", r); r += 1
+
+    write_label(ws, r, "Implied equity (median P/B × BV)", bold=True)
+    write_formula(ws, r, 2, f"=D{COMPS_ROWS['median']}*B{r_bv}", NUM_BN, bold=True)
+    reg("cp.equity_pb", SH_COMPS, "B", r); r += 2
+
+    # Per-share values
+    write_label(ws, r, "Per-share (EV/EBITDA basis)", bold=True, banded=True)
+    write_formula(ws, r, 2, f"={C('cp.equity_ev')}*1000/{C('a.shares')}", '#,##0.00', bold=True, banded=True)
+    r += 1
+
+    write_label(ws, r, "Per-share (P/E basis)", bold=True, banded=True)
+    write_formula(ws, r, 2, f"={C('cp.equity_pe')}*1000/{C('a.shares')}", '#,##0.00', bold=True, banded=True)
+    r += 1
+
+    write_label(ws, r, "Per-share (P/B basis)", bold=True, banded=True)
+    write_formula(ws, r, 2, f"={C('cp.equity_pb')}*1000/{C('a.shares')}", '#,##0.00', bold=True, banded=True)
+
+
+# =============================================================================
+# 21C. SUM-OF-PARTS  (Phase 4)
+# =============================================================================
+
+SOTP_ROWS = {}
+
+def build_sotp(ws):
+    """Sum-of-parts: value each segment at its own EV/EBITDA multiple,
+    sum to total enterprise value, then derive equity by subtracting net
+    debt and adding the carry value of equity-method investments."""
+    ws.column_dimensions["A"].width = 28
+    for c in range(2, 8):
+        ws.column_dimensions[get_column_letter(c)].width = 14
+
+    ws["A1"] = "SUM-OF-PARTS VALUATION"
+    ws["A1"].font = section_font
+    ws["A2"] = ("Segment-level FY+1 EBITDA × segment EV/EBITDA = segment EV. "
+                "Sum to total operating EV; plus investments at carry value; "
+                "less net debt = equity. Compare to DCF and Comps.")
+    ws["A2"].font = sub_font
+
+    # Header
+    headers = ["Segment", "FY+1 Revenue", "CM%", "Seg EBITDA", "Multiple", "Segment EV"]
+    for i, h in enumerate(headers):
+        c = ws.cell(row=4, column=1 + i, value=h)
+        c.font = header_font; c.fill = header_fill; c.alignment = right if i > 0 else left
+
+    segs = [
+        ("Mobile postpaid",  "postpaid"),
+        ("Mobile prepaid",   "prepaid"),
+        ("Fixed broadband",  "fixed"),
+        ("B2B connectivity", "b2b"),
+        ("ICT / cloud",      "ict"),
+        ("Wholesale",        "wholesale"),
+        ("Equipment",        "equipment"),
+    ]
+
+    r = 5
+    seg_ev_rows = []
+    for label, key in segs:
+        write_label(ws, r, label)
+        # Revenue Y1
+        rev_cell = C(f'dr.{key}_rev_t1') if key != "equipment" else C('dr.equipment_rev_t1')
+        write_formula(ws, r, 2, f"={rev_cell}", NUM_BN)
+        # CM%
+        write_formula(ws, r, 3, f"={C(f'a.{key}_cm')}", NUM_PCT)
+        # Segment EBITDA (proxy)
+        write_formula(ws, r, 4, f"=B{r}*C{r}", NUM_BN)
+        # Multiple
+        write_formula(ws, r, 5, f"={C(f'a.sotp_mult_{key}')}", NUM_X)
+        # Segment EV
+        write_formula(ws, r, 6, f"=D{r}*E{r}", NUM_BN, bold=True)
+        seg_ev_rows.append(r)
+        r += 1
+
+    # Total operating EV
+    r += 1
+    write_label(ws, r, "Sum of segment EVs (operating)", bold=True, banded=True)
+    write_formula(ws, r, 6, f"=SUM(F{seg_ev_rows[0]}:F{seg_ev_rows[-1]})", NUM_BN, bold=True, banded=True)
+    SOTP_ROWS["op_ev"] = r
+    op_ev_row = r; r += 1
+
+    # Plus investments
+    write_label(ws, r, "+ Investments (carry value)")
+    write_formula(ws, r, 6, f"={C('a.sotp_investments_y0')}", NUM_BN)
+    inv_row = r; r += 1
+
+    # Less net debt
+    write_label(ws, r, "− Net debt (Y0)")
+    write_formula(ws, r, 6, f"=-{C('d.net_y0')}", NUM_BN)
+    debt_row = r; r += 1
+
+    # SOTP equity value
+    write_label(ws, r, "SOTP equity value", bold=True, banded=True)
+    write_formula(ws, r, 6, f"=F{op_ev_row}+F{inv_row}+F{debt_row}", NUM_BN, bold=True, banded=True)
+    reg("sotp.equity", SH_SOTP, "F", r)
+    SOTP_ROWS["equity"] = r; r += 1
+
+    # Per share
+    write_label(ws, r, "SOTP per share (SAR)", bold=True, banded=True)
+    write_formula(ws, r, 6, f"=F{SOTP_ROWS['equity']}*1000/{C('a.shares')}", '#,##0.00', bold=True, banded=True)
+
+
+# =============================================================================
+# 21D. RETURNS  (Phase 5)
+# =============================================================================
+
+RET_ROWS = {}
+
+def build_returns(ws):
+    """ROIC / NOPAT / EVA / DuPont decomposition.
+
+    Invested capital: PP&E + ROU + Goodwill + Intangibles + Investments
+    + WC operating (= AR + Inventory − AP) ÷ avg of opening and closing.
+    """
+    ws.column_dimensions["A"].width = 34
+    for c in range(2, 8):
+        ws.column_dimensions[get_column_letter(c)].width = 13
+
+    ws["A1"] = "RETURNS ANALYSIS — ROIC / EVA / DuPont"
+    ws["A1"].font = section_font
+    ws["A2"] = ("Capital efficiency, value creation, and ROE decomposition. "
+                "Invested capital averaged across opening and closing balances.")
+    ws["A2"].font = sub_font
+
+    ws.cell(row=4, column=1).fill = header_fill
+    for t in range(1, 6):
+        c = ws.cell(row=4, column=2 + t, value=f"Y{t}")
+        c.font = header_font; c.fill = header_fill; c.alignment = right
+
+    r = 6
+
+    # ===== NOPAT =====
+    section_header(ws, r, "NOPAT"); r += 1
+    write_label(ws, r, "EBIT (from IS)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'is.ebit_t{t}')}", NUM_BN)
+    ebit_row = r; r += 1
+
+    write_label(ws, r, "× (1 − tax rate)")
+    for t in range(1, 6):
+        write_formula(ws, r, 2 + t, f"=(1-{C('a.tax')})", NUM_PCT)
+    r += 1
+
+    write_label(ws, r, "NOPAT", bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={col}{ebit_row}*(1-{C('a.tax')})", NUM_BN, bold=True, banded=True)
+        reg(f"r.nopat_t{t}", SH_RETURNS, col, r)
+    nopat_row = r
+    RET_ROWS["nopat"] = r; r += 2
+
+    # ===== INVESTED CAPITAL =====
+    section_header(ws, r, "INVESTED CAPITAL"); r += 1
+
+    # Components (using closing balances per year)
+    # PPE
+    write_label(ws, r, "PP&E", indent=1)
+    write_formula(ws, r, 2, f"={C('a.ppe_y0')}", NUM_BN)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'p.closing_t{t}')}", NUM_BN)
+    ppe_row = r; r += 1
+
+    write_label(ws, r, "+ Right-of-use assets", indent=1)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'l.rou_t{t}')}", NUM_BN)
+    rou_row = r; r += 1
+
+    write_label(ws, r, "+ Goodwill", indent=1)
+    write_formula(ws, r, 2, f"={C('a.goodwill_y0')}", NUM_BN)
+    for t in range(1, 6):
+        prev = get_column_letter(2 + t - 1)
+        write_formula(ws, r, 2 + t, f"={prev}{r}", NUM_BN)
+    gw_row = r; r += 1
+
+    write_label(ws, r, "+ Intangibles (incl. spectrum)", indent=1)
+    write_formula(ws, r, 2, f"={C('a.intangibles_y0')}", NUM_BN)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        # Other intan + spectrum NBV
+        write_formula(ws, r, 2 + t, f"={C(f's.nbv_t{t}')}+{C('a.other_intangibles_y0')}-{C('a.intangible_amort_pct')}*{C(f'is.revenue_t{t}')}*{t}", NUM_BN)
+    intan_row = r; r += 1
+
+    write_label(ws, r, "+ Operating WC (AR + Inv − AP)", indent=1)
+    write_formula(ws, r, 2, f"={C('a.ar_y0')}+{C('a.inv_y0')}-{C('a.ap_y0')}", NUM_BN)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'w.ar_t{t}')}+{C(f'w.inv_t{t}')}-{C(f'w.ap_t{t}')}", NUM_BN)
+    wc_row = r; r += 1
+
+    write_label(ws, r, "Invested capital (closing)", bold=True, banded=True)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{ppe_row}+{col}{rou_row}+{col}{gw_row}+{col}{intan_row}+{col}{wc_row}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+    ic_close_row = r
+    RET_ROWS["ic_close"] = r; r += 1
+
+    write_label(ws, r, "Invested capital (average)")
+    write_formula(ws, r, 2, '""', '@')
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        prev_col = get_column_letter(2 + t - 1)
+        formula = f"=AVERAGE({prev_col}{ic_close_row},{col}{ic_close_row})"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
+    ic_avg_row = r
+    RET_ROWS["ic_avg"] = r; r += 2
+
+    # ===== ROIC =====
+    section_header(ws, r, "ROIC & ECONOMIC PROFIT"); r += 1
+
+    write_label(ws, r, "ROIC (= NOPAT / avg IC)", bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{nopat_row}/{col}{ic_avg_row}"
+        write_formula(ws, r, 2 + t, formula, NUM_PCT, bold=True, banded=True)
+        reg(f"r.roic_t{t}", SH_RETURNS, col, r)
+    RET_ROWS["roic"] = r; r += 1
+
+    write_label(ws, r, "WACC")
+    for t in range(1, 6):
+        write_formula(ws, r, 2 + t, f"={C('a.wacc')}", NUM_PCT)
+    wacc_row = r; r += 1
+
+    write_label(ws, r, "ROIC − WACC spread", bold=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{RET_ROWS['roic']}-{col}{wacc_row}"
+        write_formula(ws, r, 2 + t, formula, NUM_PCT, bold=True)
+    r += 1
+
+    write_label(ws, r, "EVA (= spread × IC)", bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"=({col}{RET_ROWS['roic']}-{col}{wacc_row})*{col}{ic_avg_row}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+    r += 2
+
+    # ===== DUPONT =====
+    section_header(ws, r, "DUPONT — ROE DECOMPOSITION"); r += 1
+
+    write_label(ws, r, "Net margin (NI / Revenue)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'is.attr_equity_t{t}')}/{C(f'is.revenue_t{t}')}", NUM_PCT)
+    nm_row = r; r += 1
+
+    write_label(ws, r, "Asset turnover (Revenue / Avg Assets)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        prev_col = get_column_letter(2 + t - 1)
+        avg_assets = f"AVERAGE({prev_col}{ic_close_row},{col}{ic_close_row})*1.3"  # rough scale-up since IC < total assets
+        # Better: use the actual total assets from BS
+        avg_assets = f"AVERAGE({C(f'b.total_assets_t{t-1 if t>0 else 0}')},{C(f'b.total_assets_t{t}')})"
+        write_formula(ws, r, 2 + t, f"={C(f'is.revenue_t{t}')}/{avg_assets}", NUM_PCT)
+    at_row = r; r += 1
+
+    write_label(ws, r, "Leverage (Assets / Equity)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'b.total_assets_t{t}')}/{C(f'b.total_equity_t{t}')}", NUM_X)
+    lm_row = r; r += 1
+
+    write_label(ws, r, "ROE (= NM × AT × LM)", bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{nm_row}*{col}{at_row}*{col}{lm_row}"
+        write_formula(ws, r, 2 + t, formula, NUM_PCT, bold=True, banded=True)
+    r += 1
+
+    write_label(ws, r, "ROE (cross-check: NI / Avg Equity)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        prev_col = get_column_letter(2 + t - 1)
+        formula = f"={C(f'is.attr_equity_t{t}')}/AVERAGE({C(f'b.total_equity_t{t-1 if t>0 else 0}')},{C(f'b.total_equity_t{t}')})"
+        write_formula(ws, r, 2 + t, formula, NUM_PCT)
+
+
+# =============================================================================
+# 21E. KPI DASHBOARD  (Phase 5)
+# =============================================================================
+
+def build_kpi(ws):
+    """Single-screen KPI dashboard pulling from all upstream sheets.
+    Operational + financial + per-share."""
+    ws.column_dimensions["A"].width = 36
+    for c in range(2, 8):
+        ws.column_dimensions[get_column_letter(c)].width = 13
+
+    ws["A1"] = "KPI DASHBOARD"
+    ws["A1"].font = section_font
+    ws["A2"] = "All key operational, financial and per-share metrics in one screen."
+    ws["A2"].font = sub_font
+
+    ws.cell(row=4, column=1).fill = header_fill
+    for t in range(1, 6):
+        c = ws.cell(row=4, column=2 + t, value=f"Y{t}")
+        c.font = header_font; c.fill = header_fill; c.alignment = right
+
+    r = 6
+    # ===== Operational KPIs =====
+    section_header(ws, r, "OPERATIONAL"); r += 1
+
+    kpis = [
+        ("Mobile postpaid subs (mm)",         lambda t: f"={C(f'dr.postpaid_subs_t{t}')}",   '#,##0.0'),
+        ("Mobile prepaid subs (mm)",          lambda t: f"={C(f'dr.prepaid_subs_t{t}')}",    '#,##0.0'),
+        ("Fixed broadband subs (mm)",         lambda t: f"={C(f'dr.fixed_subs_t{t}')}",      '#,##0.0'),
+        ("Postpaid ARPU (SAR/mo)",            lambda t: f"={C(f'dr.postpaid_arpu_t{t}')}",   '#,##0'),
+        ("Prepaid ARPU (SAR/mo)",             lambda t: f"={C(f'dr.prepaid_arpu_t{t}')}",    '#,##0'),
+        ("Fixed broadband ARPU (SAR/mo)",     lambda t: f"={C(f'dr.fixed_arpu_t{t}')}",      '#,##0'),
+    ]
+    for label, fn, fmt in kpis:
+        write_label(ws, r, label, indent=1)
+        for t in range(1, 6):
+            write_formula(ws, r, 2 + t, fn(t), fmt)
+        r += 1
+
+    r += 1
+    # ===== Financial KPIs =====
+    section_header(ws, r, "FINANCIAL"); r += 1
+
+    fin_kpis = [
+        ("Revenue (SAR bn)",                  lambda t: f"={C(f'is.revenue_t{t}')}",         NUM_BN),
+        ("Revenue growth (yoy)",              lambda t: (f"={C(f'is.revenue_t{t}')}/{C(f'is.revenue_t{t-1}')}-1" if t > 1 else f'""'),   NUM_PCT),
+        ("EBITDA (SAR bn)",                   lambda t: f"={C(f'is.ebitda_t{t}')}",          NUM_BN),
+        ("EBITDA margin",                     lambda t: f"={C(f'is.ebitda_t{t}')}/{C(f'is.revenue_t{t}')}",   NUM_PCT),
+        ("EBIT (SAR bn)",                     lambda t: f"={C(f'is.ebit_t{t}')}",            NUM_BN),
+        ("Net income (SAR bn)",               lambda t: f"={C(f'is.attr_equity_t{t}')}",     NUM_BN),
+        ("Net margin",                        lambda t: f"={C(f'is.attr_equity_t{t}')}/{C(f'is.revenue_t{t}')}", NUM_PCT),
+        ("Capex (SAR bn)",                    lambda t: f"={C(f'p.capex_t{t}')}",            NUM_BN),
+        ("Capex intensity",                   lambda t: f"={C(f'p.capex_t{t}')}/{C(f'is.revenue_t{t}')}",    NUM_PCT),
+        ("ROIC",                              lambda t: f"={C(f'r.roic_t{t}')}",             NUM_PCT),
+    ]
+    for label, fn, fmt in fin_kpis:
+        write_label(ws, r, label, indent=1)
+        for t in range(1, 6):
+            v = fn(t)
+            if v == '""':
+                ws.cell(row=r, column=2 + t, value='""').font = formula_font
+            else:
+                write_formula(ws, r, 2 + t, v, fmt)
+        r += 1
+
+    r += 1
+    # ===== Leverage & per-share =====
+    section_header(ws, r, "LEVERAGE & PER-SHARE"); r += 1
+
+    write_label(ws, r, "Net debt / EBITDA", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'd.net_t{t}')}/{C(f'is.ebitda_t{t}')}", NUM_X)
+    r += 1
+
+    write_label(ws, r, "Interest cover (EBITDA/interest)", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'is.ebitda_t{t}')}/(-{C(f'is.finance_costs_t{t}')})", NUM_X)
+    r += 1
+
+    write_label(ws, r, "EPS (SAR)", indent=1)
+    for t in range(1, 6):
+        write_formula(ws, r, 2 + t, f"={C(f'is.eps_t{t}')}", '#,##0.00')
+    r += 1
+
+    write_label(ws, r, "DPS (SAR)", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        # Dividends per share = div_payout × EPS
+        write_formula(ws, r, 2 + t, f"={C('a.div_payout')}*{C(f'is.eps_t{t}')}", '#,##0.00')
+    r += 1
+
+    write_label(ws, r, "BVPS (book value per share)", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'b.total_equity_t{t}')}*1000/{C('a.shares')}", '#,##0.00')
+    r += 1
+
+
+# =============================================================================
+# 21F. COVENANTS  (Phase 5)
+# =============================================================================
+
+def build_covenants(ws):
+    """Covenant compliance tracking. Net debt/EBITDA vs covenant ceiling,
+    interest cover vs floor, distance-to-covenant per year. Status flagged
+    by conditional formatting."""
+    from openpyxl.formatting.rule import CellIsRule, FormulaRule
+
+    ws.column_dimensions["A"].width = 36
+    for c in range(2, 8):
+        ws.column_dimensions[get_column_letter(c)].width = 14
+
+    ws["A1"] = "COVENANT COMPLIANCE TRACKING"
+    ws["A1"].font = section_font
+    ws["A2"] = ("Net debt/EBITDA and interest-cover vs covenant thresholds. "
+                "Distance-to-covenant flagged green / amber / red.")
+    ws["A2"].font = sub_font
+
+    ws.cell(row=4, column=1).fill = header_fill
+    for t in range(1, 6):
+        c = ws.cell(row=4, column=2 + t, value=f"Y{t}")
+        c.font = header_font; c.fill = header_fill; c.alignment = right
+
+    r = 6
+    # ===== LEVERAGE COVENANT =====
+    section_header(ws, r, "NET DEBT / EBITDA"); r += 1
+
+    write_label(ws, r, "Net debt / EBITDA (actual)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'd.net_t{t}')}/{C(f'is.ebitda_t{t}')}", NUM_X)
+    lev_row = r; r += 1
+
+    write_label(ws, r, "Covenant ceiling")
+    for t in range(1, 6):
+        write_formula(ws, r, 2 + t, f"={C('a.cov_leverage_max')}", NUM_X)
+    lev_max = r; r += 1
+
+    write_label(ws, r, "Internal warning level")
+    for t in range(1, 6):
+        write_formula(ws, r, 2 + t, f"={C('a.cov_leverage_warn')}", NUM_X)
+    lev_warn = r; r += 1
+
+    write_label(ws, r, "Distance to covenant (x)", bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{lev_max}-{col}{lev_row}"
+        write_formula(ws, r, 2 + t, formula, NUM_X, bold=True, banded=True)
+    r += 1
+
+    write_label(ws, r, "Status")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = (f'=IF({col}{lev_row}>{col}{lev_max},"BREACH",'
+                   f'IF({col}{lev_row}>{col}{lev_warn},"WARN","OK"))')
+        c = ws.cell(row=r, column=2 + t, value=formula)
+        c.alignment = right
+        c.font = formula_font
+    status_lev = r; r += 2
+
+    # ===== INTEREST COVER =====
+    section_header(ws, r, "INTEREST COVER"); r += 1
+
+    write_label(ws, r, "Interest cover (EBITDA / interest)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'is.ebitda_t{t}')}/(-{C(f'is.finance_costs_t{t}')})", NUM_X)
+    ic_row = r; r += 1
+
+    write_label(ws, r, "Covenant floor")
+    for t in range(1, 6):
+        write_formula(ws, r, 2 + t, f"={C('a.cov_int_cover_min')}", NUM_X)
+    ic_min = r; r += 1
+
+    write_label(ws, r, "Headroom (x)", bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{ic_row}-{col}{ic_min}"
+        write_formula(ws, r, 2 + t, formula, NUM_X, bold=True, banded=True)
+    r += 1
+
+    write_label(ws, r, "Status")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = (f'=IF({col}{ic_row}<{col}{ic_min},"BREACH",'
+                   f'IF({col}{ic_row}<{col}{ic_min}*1.5,"WARN","OK"))')
+        c = ws.cell(row=r, column=2 + t, value=formula)
+        c.alignment = right
+        c.font = formula_font
+    status_ic = r; r += 1
+
+    # Conditional formatting on Status rows
+    rng_lev = f"C{status_lev}:G{status_lev}"
+    rng_ic = f"C{status_ic}:G{status_ic}"
+    for rng in (rng_lev, rng_ic):
+        ws.conditional_formatting.add(rng,
+            CellIsRule(operator="equal", formula=['"OK"'],
+                       fill=pass_fill, font=pass_font))
+        ws.conditional_formatting.add(rng,
+            CellIsRule(operator="equal", formula=['"BREACH"'],
+                       fill=fail_fill, font=fail_font))
+        ws.conditional_formatting.add(rng,
+            CellIsRule(operator="equal", formula=['"WARN"'],
+                       fill=PatternFill("solid", fgColor="FFF1C2"),
+                       font=Font(name="Calibri", size=11, color="8A6500", bold=True)))
 
 
 # =============================================================================
@@ -3611,7 +4287,18 @@ def main():
     build_budget(wb.create_sheet(SH_BUD))
     build_scenarios(wb.create_sheet(SH_SCEN))
     build_sensitivity(wb.create_sheet(SH_SENS))
+
+    # Phase 4: Comps & SOTP must be built BEFORE Valuation (the Multi-method
+    # summary block at the bottom of Valuation references them).
+    build_comps(wb.create_sheet(SH_COMPS))
+    build_sotp(wb.create_sheet(SH_SOTP))
     build_valuation(wb.create_sheet(SH_VAL))
+
+    # Phase 5: Returns, KPI, Covenants — all pull from upstream sheets.
+    build_returns(wb.create_sheet(SH_RETURNS))
+    build_kpi(wb.create_sheet(SH_KPI))
+    build_covenants(wb.create_sheet(SH_COV))
+
     build_checks(wb.create_sheet(SH_CHK))
 
     wb.active = 0

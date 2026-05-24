@@ -357,7 +357,7 @@
     <div class="prose">
       <p>The downloadable workbook is a full three-statement model — not a summary. Sixteen sheets, fully formula-linked, with integrity checks that flag any breakage in red.</p>
 
-      <p style="margin-top: 1rem;">The workbook is being built in <strong>five phases</strong>, with each phase adding depth that a senior practitioner (CPA, ACCA, CFA-charterholder) would expect. <strong>Phase 1 is live now</strong>; phases 2-5 are listed below with their planned content.</p>
+      <p style="margin-top: 1rem;">The workbook was built in <strong>five phases</strong>, each adding depth that a senior practitioner (CPA, ACCA, CFA-charterholder) would expect. <strong>All five phases are now live</strong> &mdash; 24 sheets, ~2,150 formula cells, Y0 calibrated to STC&rsquo;s actual FY2024 balance sheet.</p>
 
       <table class="compare-table" style="margin-top: 1.25rem;">
         <thead>
@@ -392,17 +392,17 @@
           <tr><td>Tax (deferred)</td><td>Current tax + deferred tax build. Deferred tax driven by PP&amp;E book-vs-tax depreciation timing (tax_dep_rate 15% &gt; book 10% creates DTL). DTL rolls forward on BS; ΔDTL flows through IS as deferred tax expense; non-cash addback on CFS.</td><td><span class="status status-live">3 &middot; Live</span></td></tr>
           <tr><td>IS / BS / CFS rewiring</td><td>IS finance costs split into bond/loan interest + lease interest. IS deferred tax row pulls from Tax sheet. BS DTL line rolls up. CFS net debt issuance derived from per-tranche issuance &minus; repayment; deferred tax addback in CFO.</td><td><span class="status status-live">3 &middot; Live</span></td></tr>
           <tr><td colspan="3" style="background: var(--bg-elevated); font-weight: 600;">Phase 4 &mdash; Valuation toolkit</td></tr>
-          <tr><td>Comparable companies</td><td>Trading multiples (EV/EBITDA, P/E, P/B, dividend yield) for sector peers; median &amp; quartiles</td><td><span class="status status-progress">In progress</span></td></tr>
-          <tr><td>Sum-of-parts</td><td>Separate valuations for Consumer, B2B, Tower / Infrastructure, Fintech; implied conglomerate discount</td><td><span class="status status-progress">In progress</span></td></tr>
-          <tr><td>Multi-method summary</td><td>DCF + comps + DDM + EV/subscriber, range and central case</td><td><span class="status status-progress">In progress</span></td></tr>
+          <tr><td>Comparable companies</td><td>Seven regional &amp; global telco peers (Mobily, Zain KSA, e&amp;, du, Ooredoo, Vodafone, Singtel) with forward EV/EBITDA, P/E, P/B, dividend yield, EBITDA margin. Mean / median / min / max. Applied to STC FY+1 to derive implied EV, equity and per-share on three multiple bases.</td><td><span class="status status-live">4 &middot; Live</span></td></tr>
+          <tr><td>Sum-of-parts</td><td>Segment-level FY+1 EBITDA × differentiated EV/EBITDA per segment (postpaid 6.5x, prepaid 5.0x, fixed 7.5x, B2B 6.5x, ICT 9.0x, wholesale 5.0x, equipment 3.0x). Plus investments (book value), less net debt = SOTP equity. Per-share output.</td><td><span class="status status-live">4 &middot; Live</span></td></tr>
+          <tr><td>Multi-method summary</td><td>Single table at the bottom of the Valuation sheet showing DCF + 3 comparable-cos. bases + SOTP equity values and per-share. Mean / median / min / max as the valuation range.</td><td><span class="status status-live">4 &middot; Live</span></td></tr>
           <tr><td colspan="3" style="background: var(--bg-elevated); font-weight: 600;">Phase 5 &mdash; Returns, KPI & risk</td></tr>
-          <tr><td>Returns</td><td>ROIC, NOPAT, invested capital, EVA, ROIC-WACC spread, DuPont decomposition</td><td><span class="status status-progress">In progress</span></td></tr>
-          <tr><td>KPI dashboard</td><td>Operational (subs, ARPU, churn, postpaid mix), financial (FCF margin, leverage), per-share (EPS, DPS, BVPS)</td><td><span class="status status-progress">In progress</span></td></tr>
-          <tr><td>Covenants</td><td>Net debt/EBITDA, interest cover, distance-to-covenant tracking</td><td><span class="status status-progress">In progress</span></td></tr>
+          <tr><td>Returns</td><td>NOPAT, invested capital (PP&amp;E + ROU + Goodwill + Intangibles + operating WC; average of opening and closing), ROIC, ROIC&minus;WACC spread, EVA. Plus DuPont decomposition (ROE = net margin &times; asset turnover &times; leverage) with cross-check.</td><td><span class="status status-live">5 &middot; Live</span></td></tr>
+          <tr><td>KPI Dashboard</td><td>Single-screen view: operational (postpaid / prepaid / fixed subs, ARPU by segment), financial (revenue, growth, EBITDA, margins, capex, capex intensity, ROIC), leverage (net debt/EBITDA, interest cover), per-share (EPS, DPS, BVPS).</td><td><span class="status status-live">5 &middot; Live</span></td></tr>
+          <tr><td>Covenants</td><td>Net debt/EBITDA vs covenant ceiling (3.5x) and warning level (3.0x). Interest cover vs covenant floor (4.0x). Distance-to-covenant per year. Status row flagged green (OK) / amber (warn) / red (breach) via conditional formatting.</td><td><span class="status status-live">5 &middot; Live</span></td></tr>
         </tbody>
       </table>
 
-      <p style="margin-top: 1.25rem;">Convention: <strong>blue inputs</strong>, <strong>black formulas</strong>, <strong>bold</strong> outputs and subtotals, light-cream fill on key rollups. <strong>~1,400 formula cells</strong> in Phase 1; expected ~3,000 by Phase 5.</p>
+      <p style="margin-top: 1.25rem;">Convention: <strong>blue inputs</strong>, <strong>black formulas</strong>, <strong>bold</strong> outputs and subtotals, light-cream fill on key rollups. <strong>24 sheets, ~2,150 formula cells</strong> across all five phases.</p>
 
       <p style="font-size: 0.875rem; color: var(--text-subtle); margin-top: 1.25rem;">
         Build script: <a href="build_excel.py">build_excel.py</a> (Python, openpyxl). Default values approximate STC; all balance-sheet starting positions are illustrative &mdash; replace blue input cells with audited figures before publication.
