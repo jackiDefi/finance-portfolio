@@ -253,6 +253,33 @@ D = {
     # ---- PPE depreciation rate (now bottom-up, not % of revenue) ----
     "ppe_dep_rate":           0.10,   # 10% / year = ~10-yr blended useful life
 
+    # =========================================================================
+    # PHASE 3 — Tranche debt waterfall + deferred tax build
+    # =========================================================================
+
+    # ---- Tranche 1: Sukuk 1 (bullet maturity Y4, refinanced same year) ----
+    "t1_notional":            8.0,    # SAR bn
+    "t1_coupon":              0.045,
+    "t1_maturity_y":          4,      # repay full notional + reissue in Y4
+
+    # ---- Tranche 2: Sukuk 2 (matures Y8 — out of horizon) ----
+    "t2_notional":           12.0,
+    "t2_coupon":              0.050,
+
+    # ---- Tranche 3: Term loan (annually amortising over 5 years) ----
+    "t3_notional":            4.0,
+    "t3_coupon":              0.060,
+    "t3_amort_per_year":      0.8,    # full pay-down over 5 years
+
+    # ---- Tranche 4: Revolving credit facility (drawn balance held flat) ----
+    "t4_notional":            1.0,
+    "t4_coupon":              0.055,
+
+    # Cross-check: t1 + t2 + t3 + t4 = 25 = a.st_debt_y0 (5) + a.lt_debt_y0 (20) ✓
+
+    # ---- Deferred tax (book vs tax depreciation timing) ----
+    "tax_dep_rate":           0.15,   # accelerated tax depreciation vs book 10%
+
     # ---- Budget seasonality (Q1, Q2, Q3, Q4 monthly weights sum to 1) ----
     # Telecom revenue is fairly flat with slight Q4 uplift from device sales.
     "month_weights": [
@@ -637,6 +664,30 @@ def build_assumptions(ws):
 
         # ---- Phase 2: Other intangibles ----
         (142,"other_intangibles_y0","Other intangibles Y0 (SAR bn)",  D["other_intangibles_y0"],NUM_BN,  "Brand, software, customer lists (ex-spectrum)."),
+
+        # ---- Phase 3: Tranche-by-tranche debt waterfall ----
+        (144, None,             "PHASE 3 — Debt tranches",            None,                   NUM_BN,  None),
+        (145, None,             "Tranche 1 — Sukuk 1 (bullet, refi)", None,                   NUM_BN,  None),
+        (146,"t1_notional",        "  Notional (SAR bn)",             D["t1_notional"],       NUM_BN,    "Bullet maturity in year t1_maturity_y."),
+        (147,"t1_coupon",          "  Coupon",                        D["t1_coupon"],         NUM_PCT,   None),
+        (148,"t1_maturity_y",      "  Maturity year",                 D["t1_maturity_y"],     NUM_INT,   "Refinanced at par at maturity (net debt change = 0)."),
+
+        (150, None,             "Tranche 2 — Sukuk 2 (matures Y8)",   None,                   NUM_BN,  None),
+        (151,"t2_notional",        "  Notional (SAR bn)",             D["t2_notional"],       NUM_BN,    "Out of 5-year horizon; held flat."),
+        (152,"t2_coupon",          "  Coupon",                        D["t2_coupon"],         NUM_PCT,   None),
+
+        (154, None,             "Tranche 3 — Term loan (amortising)", None,                   NUM_BN,  None),
+        (155,"t3_notional",        "  Notional Y0 (SAR bn)",          D["t3_notional"],       NUM_BN,    "Amortises annually."),
+        (156,"t3_coupon",          "  Coupon",                        D["t3_coupon"],         NUM_PCT,   None),
+        (157,"t3_amort_per_year",  "  Repayment per year",            D["t3_amort_per_year"], NUM_BN,    "Fully paid off by Y5."),
+
+        (159, None,             "Tranche 4 — RCF (drawn portion)",    None,                   NUM_BN,  None),
+        (160,"t4_notional",        "  Drawn balance Y0 (SAR bn)",     D["t4_notional"],       NUM_BN,    "Held flat at drawn level."),
+        (161,"t4_coupon",          "  Coupon (floating)",             D["t4_coupon"],         NUM_PCT,   None),
+
+        # ---- Phase 3: Deferred tax ----
+        (163, None,             "PHASE 3 — Deferred tax",             None,                   NUM_BN,  None),
+        (164,"tax_dep_rate",       "Tax depreciation rate",           D["tax_dep_rate"],      NUM_PCT,   "Accelerated vs book 10% → creates DTL."),
     ]
 
     for row, key, label, value, fmt, note in rows:
@@ -1459,32 +1510,207 @@ TAX_ROWS_PLACEHOLDER = 0
 DEBT_ROWS = {}
 
 def build_debt(ws):
-    ws.column_dimensions["A"].width = 32
+    """Tranche-by-tranche debt waterfall. Four tranches: two Sukuk, one term
+    loan (amortising), one RCF. Each has opening + issuance − repayment =
+    closing, plus its own interest expense at coupon rate. Maturity profile
+    summarised at the bottom."""
+    ws.column_dimensions["A"].width = 38
     for c in range(2, 8):
         ws.column_dimensions[get_column_letter(c)].width = 13
 
-    ws["A1"] = "DEBT SCHEDULE"
+    ws["A1"] = "DEBT SCHEDULE — TRANCHE WATERFALL"
     ws["A1"].font = section_font
-    ws["A2"] = "Total debt = ST + LT + lease liabilities. Held flat unless overridden (simplification)."
+    ws["A2"] = ("Four debt instruments. Per-tranche opening + issuance − repayment = closing. "
+                "Lease liabilities live on the Leases sheet; pulled in below for total leverage view.")
     ws["A2"].font = sub_font
 
     year_header(ws, 4, 0, 5)
-
     r = 6
 
-    # Opening total debt = Y0 ST + LT + lease
-    write_label(ws, r, "Short-term debt")
-    write_formula(ws, r, 2, f"={C('a.st_debt_y0')}", NUM_BN)  # Y0
+    tranche_meta = []  # collected (closing_row, interest_row) per tranche
+
+    # ---------- TRANCHE 1: Sukuk 1 (bullet maturity, refinanced at par) ----------
+    section_header(ws, r, "TRANCHE 1 — Sukuk 1 (bullet, refinanced)"); r += 1
+
+    write_label(ws, r, "Opening balance", indent=1)
+    write_formula(ws, r, 2, '""', '@')
     for t in range(1, 6):
-        prev = ws.cell(row=r, column=2 + t - 1).coordinate
-        write_formula(ws, r, 2 + t, f"={prev}", NUM_BN)  # held flat
+        col = get_column_letter(2 + t)
+        if t == 1:
+            write_formula(ws, r, 2 + t, f"={C('a.t1_notional')}", NUM_BN)
+        else:
+            prev = get_column_letter(2 + t - 1)
+            write_formula(ws, r, 2 + t, f"={prev}{r + 3}", NUM_BN)
+    t1_open = r; r += 1
+
+    write_label(ws, r, "+ Issuance", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        # Refinanced at maturity: issue same notional in year t1_maturity_y
+        write_formula(ws, r, 2 + t, f"=IF({t}={C('a.t1_maturity_y')},{C('a.t1_notional')},0)", NUM_BN)
+    t1_iss = r; r += 1
+
+    write_label(ws, r, "− Repayment", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"=-IF({t}={C('a.t1_maturity_y')},{C('a.t1_notional')},0)", NUM_BN)
+    t1_rep = r; r += 1
+
+    write_label(ws, r, "Closing balance", indent=1, bold=True, banded=True)
+    write_formula(ws, r, 2, f"={C('a.t1_notional')}", NUM_BN, bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{t1_open}+{col}{t1_iss}+{col}{t1_rep}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+    t1_close = r; r += 1
+
+    write_label(ws, r, "Interest expense (coupon × opening)", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={col}{t1_open}*{C('a.t1_coupon')}", NUM_BN)
+    t1_int = r; r += 2
+    tranche_meta.append((t1_close, t1_int, t1_iss, t1_rep, "Sukuk 1"))
+
+    # ---------- TRANCHE 2: Sukuk 2 (matures beyond horizon) ----------
+    section_header(ws, r, "TRANCHE 2 — Sukuk 2 (matures Y8)"); r += 1
+
+    write_label(ws, r, "Opening balance", indent=1)
+    write_formula(ws, r, 2, '""', '@')
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        if t == 1:
+            write_formula(ws, r, 2 + t, f"={C('a.t2_notional')}", NUM_BN)
+        else:
+            prev = get_column_letter(2 + t - 1)
+            write_formula(ws, r, 2 + t, f"={prev}{r + 3}", NUM_BN)
+    t2_open = r; r += 1
+
+    write_label(ws, r, "+ Issuance", indent=1)
+    for t in range(1, 6):
+        write_formula(ws, r, 2 + t, "=0", NUM_BN)
+    t2_iss = r; r += 1
+
+    write_label(ws, r, "− Repayment", indent=1)
+    for t in range(1, 6):
+        write_formula(ws, r, 2 + t, "=0", NUM_BN)
+    t2_rep = r; r += 1
+
+    write_label(ws, r, "Closing balance", indent=1, bold=True, banded=True)
+    write_formula(ws, r, 2, f"={C('a.t2_notional')}", NUM_BN, bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{t2_open}+{col}{t2_iss}+{col}{t2_rep}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+    t2_close = r; r += 1
+
+    write_label(ws, r, "Interest expense", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={col}{t2_open}*{C('a.t2_coupon')}", NUM_BN)
+    t2_int = r; r += 2
+    tranche_meta.append((t2_close, t2_int, t2_iss, t2_rep, "Sukuk 2"))
+
+    # ---------- TRANCHE 3: Term loan (amortising) ----------
+    section_header(ws, r, "TRANCHE 3 — Term loan (amortising)"); r += 1
+
+    write_label(ws, r, "Opening balance", indent=1)
+    write_formula(ws, r, 2, '""', '@')
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        if t == 1:
+            write_formula(ws, r, 2 + t, f"={C('a.t3_notional')}", NUM_BN)
+        else:
+            prev = get_column_letter(2 + t - 1)
+            write_formula(ws, r, 2 + t, f"={prev}{r + 3}", NUM_BN)
+    t3_open = r; r += 1
+
+    write_label(ws, r, "+ Issuance", indent=1)
+    for t in range(1, 6):
+        write_formula(ws, r, 2 + t, "=0", NUM_BN)
+    t3_iss = r; r += 1
+
+    write_label(ws, r, "− Repayment", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        opening_cell = f"{col}{t3_open}"
+        # Repay min(amort_per_year, opening) to avoid negative balance
+        formula = f"=-MIN({C('a.t3_amort_per_year')},{opening_cell})"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
+    t3_rep = r; r += 1
+
+    write_label(ws, r, "Closing balance", indent=1, bold=True, banded=True)
+    write_formula(ws, r, 2, f"={C('a.t3_notional')}", NUM_BN, bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{t3_open}+{col}{t3_iss}+{col}{t3_rep}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+    t3_close = r; r += 1
+
+    write_label(ws, r, "Interest expense", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={col}{t3_open}*{C('a.t3_coupon')}", NUM_BN)
+    t3_int = r; r += 2
+    tranche_meta.append((t3_close, t3_int, t3_iss, t3_rep, "Term loan"))
+
+    # ---------- TRANCHE 4: RCF (held flat) ----------
+    section_header(ws, r, "TRANCHE 4 — RCF (drawn portion)"); r += 1
+
+    write_label(ws, r, "Opening balance", indent=1)
+    write_formula(ws, r, 2, '""', '@')
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        if t == 1:
+            write_formula(ws, r, 2 + t, f"={C('a.t4_notional')}", NUM_BN)
+        else:
+            prev = get_column_letter(2 + t - 1)
+            write_formula(ws, r, 2 + t, f"={prev}{r + 3}", NUM_BN)
+    t4_open = r; r += 1
+
+    write_label(ws, r, "+ Issuance", indent=1)
+    for t in range(1, 6):
+        write_formula(ws, r, 2 + t, "=0", NUM_BN)
+    t4_iss = r; r += 1
+
+    write_label(ws, r, "− Repayment", indent=1)
+    for t in range(1, 6):
+        write_formula(ws, r, 2 + t, "=0", NUM_BN)
+    t4_rep = r; r += 1
+
+    write_label(ws, r, "Closing balance", indent=1, bold=True, banded=True)
+    write_formula(ws, r, 2, f"={C('a.t4_notional')}", NUM_BN, bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{t4_open}+{col}{t4_iss}+{col}{t4_rep}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+    t4_close = r; r += 1
+
+    write_label(ws, r, "Interest expense", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={col}{t4_open}*{C('a.t4_coupon')}", NUM_BN)
+    t4_int = r; r += 2
+    tranche_meta.append((t4_close, t4_int, t4_iss, t4_rep, "RCF"))
+
+    # ---------- TOTALS ----------
+    section_header(ws, r, "TOTAL FINANCIAL DEBT (excl. leases)"); r += 1
+
+    # Total ST + LT (held flat conceptually as sum of the 4 tranches)
+    # We split ST and LT for BS reference (assume Term Loan + RCF are short-term-ish; Sukuk = long-term)
+    write_label(ws, r, "Short-term debt (Term Loan + RCF)", bold=True)
+    write_formula(ws, r, 2, f"={C('a.st_debt_y0')}", NUM_BN, bold=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{t3_close}+{col}{t4_close}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True)
     DEBT_ROWS["st"] = r; r += 1
 
-    write_label(ws, r, "Long-term debt")
-    write_formula(ws, r, 2, f"={C('a.lt_debt_y0')}", NUM_BN)
+    write_label(ws, r, "Long-term debt (Sukuk 1 + Sukuk 2)", bold=True)
+    write_formula(ws, r, 2, f"={C('a.lt_debt_y0')}", NUM_BN, bold=True)
     for t in range(1, 6):
-        prev = ws.cell(row=r, column=2 + t - 1).coordinate
-        write_formula(ws, r, 2 + t, f"={prev}", NUM_BN)
+        col = get_column_letter(2 + t)
+        formula = f"={col}{t1_close}+{col}{t2_close}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True)
     DEBT_ROWS["lt"] = r; r += 1
 
     write_label(ws, r, "Lease liabilities (from Leases sheet)")
@@ -1495,7 +1721,7 @@ def build_debt(ws):
 
     # Total gross debt
     r += 1
-    write_label(ws, r, "Gross debt (total)", bold=True, banded=True)
+    write_label(ws, r, "Gross debt (total, incl. leases)", bold=True, banded=True)
     for t in range(0, 6):
         col = get_column_letter(2 + t)
         formula = f"={col}{DEBT_ROWS['st']}+{col}{DEBT_ROWS['lt']}+{col}{DEBT_ROWS['lease']}"
@@ -1506,14 +1732,10 @@ def build_debt(ws):
             reg(f"d.gross_t{t}", SH_DEBT, col, r)
     DEBT_ROWS["gross"] = r; r += 2
 
-    # Net debt = gross - cash (cash comes from BS; for now use Y0 directly and let
-    # subsequent years pick up cash from BS sheet rows we'll write in build_bs)
+    # Cash (from BS via patched reference)
     write_label(ws, r, "Less: cash (from BS)")
-    # Y0 cash
     write_formula(ws, r, 2, f"=-{C('a.cash_y0')}", NUM_BN)
-    # Y1..Y5: pull from BS
     for t in range(1, 6):
-        # BS cash row to be defined; we'll reference by name later via key registry
         col = get_column_letter(2 + t)
         write_formula(ws, r, 2 + t, f"=-BS!{col}{BS_PLACEHOLDER_CASH}", NUM_BN)
     DEBT_ROWS["cash_offset"] = r; r += 1
@@ -1530,16 +1752,43 @@ def build_debt(ws):
             reg(f"d.net_t{t}", SH_DEBT, col, r)
     DEBT_ROWS["net"] = r; r += 2
 
-    # Interest expense (positive number) — financial debt only, leases handled separately
-    write_label(ws, r, "Interest expense (= kd × opening ST + LT debt)")
+    # Total interest expense (sum of tranche interests — already excludes lease interest)
+    write_label(ws, r, "Total financial interest (sum of tranches)", bold=True, banded=True)
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        prev_col = get_column_letter(2 + t - 1)
-        # Exclude lease portion to avoid double-counting (lease interest comes from Leases sheet).
-        formula = f"={C('a.kd')}*({prev_col}{DEBT_ROWS['st']}+{prev_col}{DEBT_ROWS['lt']})"
-        write_formula(ws, r, 2 + t, formula, NUM_BN)
+        cells = [f"{col}{m[1]}" for m in tranche_meta]
+        write_formula(ws, r, 2 + t, "=" + "+".join(cells), NUM_BN, bold=True, banded=True)
         reg(f"d.interest_t{t}", SH_DEBT, col, r)
-    DEBT_ROWS["interest"] = r
+    DEBT_ROWS["interest"] = r; r += 1
+
+    # Net debt issuance per year (for CFS) = sum of tranche issuances + repayments
+    write_label(ws, r, "Net debt issuance (to CFS)", bold=True)
+    write_formula(ws, r, 2, '""', '@')
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        terms = [f"{col}{m[2]}+{col}{m[3]}" for m in tranche_meta]  # iss + rep
+        write_formula(ws, r, 2 + t, "=" + "+".join(terms), NUM_BN, bold=True)
+        reg(f"d.net_issuance_t{t}", SH_DEBT, col, r)
+    DEBT_ROWS["net_issuance"] = r; r += 2
+
+    # Maturity profile (Y1-Y5 principal payments)
+    section_header(ws, r, "MATURITY PROFILE — principal payments by year"); r += 1
+
+    write_label(ws, r, "Principal due", bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        # Sum of all tranche repayments (negative numbers) → take absolute
+        terms = [f"-{col}{m[3]}" for m in tranche_meta]
+        write_formula(ws, r, 2 + t, "=" + "+".join(terms), NUM_BN, bold=True, banded=True)
+    r += 1
+
+    # Per-tranche maturity ladder for transparency
+    for closing_row, interest_row, iss_row, rep_row, name in tranche_meta:
+        write_label(ws, r, f"  {name}", indent=1)
+        for t in range(1, 6):
+            col = get_column_letter(2 + t)
+            write_formula(ws, r, 2 + t, f"=-{col}{rep_row}", NUM_BN)
+        r += 1
 
 
 BS_PLACEHOLDER_CASH = 0   # patched below by build_bs writing the actual row
@@ -1721,22 +1970,31 @@ def build_wc(ws):
 TAX_ROWS = {}
 
 def build_tax(ws):
-    ws.column_dimensions["A"].width = 32
+    """Tax schedule — current tax + deferred tax build.
+
+    Deferred tax driven by the timing difference between book and tax
+    depreciation of PP&E. Tax depreciation is accelerated (tax_dep_rate
+    > ppe_dep_rate) so the temporary difference creates a Deferred Tax
+    Liability that grows over the explicit period."""
+    ws.column_dimensions["A"].width = 36
     for c in range(2, 8):
         ws.column_dimensions[get_column_letter(c)].width = 13
 
-    ws["A1"] = "TAX SCHEDULE"
+    ws["A1"] = "TAX SCHEDULE — current + deferred"
     ws["A1"].font = section_font
-    ws["A2"] = "Simplified: current tax = max(0, pretax × effective rate). Deferred tax held flat."
+    ws["A2"] = ("Current tax = effective rate × pre-tax income. "
+                "Deferred tax driven by PP&E book-vs-tax depreciation timing.")
     ws["A2"].font = sub_font
 
-    # Header — only Y1-Y5
     ws.cell(row=4, column=1).fill = header_fill
     for t in range(1, 6):
         c = ws.cell(row=4, column=2 + t, value=f"Y{t}")
         c.font = header_font; c.fill = header_fill; c.alignment = right
 
     r = 6
+    # ----- Current tax block -----
+    section_header(ws, r, "CURRENT TAX"); r += 1
+
     write_label(ws, r, "Pre-tax income (from IS)")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
@@ -1754,7 +2012,72 @@ def build_tax(ws):
         formula = f"=MAX(0,{col}{TAX_ROWS['pretax']}*{col}{TAX_ROWS['rate']})"
         write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
         reg(f"t.expense_t{t}", SH_TAX, col, r)
-    TAX_ROWS["expense"] = r
+    TAX_ROWS["expense"] = r; r += 2
+
+    # ----- Deferred tax block -----
+    section_header(ws, r, "DEFERRED TAX  (PP&E book vs tax depreciation)"); r += 1
+
+    write_label(ws, r, "Book depreciation (PP&E)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        # = positive (book dep). p.da_t is negative, so abs = -p.da_t
+        write_formula(ws, r, 2 + t, f"=-{C(f'p.da_t{t}')}", NUM_BN)
+    TAX_ROWS["book_dep"] = r; r += 1
+
+    write_label(ws, r, "Tax depreciation (accelerated)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        # = tax_dep_rate × opening PP&E NBV (previous year's closing on PPE sheet)
+        if t == 1:
+            opening_ppe = C("p.closing_y0")
+        else:
+            opening_ppe = C(f"p.closing_t{t - 1}")
+        write_formula(ws, r, 2 + t, f"={C('a.tax_dep_rate')}*{opening_ppe}", NUM_BN)
+    TAX_ROWS["tax_dep"] = r; r += 1
+
+    write_label(ws, r, "Timing difference (tax > book)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{TAX_ROWS['tax_dep']}-{col}{TAX_ROWS['book_dep']}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
+    TAX_ROWS["timing"] = r; r += 1
+
+    write_label(ws, r, "Deferred tax expense (= timing × rate)", bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{TAX_ROWS['timing']}*{col}{TAX_ROWS['rate']}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+        reg(f"t.deferred_t{t}", SH_TAX, col, r)
+    TAX_ROWS["deferred"] = r; r += 1
+
+    write_label(ws, r, "Closing DTL (rollforward)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        if t == 1:
+            formula = f"={C('a.dtl_y0')}+{col}{TAX_ROWS['deferred']}"
+        else:
+            prev_col = get_column_letter(2 + t - 1)
+            formula = f"={prev_col}{r}+{col}{TAX_ROWS['deferred']}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
+        reg(f"t.dtl_t{t}", SH_TAX, col, r)
+    reg("t.dtl_y0", SH_TAX, "B", r)  # symbolic — Y0 value lives on Assumptions
+    TAX_ROWS["dtl"] = r; r += 2
+
+    # ----- Total tax expense -----
+    write_label(ws, r, "TOTAL TAX EXPENSE (current + deferred)", bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{TAX_ROWS['expense']}+{col}{TAX_ROWS['deferred']}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+        reg(f"t.total_t{t}", SH_TAX, col, r)
+    TAX_ROWS["total"] = r; r += 1
+
+    # ETR memo
+    write_label(ws, r, "Effective tax rate (incl. deferred)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{TAX_ROWS['total']}/{col}{TAX_ROWS['pretax']}"
+        write_formula(ws, r, 2 + t, formula, NUM_PCT)
 
 
 # =============================================================================
@@ -1982,7 +2305,8 @@ def build_is_v2(ws):
     write_label(ws, r, "Deferred tax (movement)")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        write_formula(ws, r, 2 + t, "=0", NUM_BN)
+        # Negative on IS (tax expense), positive value comes from Tax sheet
+        write_formula(ws, r, 2 + t, f"=-{C(f't.deferred_t{t}')}", NUM_BN)
         reg(f"is.deferred_tax_t{t}", SH_IS, col, r)
     IS_ROWS["deferred_tax"] = r
 
@@ -2348,11 +2672,11 @@ def build_bs(ws):
         write_formula(ws, r, 2 + t, f"={prev}{r}", NUM_BN)
     BS_ROWS["provisions"] = r; r += 1
 
-    write_label(ws, r, "Deferred tax liabilities (flat)")
+    write_label(ws, r, "Deferred tax liabilities (rollforward)")
     write_formula(ws, r, 2, f"={C('a.dtl_y0')}", NUM_BN)
     for t in range(1, 6):
-        prev = get_column_letter(2 + t - 1)
-        write_formula(ws, r, 2 + t, f"={prev}{r}", NUM_BN)
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f't.dtl_t{t}')}", NUM_BN)
     BS_ROWS["dtl"] = r; r += 1
 
     write_label(ws, r, "Other non-current liabilities (flat)")
@@ -2462,6 +2786,12 @@ def build_cfs(ws):
         write_formula(ws, r, 2 + t, f"=-{C(f'is.amortisation_t{t}')}", NUM_BN)
     CFS_ROWS["amort"] = r; r += 1
 
+    write_label(ws, r, "+ Deferred tax (non-cash addback)")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f't.deferred_t{t}')}", NUM_BN)
+    CFS_ROWS["deferred_tax"] = r; r += 1
+
     write_label(ws, r, "+/− Δ working capital")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
@@ -2472,7 +2802,8 @@ def build_cfs(ws):
     for t in range(1, 6):
         col = get_column_letter(2 + t)
         formula = (f"={col}{CFS_ROWS['ni']}+{col}{CFS_ROWS['da']}"
-                   f"+{col}{CFS_ROWS['amort']}+{col}{CFS_ROWS['dwc']}")
+                   f"+{col}{CFS_ROWS['amort']}+{col}{CFS_ROWS['deferred_tax']}"
+                   f"+{col}{CFS_ROWS['dwc']}")
         write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
         reg(f"c.cfo_t{t}", SH_CFS, col, r)
     CFS_ROWS["cfo"] = r; r += 2
@@ -2508,9 +2839,10 @@ def build_cfs(ws):
 
     section_header(ws, r, "FINANCING"); r += 1
 
-    write_label(ws, r, "+/− Net debt issuance (flat assumption)")
+    write_label(ws, r, "+/− Net debt issuance (from Debt schedule)")
     for t in range(1, 6):
-        write_formula(ws, r, 2 + t, "=0", NUM_BN)  # ST + LT debt held flat
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'd.net_issuance_t{t}')}", NUM_BN)
     CFS_ROWS["debt_chg"] = r; r += 1
 
     write_label(ws, r, "− Lease cash payments")
