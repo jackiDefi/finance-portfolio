@@ -130,7 +130,7 @@ D = {
     "ar_y0":             15.4,     # = 75 * 75/365
     "inv_y0":             2.5,
     "other_ca_y0":        5.0,
-    "ppe_y0":            80.0,
+    "ppe_y0":            62.0,    # Phase 2: PPE excl. ROU (was 80 in Phase 1 — 18 carved out to ROU)
     "goodwill_y0":       25.0,
     "intangibles_y0":    15.0,
     "investments_y0":     8.0,
@@ -222,6 +222,37 @@ D = {
     "associates_growth":      0.05,
     "minority_share_ni":      0.05,   # % of group NI attributable to minority
 
+    # =========================================================================
+    # PHASE 2 — Asset schedules: spectrum, leases (IFRS 16)
+    # =========================================================================
+
+    # ---- Spectrum cohorts (3 vintages) ----
+    "spec_c1_nbv_y0":         4.0,    # Pre-2020 licenses, mostly amortised
+    "spec_c1_life":           5,      # years remaining
+    "spec_c2_nbv_y0":         8.0,    # 2020-2024 licenses (4G refarm + initial 5G)
+    "spec_c2_life":           15,
+    "spec_c3_cash_y":         2,      # Year of future cash payment (Y2 = 5G mid-band)
+    "spec_c3_cash":           3.0,    # SAR bn cash payment in that year
+    "spec_c3_life":           18,     # amortisation term
+
+    # Total intangibles Y0 implied = spec_c1 + spec_c2 + other intangibles.
+    # We keep total at 15 (existing input). Other intangibles = 15 - 12 = 3.
+    "other_intangibles_y0":   3.0,
+
+    # ---- Right-of-use assets (IFRS 16 leases) ----
+    "rou_y0":                18.0,    # carved out of original PPE_y0 = 80
+    "lease_term_avg":        10,      # years
+    "lease_rate":             0.05,   # implicit rate on lease liabilities
+    "new_lease_per_year":     1.5,    # annual lease additions, SAR bn
+    # NOTE: a.lease_liab_y0 = 18 already exists in Phase 1 inputs.
+
+    # ---- Capex split (Phase 2 — maintenance vs growth) ----
+    "capex_maintenance_pct":  0.55,   # % of PP&E capex spent on maintenance
+    # growth = 1 − maintenance
+
+    # ---- PPE depreciation rate (now bottom-up, not % of revenue) ----
+    "ppe_dep_rate":           0.10,   # 10% / year = ~10-yr blended useful life
+
     # ---- Budget seasonality (Q1, Q2, Q3, Q4 monthly weights sum to 1) ----
     # Telecom revenue is fairly flat with slight Q4 uplift from device sales.
     "month_weights": [
@@ -233,8 +264,10 @@ D = {
 }
 
 # Derived: starting retained earnings to balance
+# Phase 2: ROU added as separate asset; PPE reduced by 18 to compensate (net effect on assets = 0).
 TOTAL_ASSETS_Y0 = (D["cash_y0"] + D["ar_y0"] + D["inv_y0"] + D["other_ca_y0"]
-                   + D["ppe_y0"] + D["goodwill_y0"] + D["intangibles_y0"]
+                   + D["ppe_y0"] + D["rou_y0"]
+                   + D["goodwill_y0"] + D["intangibles_y0"]
                    + D["investments_y0"] + D["dta_y0"])
 TOTAL_LIAB_Y0   = (D["ap_y0"] + D["other_cl_y0"] + D["st_debt_y0"] + D["lt_debt_y0"]
                    + D["lease_liab_y0"] + D["provisions_y0"] + D["dtl_y0"]
@@ -262,6 +295,8 @@ SH_TAX    = "Tax"
 SH_BUD    = "Budget"
 SH_SCEN   = "Scenarios"
 SH_SENS   = "Sensitivity"
+SH_SPEC   = "Spectrum"   # Phase 2 — spectrum cohort amortisation
+SH_LEASE  = "Leases"     # Phase 2 — IFRS 16 right-of-use schedule
 SH_VAL    = "Valuation"
 SH_CHK    = "Checks"
 
@@ -573,10 +608,35 @@ def build_assumptions(ws):
 
         # ---- Below-EBITDA items ----
         (117, None,             "Below-EBITDA items",                 None,                   NUM_BN,  None),
-        (118,"intangible_amort_pct","Intangibles amortisation",       D["intangible_amort_pct"],NUM_PCT, "Ex-spectrum (spectrum schedule comes in Phase 2)."),
+        (118,"intangible_amort_pct","Intangibles amortisation (ex-spectrum)", D["intangible_amort_pct"],NUM_PCT, "Other intangibles only; spectrum lives on its own schedule."),
         (119,"associates_y0",      "Share of associate profit Y0",    D["associates_y0"],     NUM_BN,    "Equity-accounted minority stakes."),
         (120,"associates_growth",  "Associates growth",               D["associates_growth"], NUM_PCT,   None),
         (121,"minority_share_ni",  "Minority share of NI",            D["minority_share_ni"], NUM_PCT,   "Vodafone Egypt 49% non-controlling interest."),
+
+        # ---- Phase 2: Spectrum cohorts ----
+        (123, None,             "PHASE 2 — Spectrum licenses",        None,                   NUM_BN,  None),
+        (124,"spec_c1_nbv_y0",     "Cohort 1 — pre-2020 NBV (SAR bn)",D["spec_c1_nbv_y0"],    NUM_BN,    "Mostly amortised legacy 2G/3G spectrum."),
+        (125,"spec_c1_life",       "Cohort 1 — remaining life (yrs)", D["spec_c1_life"],      NUM_INT,   None),
+        (126,"spec_c2_nbv_y0",     "Cohort 2 — 2020-2024 NBV",        D["spec_c2_nbv_y0"],    NUM_BN,    "4G refarm + initial 5G allocations."),
+        (127,"spec_c2_life",       "Cohort 2 — remaining life (yrs)", D["spec_c2_life"],      NUM_INT,   None),
+        (128,"spec_c3_cash_y",     "Cohort 3 — cash payment year",    D["spec_c3_cash_y"],    NUM_INT,   "Year of next major 5G mid-band auction."),
+        (129,"spec_c3_cash",       "Cohort 3 — cash payment (SAR bn)",D["spec_c3_cash"],      NUM_BN,    "Lump-sum auction cost."),
+        (130,"spec_c3_life",       "Cohort 3 — amortisation life",    D["spec_c3_life"],      NUM_INT,   None),
+
+        # ---- Phase 2: Leases (IFRS 16) ----
+        (132, None,             "PHASE 2 — Leases (IFRS 16)",         None,                   NUM_BN,  None),
+        (133,"rou_y0",             "Right-of-use asset Y0 (SAR bn)",  D["rou_y0"],            NUM_BN,    "Carved out of original PPE Y0 = 80."),
+        (134,"lease_term_avg",     "Average lease term (years)",      D["lease_term_avg"],    NUM_INT,   "Drives ROU depreciation rate."),
+        (135,"lease_rate",         "Implicit lease rate",             D["lease_rate"],        NUM_PCT,   "Interest accretion on lease liabilities."),
+        (136,"new_lease_per_year", "New lease additions / year (SAR bn)", D["new_lease_per_year"], NUM_BN, "Annual lease take-on (non-cash)."),
+
+        # ---- Phase 2: PPE schedule depth ----
+        (138, None,             "PHASE 2 — PP&E depreciation",        None,                   NUM_BN,  None),
+        (139,"ppe_dep_rate",       "PP&E annual depreciation rate",   D["ppe_dep_rate"],      NUM_PCT,   "Applied to opening NBV (blended useful-life)."),
+        (140,"capex_maintenance_pct","Capex maintenance share",       D["capex_maintenance_pct"], NUM_PCT,"Growth = 1 − maintenance."),
+
+        # ---- Phase 2: Other intangibles ----
+        (142,"other_intangibles_y0","Other intangibles Y0 (SAR bn)",  D["other_intangibles_y0"],NUM_BN,  "Brand, software, customer lists (ex-spectrum)."),
     ]
 
     for row, key, label, value, fmt, note in rows:
@@ -974,6 +1034,290 @@ def build_segments(ws):
 
 
 # =============================================================================
+# 8C. SPECTRUM SCHEDULE  (Phase 2)
+# =============================================================================
+
+SPEC_ROWS = {}
+
+def build_spectrum(ws):
+    """Spectrum license cohort schedule. Each cohort amortises straight-line.
+    Cohort 3 has a future cash payment (in year c3_cash_y) — that cash hits
+    CFS investing as a separate line from operating capex."""
+    ws.column_dimensions["A"].width = 40
+    for c in range(2, 8):
+        ws.column_dimensions[get_column_letter(c)].width = 13
+
+    ws["A1"] = "SPECTRUM LICENSE SCHEDULE"
+    ws["A1"].font = section_font
+    ws["A2"] = ("Three cohorts. Cohort 1 & 2 are on the books at Y0 and amortise from there. "
+                "Cohort 3 lands as a lumpy cash payment in year c3_cash_y, then amortises over its license term.")
+    ws["A2"].font = sub_font
+
+    year_header(ws, 4, 0, 5)
+    r = 6
+
+    cohort_meta = []   # collected (closing_row, amort_row, cash_row_or_None) per cohort
+
+    # ---- COHORT 1 — pre-2020 legacy ----
+    section_header(ws, r, "COHORT 1 — Pre-2020 legacy 2G/3G"); r += 1
+
+    write_label(ws, r, "Opening NBV", indent=1)
+    write_formula(ws, r, 2, '""', '@')
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        if t == 1:
+            write_formula(ws, r, 2 + t, f"={C('a.spec_c1_nbv_y0')}", NUM_BN)
+        else:
+            prev_col = get_column_letter(2 + t - 1)
+            write_formula(ws, r, 2 + t, f"={prev_col}{r + 2}", NUM_BN)  # prev closing
+    c1_open = r; r += 1
+
+    write_label(ws, r, "− Annual amortisation", indent=1)
+    amort_const_c1 = f"({C('a.spec_c1_nbv_y0')}/{C('a.spec_c1_life')})"
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        opening_cell = f"{col}{c1_open}"
+        write_formula(ws, r, 2 + t, f"=-MIN({amort_const_c1},{opening_cell})", NUM_BN)
+    c1_amort = r; r += 1
+
+    write_label(ws, r, "Closing NBV", indent=1, bold=True, banded=True)
+    write_formula(ws, r, 2, f"={C('a.spec_c1_nbv_y0')}", NUM_BN, bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{c1_open}+{col}{c1_amort}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+    c1_close = r; r += 2
+    cohort_meta.append((c1_close, c1_amort, None))
+
+    # ---- COHORT 2 — 2020-2024 licenses ----
+    section_header(ws, r, "COHORT 2 — 2020-2024 licenses (4G refarm + initial 5G)"); r += 1
+
+    write_label(ws, r, "Opening NBV", indent=1)
+    write_formula(ws, r, 2, '""', '@')
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        if t == 1:
+            write_formula(ws, r, 2 + t, f"={C('a.spec_c2_nbv_y0')}", NUM_BN)
+        else:
+            prev_col = get_column_letter(2 + t - 1)
+            write_formula(ws, r, 2 + t, f"={prev_col}{r + 2}", NUM_BN)
+    c2_open = r; r += 1
+
+    write_label(ws, r, "− Annual amortisation", indent=1)
+    amort_const_c2 = f"({C('a.spec_c2_nbv_y0')}/{C('a.spec_c2_life')})"
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        opening_cell = f"{col}{c2_open}"
+        write_formula(ws, r, 2 + t, f"=-MIN({amort_const_c2},{opening_cell})", NUM_BN)
+    c2_amort = r; r += 1
+
+    write_label(ws, r, "Closing NBV", indent=1, bold=True, banded=True)
+    write_formula(ws, r, 2, f"={C('a.spec_c2_nbv_y0')}", NUM_BN, bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{c2_open}+{col}{c2_amort}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+    c2_close = r; r += 2
+    cohort_meta.append((c2_close, c2_amort, None))
+
+    # ---- COHORT 3 — future 5G mid-band auction ----
+    section_header(ws, r, "COHORT 3 — Future 5G mid-band (auction in year c3_cash_y)"); r += 1
+
+    # Cash addition row (only triggers in the cash year)
+    write_label(ws, r, "Cash payment (auction)", indent=1)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        if t == 0:
+            write_formula(ws, r, 2 + t, "=0", NUM_BN)
+        else:
+            # =IF(t = c3_cash_y, c3_cash, 0)
+            write_formula(ws, r, 2 + t, f"=IF({t}={C('a.spec_c3_cash_y')},{C('a.spec_c3_cash')},0)", NUM_BN)
+    c3_cash = r; r += 1
+
+    # Opening NBV
+    write_label(ws, r, "Opening NBV (+ current-year cash)", indent=1)
+    write_formula(ws, r, 2, "=0", NUM_BN)  # Y0 not yet acquired
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        if t == 1:
+            base = f"0+{col}{c3_cash}"   # Y0 closing = 0
+        else:
+            prev_col = get_column_letter(2 + t - 1)
+            base = f"{prev_col}{r + 2}+{col}{c3_cash}"  # prev closing + this year cash
+        write_formula(ws, r, 2 + t, f"={base}", NUM_BN)
+    c3_open = r; r += 1
+
+    # Amortisation — only if opening NBV > 0
+    write_label(ws, r, "− Annual amortisation", indent=1)
+    amort_const_c3 = f"({C('a.spec_c3_cash')}/{C('a.spec_c3_life')})"
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        opening_cell = f"{col}{c3_open}"
+        write_formula(ws, r, 2 + t,
+                       f"=IF({opening_cell}>0,-MIN({amort_const_c3},{opening_cell}),0)", NUM_BN)
+    c3_amort = r; r += 1
+
+    # Closing NBV
+    write_label(ws, r, "Closing NBV", indent=1, bold=True, banded=True)
+    write_formula(ws, r, 2, "=0", NUM_BN, bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{c3_open}+{col}{c3_amort}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+    c3_close = r; r += 2
+    cohort_meta.append((c3_close, c3_amort, c3_cash))
+
+    # ---- TOTALS ----
+    section_header(ws, r, "TOTALS"); r += 1
+
+    # Total NBV (used by BS spectrum line)
+    write_label(ws, r, "Total spectrum NBV (to BS)", bold=True, banded=True)
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        cells = [f"{col}{m[0]}" for m in cohort_meta]
+        write_formula(ws, r, 2 + t, "=" + "+".join(cells), NUM_BN, bold=True, banded=True)
+        reg(f"s.nbv_t{t}", SH_SPEC, col, r)
+    SPEC_ROWS["total_nbv"] = r; r += 1
+
+    # Total amortisation per year (used by IS — negative number)
+    write_label(ws, r, "Total amortisation (to IS)", bold=True)
+    write_formula(ws, r, 2, '""', '@')
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        cells = [f"{col}{m[1]}" for m in cohort_meta]
+        write_formula(ws, r, 2 + t, "=" + "+".join(cells), NUM_BN, bold=True)
+        reg(f"s.amort_t{t}", SH_SPEC, col, r)
+    SPEC_ROWS["total_amort"] = r; r += 1
+
+    # Total cash payments per year (used by CFS investing)
+    write_label(ws, r, "Total cash payments (to CFS)")
+    write_formula(ws, r, 2, '""', '@')
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        # only cohort 3 has cash; others = 0
+        write_formula(ws, r, 2 + t, f"={col}{c3_cash}", NUM_BN)
+        reg(f"s.cash_t{t}", SH_SPEC, col, r)
+    SPEC_ROWS["total_cash"] = r
+
+
+# =============================================================================
+# 8D. LEASE SCHEDULE  (Phase 2 — IFRS 16)
+# =============================================================================
+
+LEASE_ROWS = {}
+
+def build_leases(ws):
+    """IFRS 16 right-of-use asset and lease liability rollforward.
+
+    Convention: cash payments sized so the lease liability decays at the same
+    pace as the ROU asset (i.e., cash_payment_t = -ROU_dep_t − interest_t).
+    Result: ROU closing = LL closing every year, which is what a well-structured
+    average lease portfolio looks like.
+    """
+    ws.column_dimensions["A"].width = 40
+    for c in range(2, 8):
+        ws.column_dimensions[get_column_letter(c)].width = 13
+
+    ws["A1"] = "IFRS 16 LEASE SCHEDULE"
+    ws["A1"].font = section_font
+    ws["A2"] = ("Right-of-use asset and lease liability rollforward. Additions are non-cash; "
+                "cash payments hit CFS financing.")
+    ws["A2"].font = sub_font
+
+    year_header(ws, 4, 0, 5)
+    r = 6
+
+    # ------------- ROU ASSET -------------
+    section_header(ws, r, "RIGHT-OF-USE ASSET"); r += 1
+
+    write_label(ws, r, "Opening ROU", indent=1)
+    write_formula(ws, r, 2, '""', '@')
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        if t == 1:
+            write_formula(ws, r, 2 + t, f"={C('a.rou_y0')}", NUM_BN)
+        else:
+            prev_col = get_column_letter(2 + t - 1)
+            write_formula(ws, r, 2 + t, f"={prev_col}{r + 3}", NUM_BN)  # prev closing
+    rou_open = r; r += 1
+
+    write_label(ws, r, "+ New lease additions", indent=1)
+    for t in range(1, 6):
+        write_formula(ws, r, 2 + t, f"={C('a.new_lease_per_year')}", NUM_BN)
+    rou_adds = r; r += 1
+
+    write_label(ws, r, "− ROU depreciation", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        # = -(opening + additions) / lease_term_avg
+        formula = f"=-({col}{rou_open}+{col}{rou_adds})/{C('a.lease_term_avg')}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
+        reg(f"l.rou_dep_t{t}", SH_LEASE, col, r)
+    LEASE_ROWS["rou_dep"] = r
+    rou_dep = r; r += 1
+
+    write_label(ws, r, "Closing ROU", indent=1, bold=True, banded=True)
+    write_formula(ws, r, 2, f"={C('a.rou_y0')}", NUM_BN, bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{rou_open}+{col}{rou_adds}+{col}{rou_dep}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+        reg(f"l.rou_t{t}", SH_LEASE, col, r)
+    reg("l.rou_t0", SH_LEASE, "B", r)
+    LEASE_ROWS["rou_close"] = r
+    rou_close = r; r += 2
+
+    # ------------- LEASE LIABILITY -------------
+    section_header(ws, r, "LEASE LIABILITY"); r += 1
+
+    write_label(ws, r, "Opening lease liability", indent=1)
+    write_formula(ws, r, 2, '""', '@')
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        if t == 1:
+            write_formula(ws, r, 2 + t, f"={C('a.lease_liab_y0')}", NUM_BN)
+        else:
+            prev_col = get_column_letter(2 + t - 1)
+            write_formula(ws, r, 2 + t, f"={prev_col}{r + 4}", NUM_BN)
+    ll_open = r; r += 1
+
+    write_label(ws, r, "+ Interest accretion", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={col}{ll_open}*{C('a.lease_rate')}", NUM_BN)
+        reg(f"l.interest_t{t}", SH_LEASE, col, r)
+    LEASE_ROWS["interest"] = r
+    ll_interest = r; r += 1
+
+    write_label(ws, r, "+ New lease additions", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={col}{rou_adds}", NUM_BN)
+    ll_adds = r; r += 1
+
+    write_label(ws, r, "− Cash payments", indent=1)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        # cash payment = -(abs(rou_dep) + interest) = rou_dep - interest
+        # since rou_dep already negative
+        formula = f"={col}{rou_dep}-{col}{ll_interest}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
+        reg(f"l.cash_t{t}", SH_LEASE, col, r)
+    LEASE_ROWS["cash"] = r
+    ll_cash = r; r += 1
+
+    write_label(ws, r, "Closing lease liability", indent=1, bold=True, banded=True)
+    write_formula(ws, r, 2, f"={C('a.lease_liab_y0')}", NUM_BN, bold=True, banded=True)
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        formula = f"={col}{ll_open}+{col}{ll_interest}+{col}{ll_adds}+{col}{ll_cash}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
+        reg(f"l.liab_t{t}", SH_LEASE, col, r)
+    reg("l.liab_t0", SH_LEASE, "B", r)
+    LEASE_ROWS["liab_close"] = r
+
+
+# =============================================================================
 # 9. INCOME STATEMENT
 # =============================================================================
 
@@ -1143,11 +1487,10 @@ def build_debt(ws):
         write_formula(ws, r, 2 + t, f"={prev}", NUM_BN)
     DEBT_ROWS["lt"] = r; r += 1
 
-    write_label(ws, r, "Lease liabilities (IFRS 16)")
-    write_formula(ws, r, 2, f"={C('a.lease_liab_y0')}", NUM_BN)
-    for t in range(1, 6):
-        prev = ws.cell(row=r, column=2 + t - 1).coordinate
-        write_formula(ws, r, 2 + t, f"={prev}", NUM_BN)
+    write_label(ws, r, "Lease liabilities (from Leases sheet)")
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'l.liab_t{t}')}", NUM_BN)
     DEBT_ROWS["lease"] = r; r += 1
 
     # Total gross debt
@@ -1187,12 +1530,13 @@ def build_debt(ws):
             reg(f"d.net_t{t}", SH_DEBT, col, r)
     DEBT_ROWS["net"] = r; r += 2
 
-    # Interest expense (positive number)
-    write_label(ws, r, "Interest expense (= kd × opening gross debt)")
+    # Interest expense (positive number) — financial debt only, leases handled separately
+    write_label(ws, r, "Interest expense (= kd × opening ST + LT debt)")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
         prev_col = get_column_letter(2 + t - 1)
-        formula = f"={C('a.kd')}*{prev_col}{DEBT_ROWS['gross']}"
+        # Exclude lease portion to avoid double-counting (lease interest comes from Leases sheet).
+        formula = f"={C('a.kd')}*({prev_col}{DEBT_ROWS['st']}+{prev_col}{DEBT_ROWS['lt']})"
         write_formula(ws, r, 2 + t, formula, NUM_BN)
         reg(f"d.interest_t{t}", SH_DEBT, col, r)
     DEBT_ROWS["interest"] = r
@@ -1240,10 +1584,16 @@ def build_ppe(ws):
         reg(f"p.capex_t{t}", SH_PPE, col, r)
     PPE_ROWS["capex"] = r; r += 1
 
-    write_label(ws, r, "− Depreciation & amortisation")
+    write_label(ws, r, "− Depreciation (PP&E only)")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        formula = f"=-{C('a.da_pct')}*{C(f'is.revenue_t{t}')}"
+        # PPE dep based on opening NBV × ppe_dep_rate (NBV-based, not % of revenue)
+        prev_col = get_column_letter(2 + t - 1)
+        # Opening NBV for this year = previous year's closing PPE.
+        # For Y1 the "opening row" in PPE schedule still points to a.ppe_y0 indirectly,
+        # but the simplest formula here is: -opening × ppe_dep_rate.
+        opening_cell = f"{col}{PPE_ROWS['opening']}"
+        formula = f"=-{opening_cell}*{C('a.ppe_dep_rate')}"
         write_formula(ws, r, 2 + t, formula, NUM_BN)
         reg(f"p.da_t{t}", SH_PPE, col, r)
     PPE_ROWS["da"] = r; r += 1
@@ -1540,20 +1890,23 @@ def build_is_v2(ws):
     # SECTION 3 — DEPRECIATION & AMORTISATION (rows 30-32)
     # ============================================================
     r = 30
-    write_label(ws, r, "Depreciation")
+    write_label(ws, r, "Depreciation (PP&E + right-of-use)")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        write_formula(ws, r, 2 + t, f"={C(f'p.da_t{t}')}", NUM_BN)
+        # PPE dep from PPE schedule + ROU dep from Leases schedule (both negative)
+        formula = f"={C(f'p.da_t{t}')}+{C(f'l.rou_dep_t{t}')}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
         reg(f"is.depreciation_t{t}", SH_IS, col, r)
         reg(f"is.da_t{t}", SH_IS, col, r)
     IS_ROWS["depreciation"] = r
     IS_ROWS["da"] = r
 
     r = 31
-    write_label(ws, r, "Amortisation (intangibles ex-spectrum)")
+    write_label(ws, r, "Amortisation (intangibles + spectrum)")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        formula = f"=-{C('a.intangible_amort_pct')}*{col}{IS_ROWS['revenue']}"
+        # Other intangibles amort (formula) + spectrum amort (from Spectrum sheet, already negative)
+        formula = f"=-{C('a.intangible_amort_pct')}*{col}{IS_ROWS['revenue']}+{C(f's.amort_t{t}')}"
         write_formula(ws, r, 2 + t, formula, NUM_BN)
         reg(f"is.amortisation_t{t}", SH_IS, col, r)
     IS_ROWS["amortisation"] = r
@@ -1582,10 +1935,12 @@ def build_is_v2(ws):
     IS_ROWS["fin_inc"] = r
 
     r = 35
-    write_label(ws, r, "Finance costs (interest expense)")
+    write_label(ws, r, "Finance costs (interest + lease interest)")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        write_formula(ws, r, 2 + t, f"=-{C(f'd.interest_t{t}')}", NUM_BN)
+        # Bond/loan interest from Debt sheet + lease interest accretion from Leases sheet
+        formula = f"=-{C(f'd.interest_t{t}')}-{C(f'l.interest_t{t}')}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
         reg(f"is.finance_costs_t{t}", SH_IS, col, r)
         reg(f"is.interest_t{t}", SH_IS, col, r)  # back-compat
     IS_ROWS["finance_costs"] = r
@@ -1870,12 +2225,18 @@ def build_bs(ws):
     BS_ROWS["ca_total"] = r; r += 2
 
     # Non-current assets
-    write_label(ws, r, "PP&E")
+    write_label(ws, r, "Property, plant & equipment")
     write_formula(ws, r, 2, f"={C('a.ppe_y0')}", NUM_BN)
     for t in range(1, 6):
         col = get_column_letter(2 + t)
         write_formula(ws, r, 2 + t, f"={C(f'p.closing_t{t}')}", NUM_BN)
     BS_ROWS["ppe"] = r; r += 1
+
+    write_label(ws, r, "Right-of-use assets (IFRS 16)")
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"={C(f'l.rou_t{t}')}", NUM_BN)
+    BS_ROWS["rou"] = r; r += 1
 
     write_label(ws, r, "Goodwill (flat)")
     write_formula(ws, r, 2, f"={C('a.goodwill_y0')}", NUM_BN)
@@ -1884,14 +2245,27 @@ def build_bs(ws):
         write_formula(ws, r, 2 + t, f"={prev}{r}", NUM_BN)
     BS_ROWS["goodwill"] = r; r += 1
 
-    write_label(ws, r, "Intangibles (less amortisation)")
-    write_formula(ws, r, 2, f"={C('a.intangibles_y0')}", NUM_BN)
+    # Spectrum (from Spectrum sheet)
+    write_label(ws, r, "Spectrum licenses")
+    for t in range(0, 6):
+        col = get_column_letter(2 + t)
+        if t == 0:
+            # Y0 = sum of cohort 1 + cohort 2 starting NBVs (cohort 3 not yet acquired)
+            write_formula(ws, r, 2 + t, f"={C('a.spec_c1_nbv_y0')}+{C('a.spec_c2_nbv_y0')}", NUM_BN)
+        else:
+            write_formula(ws, r, 2 + t, f"={C(f's.nbv_t{t}')}", NUM_BN)
+    BS_ROWS["spectrum"] = r; r += 1
+
+    # Other intangibles (rolls forward independently of spectrum)
+    write_label(ws, r, "Other intangibles (less amortisation)")
+    write_formula(ws, r, 2, f"={C('a.other_intangibles_y0')}", NUM_BN)
     for t in range(1, 6):
         col = get_column_letter(2 + t)
         prev = get_column_letter(2 + t - 1)
-        # IS amortisation is recorded negative; adding it = subtracting magnitude
-        write_formula(ws, r, 2 + t, f"={prev}{r}+{C(f'is.amortisation_t{t}')}", NUM_BN)
-    BS_ROWS["intangibles"] = r; r += 1
+        # Y_t = Y_{t-1} − (intangible_amort_pct × revenue)
+        formula = f"={prev}{r}-{C('a.intangible_amort_pct')}*{C(f'is.revenue_t{t}')}"
+        write_formula(ws, r, 2 + t, formula, NUM_BN)
+    BS_ROWS["other_intangibles"] = r; r += 1
 
     write_label(ws, r, "Investments / associates (flat)")
     write_formula(ws, r, 2, f"={C('a.investments_y0')}", NUM_BN)
@@ -1910,7 +2284,9 @@ def build_bs(ws):
     write_label(ws, r, "Total non-current assets", bold=True)
     for t in range(0, 6):
         col = get_column_letter(2 + t)
-        cells = [BS_ROWS["ppe"], BS_ROWS["goodwill"], BS_ROWS["intangibles"], BS_ROWS["investments"], BS_ROWS["dta"]]
+        cells = [BS_ROWS["ppe"], BS_ROWS["rou"], BS_ROWS["goodwill"],
+                 BS_ROWS["spectrum"], BS_ROWS["other_intangibles"],
+                 BS_ROWS["investments"], BS_ROWS["dta"]]
         formula = "=" + "+".join(f"{col}{x}" for x in cells)
         write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True)
     BS_ROWS["nca_total"] = r; r += 2
@@ -2103,11 +2479,18 @@ def build_cfs(ws):
 
     section_header(ws, r, "INVESTING"); r += 1
 
-    write_label(ws, r, "− Capex")
+    write_label(ws, r, "− Capex (PP&E)")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
         write_formula(ws, r, 2 + t, f"=-{C(f'p.capex_t{t}')}", NUM_BN)
     CFS_ROWS["capex"] = r; r += 1
+
+    write_label(ws, r, "− Spectrum cash payments")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        # Spectrum cash is positive on Spectrum sheet; outflow on CFS = negative
+        write_formula(ws, r, 2 + t, f"=-{C(f's.cash_t{t}')}", NUM_BN)
+    CFS_ROWS["spec_cash"] = r; r += 1
 
     write_label(ws, r, "Other investing (flat / nil)")
     for t in range(1, 6):
@@ -2117,7 +2500,8 @@ def build_cfs(ws):
     write_label(ws, r, "Cash from investing (CFI)", bold=True, banded=True)
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        formula = f"={col}{CFS_ROWS['capex']}+{col}{CFS_ROWS['other_inv']}"
+        formula = (f"={col}{CFS_ROWS['capex']}+{col}{CFS_ROWS['spec_cash']}"
+                   f"+{col}{CFS_ROWS['other_inv']}")
         write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
         reg(f"c.cfi_t{t}", SH_CFS, col, r)
     CFS_ROWS["cfi"] = r; r += 2
@@ -2126,8 +2510,15 @@ def build_cfs(ws):
 
     write_label(ws, r, "+/− Net debt issuance (flat assumption)")
     for t in range(1, 6):
-        write_formula(ws, r, 2 + t, "=0", NUM_BN)  # debt held flat
+        write_formula(ws, r, 2 + t, "=0", NUM_BN)  # ST + LT debt held flat
     CFS_ROWS["debt_chg"] = r; r += 1
+
+    write_label(ws, r, "− Lease cash payments")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        # l.cash already negative on Leases sheet
+        write_formula(ws, r, 2 + t, f"={C(f'l.cash_t{t}')}", NUM_BN)
+    CFS_ROWS["lease_cash"] = r; r += 1
 
     write_label(ws, r, "− Dividends paid")
     for t in range(1, 6):
@@ -2138,7 +2529,8 @@ def build_cfs(ws):
     write_label(ws, r, "Cash from financing (CFF)", bold=True, banded=True)
     for t in range(1, 6):
         col = get_column_letter(2 + t)
-        formula = f"={col}{CFS_ROWS['debt_chg']}+{col}{CFS_ROWS['div']}"
+        formula = (f"={col}{CFS_ROWS['debt_chg']}+{col}{CFS_ROWS['lease_cash']}"
+                   f"+{col}{CFS_ROWS['div']}")
         write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
         reg(f"c.cff_t{t}", SH_CFS, col, r)
     CFS_ROWS["cff"] = r; r += 2
@@ -2429,11 +2821,17 @@ def build_valuation(ws):
         write_formula(ws, r, 2 + t, f"=-{C(f'is.amortisation_t{t}')}", NUM_BN)
     VAL_ROWS["amort"] = r; r += 1
 
-    write_label(ws, r, "− Capex")
+    write_label(ws, r, "− Capex (PP&E)")
     for t in range(1, 6):
         col = get_column_letter(2 + t)
         write_formula(ws, r, 2 + t, f"=-{C(f'p.capex_t{t}')}", NUM_BN)
     VAL_ROWS["capex"] = r; r += 1
+
+    write_label(ws, r, "− Spectrum cash payments")
+    for t in range(1, 6):
+        col = get_column_letter(2 + t)
+        write_formula(ws, r, 2 + t, f"=-{C(f's.cash_t{t}')}", NUM_BN)
+    VAL_ROWS["spec_cash"] = r; r += 1
 
     write_label(ws, r, "+/− Δ working capital")
     for t in range(1, 6):
@@ -2445,7 +2843,8 @@ def build_valuation(ws):
     for t in range(1, 6):
         col = get_column_letter(2 + t)
         formula = (f"={col}{VAL_ROWS['nopat']}+{col}{VAL_ROWS['da']}"
-                   f"+{col}{VAL_ROWS['amort']}+{col}{VAL_ROWS['capex']}+{col}{VAL_ROWS['dwc']}")
+                   f"+{col}{VAL_ROWS['amort']}+{col}{VAL_ROWS['capex']}"
+                   f"+{col}{VAL_ROWS['spec_cash']}+{col}{VAL_ROWS['dwc']}")
         write_formula(ws, r, 2 + t, formula, NUM_BN, bold=True, banded=True)
     VAL_ROWS["fcff"] = r; r += 2
 
@@ -2657,6 +3056,11 @@ def main():
     # Build order matters: shared registries get populated as we go.
     build_assumptions(wb.create_sheet(SH_ASSUM))
     build_drivers(wb.create_sheet(SH_DRIV))
+
+    # Phase 2: Spectrum & Leases (must be built before Debt so lease liability rolls through,
+    # and before IS so D&A lines reference the schedules).
+    build_spectrum(wb.create_sheet(SH_SPEC))
+    build_leases(wb.create_sheet(SH_LEASE))
 
     # Build downstream schedules first so IS can reference them.
     build_debt(wb.create_sheet(SH_DEBT))
