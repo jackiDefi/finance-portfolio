@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Retail &amp; Consumer — Coming soon | Togrul Mirzayev</title>
-  <meta name="description" content="Retail &amp; Consumer operating model — coming soon.">
+  <title>Retail &amp; Consumer — Operating Model | Togrul Mirzayev</title>
+  <meta name="description" content="Retail &amp; Consumer industry primer, interactive 5-year operating model, and Costco case study by Togrul Mirzayev.">
   <link rel="stylesheet" href="../../assets/css/styles.css?v=3">
   <script src="../../assets/js/main.js?v=3"></script>
 </head>
@@ -34,30 +34,359 @@
   </div>
 </div>
 
-<section class="coming-soon">
-  <div class="container-narrow">
-    <div class="eyebrow">05 &mdash; Consumer &middot; In progress</div>
-    <h1>Retail &amp; Consumer</h1>
-    <p>Same-store sales, inventory turnover, gross-margin defense, and unit economics at scale. Full deep-dive and interactive model coming soon.</p>
-
-    <div class="scope">
-      <h3>What this page will cover</h3>
-      <ul>
-        <li>Industry primer: store-level vs. company-level economics</li>
-        <li>LFL / SSS growth, footprint, e-commerce mix</li>
-        <li>Gross-margin levers, opex per store, and lease accounting</li>
-        <li>Interactive 5-year model with adjustable LFL and new-store curve</li>
-        <li>DCF valuation, EV/EBITDA, and ROIC sensitivity</li>
-        <li>Real-company case study against FY2024 reported figures</li>
-        <li>Downloadable Excel model</li>
-      </ul>
-    </div>
-
-    <p style="margin-top: 2.5rem;">
-      <a class="btn btn-outline" href="../index.html">Back to industries</a>
-    </p>
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">05 &mdash; Consumer &middot; Live</div>
+    <h1>Retail &amp; Consumer: thin margins, fast inventory, the model is the moat.</h1>
+    <p class="subtitle">How a scale retailer actually earns, why a few hundred basis points of margin decide everything, where the cash cycle helps, and what a defensible 5-year model looks like &mdash; applied to Costco.</p>
   </div>
 </section>
+
+<!-- =============================================================
+     SECTION 1 - INDUSTRY PRIMER
+============================================================== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 1 &middot; Primer</div>
+      <h2 class="section-title">How the business works</h2>
+    </div>
+
+    <div class="prose">
+      <p>Retail is a low-margin, high-velocity business where the edge is rarely the product &mdash; it is the operating model. A scale retailer buys goods, marks them up modestly, and sells enormous volume through stores and online, keeping a thin slice of each dollar. Net margins of <strong>2-6%</strong> are typical; the great operators win not by charging more but by running the machine better &mdash; tighter buying, faster inventory, lower shrink, cheaper logistics, and a format customers keep coming back to. Because the margin is thin, a couple of hundred basis points of gross margin or a few turns of inventory is the difference between a wonderful business and a failing one.</p>
+
+      <p>The single most important number is the <strong>like-for-like (LFL) or same-store sales (SSS)</strong> growth &mdash; sales growth from stores open at least a year, stripping out the noise of new-store openings. It is the cleanest read on whether the format is actually winning customers, separate from simply building more boxes. Total revenue growth = LFL growth + new-space growth; conflating the two is the classic retail-analysis error.</p>
+
+      <h3>Revenue drivers</h3>
+      <p>The build is geometric:</p>
+      <div class="value-prop" style="margin: 1.5rem 0;">
+        <p>Revenue &asymp; store count &times; sales per store &times; (1 + LFL growth)</p>
+      </div>
+      <p><strong>Store count &times; new-space</strong> is the expansion lever &mdash; how fast the footprint grows and how productive each new box is at maturity. <strong>LFL / SSS</strong> is the quality lever &mdash; traffic (transactions) &times; basket (average ticket). And increasingly the <strong>e-commerce / omnichannel mix</strong> reshapes both the economics and the capital intensity. For membership models (warehouse clubs), there is a fourth, decisive lever: the <strong>membership fee</strong>, a high-margin, recurring, prepaid revenue stream that often is the entire economic profit of the business.</p>
+
+      <h3>Cost structure</h3>
+      <p>Two lines dominate the P&amp;L:</p>
+      <ul>
+        <li><strong>Cost of goods sold</strong> &mdash; what the retailer pays for merchandise. The complement is <strong>gross margin</strong>, the headline efficiency-of-buying number; defending it against discounters and inflation is the core battle.</li>
+        <li><strong>Operating expenses (SG&amp;A)</strong> &mdash; store labour, rent / lease, distribution, marketing, corporate. Largely fixed per store, so operating leverage is powerful: incremental LFL sales drop through to profit at a high rate, and falling LFL hurts disproportionately.</li>
+      </ul>
+      <p>Lease accounting matters: under IFRS 16 / ASC 842, store leases sit on the balance sheet as right-of-use assets and lease liabilities, shifting cost between opex, D&amp;A and interest. EBITDA jumps versus the old standard with no change in the underlying economics &mdash; always check the basis.</p>
+
+      <h3>The cash cycle &mdash; a structural advantage</h3>
+      <p>The best retailers run on <strong>negative working capital</strong>. They sell inventory for cash before they have to pay the supplier for it &mdash; collecting from customers in days while paying vendors in weeks. That negative cash-conversion cycle means growth actually <em>generates</em> cash rather than consuming it, and suppliers effectively finance the inventory. <strong>Inventory turnover</strong> (COGS / average inventory) is the heartbeat: the faster the turn, the less capital tied up and the lower the markdown and obsolescence risk. A retailer whose inventory days are creeping up is usually a retailer in trouble.</p>
+
+      <h3>KPIs analysts watch</h3>
+      <ul>
+        <li><strong>LFL / same-store sales growth</strong> &mdash; the cleanest read on format health</li>
+        <li><strong>Gross margin</strong> &mdash; buying power and pricing discipline</li>
+        <li><strong>Inventory turnover &amp; cash-conversion cycle</strong> &mdash; capital efficiency</li>
+        <li><strong>Sales per square foot / per store</strong> &mdash; productivity of the box</li>
+        <li><strong>Operating (EBIT) margin &amp; SG&amp;A leverage</strong> &mdash; the operating-leverage story</li>
+        <li><strong>Membership renewal rate &amp; fee income</strong> (club models) &mdash; the recurring-revenue moat</li>
+        <li><strong>ROIC vs WACC</strong> &mdash; whether new stores actually create value</li>
+      </ul>
+
+      <h3>Valuation</h3>
+      <p>EV/EBITDA and P/E are the working tools, but the multiple is hugely dispersed: structurally-declining or low-return retailers trade at <strong>4-7x EV/EBITDA</strong>, while high-quality, durable, growing formats &mdash; especially membership models with pricing power and a long store-growth runway &mdash; command <strong>15-30x+</strong>. The premium is paid for <em>durability and reinvestment runway</em>, not current margin. DCF is the cross-check, and it routinely struggles to justify the very best names: a flat-deck DCF on a quality compounder will land well below the market because it cannot easily capture decades of high-return reinvestment. Sum-of-parts matters where retail sits alongside real estate or financial-services arms.</p>
+
+      <h3>Common analyst pitfalls</h3>
+      <ol>
+        <li><strong>Confusing total growth with LFL growth.</strong> Opening stores can mask a deteriorating core; only same-store sales tell you if the format is actually winning.</li>
+        <li><strong>Ignoring operating leverage in both directions.</strong> The fixed-cost base that makes incremental sales so profitable makes a sales miss brutal &mdash; small revenue moves swing margins hard.</li>
+        <li><strong>Anchoring the multiple on current margin instead of durability.</strong> The market pays up for quality and reinvestment runway; a DCF or low-multiple frame will chronically undervalue the best operators and overvalue cheap, declining ones.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     SECTION 2 - INTERACTIVE OPERATING MODEL
+============================================================== -->
+<section style="background: var(--bg-elevated); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 2 &middot; Interactive model</div>
+      <h2 class="section-title">5-year forecast &amp; DCF</h2>
+      <p class="section-lede">Move the sliders. Every number on the right recalculates live. Defaults are calibrated to roughly approximate Costco; change them to flex the model to any retailer. Watch how far a flat-deck DCF lands below a quality compounder&rsquo;s market price &mdash; that gap is the whole lesson of the sector.</p>
+    </div>
+
+    <div class="model">
+
+      <aside class="model-inputs">
+        <h3>Drivers</h3>
+
+        <div class="input-section-label">Operating</div>
+
+        <div class="input-group">
+          <label for="rev0">Revenue (Y0) <span class="value-display" id="rev0-val">254.5</span></label>
+          <input type="range" id="rev0" min="20" max="400" step="0.5" value="254.5">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">USD billion (incl. membership fees)</div>
+        </div>
+
+        <div class="input-group">
+          <label for="growth">Revenue growth <span class="value-display"><span id="growth-val">7.0</span>%</span></label>
+          <input type="range" id="growth" min="-5" max="15" step="0.1" value="7">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">LFL + new-space combined</div>
+        </div>
+
+        <div class="input-group">
+          <label for="ebitda">EBITDA margin <span class="value-display"><span id="ebitda-val">4.7</span>%</span></label>
+          <input type="range" id="ebitda" min="2" max="12" step="0.1" value="4.7">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">thin &mdash; membership fee does the heavy lifting</div>
+        </div>
+
+        <div class="input-group">
+          <label for="da">D&amp;A / revenue <span class="value-display"><span id="da-val">0.8</span>%</span></label>
+          <input type="range" id="da" min="0.3" max="3" step="0.1" value="0.8">
+        </div>
+
+        <div class="input-group">
+          <label for="capex">Capex intensity <span class="value-display"><span id="capex-val">1.8</span>%</span></label>
+          <input type="range" id="capex" min="0.5" max="5" step="0.1" value="1.8">
+        </div>
+
+        <div class="input-divider"></div>
+        <div class="input-section-label">Financial</div>
+
+        <div class="input-group">
+          <label for="tax">Tax rate <span class="value-display"><span id="tax-val">25.0</span>%</span></label>
+          <input type="range" id="tax" min="10" max="35" step="0.5" value="25">
+        </div>
+
+        <div class="input-group">
+          <label for="wacc">WACC <span class="value-display"><span id="wacc-val">7.5</span>%</span></label>
+          <input type="range" id="wacc" min="5" max="13" step="0.1" value="7.5">
+        </div>
+
+        <div class="input-group">
+          <label for="g">Terminal growth <span class="value-display"><span id="g-val">3.0</span>%</span></label>
+          <input type="range" id="g" min="0" max="5" step="0.1" value="3">
+        </div>
+
+        <div class="input-divider"></div>
+        <div class="input-section-label">Balance sheet</div>
+
+        <div class="input-group">
+          <label for="netdebt">Net debt (Y0) <span class="value-display" id="netdebt-val">-5.0</span></label>
+          <input type="range" id="netdebt" min="-30" max="40" step="0.5" value="-5">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">USD billion (negative = net cash)</div>
+        </div>
+
+        <div class="input-group">
+          <label for="shares">Shares outstanding <span class="value-display" id="shares-val">445</span></label>
+          <input type="range" id="shares" min="100" max="1500" step="5" value="445">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">millions</div>
+        </div>
+
+        <button type="button" class="btn-reset" id="reset-btn">Reset to defaults</button>
+      </aside>
+
+      <div class="model-outputs">
+
+        <table class="fin-table" id="forecast-table">
+          <caption>5-year forecast &mdash; USD billion</caption>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Y1</th>
+              <th>Y2</th>
+              <th>Y3</th>
+              <th>Y4</th>
+              <th>Y5</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Revenue</td><td id="rev-1"></td><td id="rev-2"></td><td id="rev-3"></td><td id="rev-4"></td><td id="rev-5"></td></tr>
+            <tr><td>EBITDA</td><td id="ebt-1"></td><td id="ebt-2"></td><td id="ebt-3"></td><td id="ebt-4"></td><td id="ebt-5"></td></tr>
+            <tr><td>D&amp;A</td><td id="dep-1"></td><td id="dep-2"></td><td id="dep-3"></td><td id="dep-4"></td><td id="dep-5"></td></tr>
+            <tr class="subtotal"><td>EBIT</td><td id="ebi-1"></td><td id="ebi-2"></td><td id="ebi-3"></td><td id="ebi-4"></td><td id="ebi-5"></td></tr>
+            <tr><td>Interest</td><td id="int-1"></td><td id="int-2"></td><td id="int-3"></td><td id="int-4"></td><td id="int-5"></td></tr>
+            <tr><td>Tax</td><td id="txp-1"></td><td id="txp-2"></td><td id="txp-3"></td><td id="txp-4"></td><td id="txp-5"></td></tr>
+            <tr class="subtotal"><td>Net income</td><td id="ni-1"></td><td id="ni-2"></td><td id="ni-3"></td><td id="ni-4"></td><td id="ni-5"></td></tr>
+            <tr><td>Capex</td><td id="cpx-1"></td><td id="cpx-2"></td><td id="cpx-3"></td><td id="cpx-4"></td><td id="cpx-5"></td></tr>
+            <tr><td>&Delta;Working capital</td><td id="wc-1"></td><td id="wc-2"></td><td id="wc-3"></td><td id="wc-4"></td><td id="wc-5"></td></tr>
+            <tr class="subtotal"><td>FCFF</td><td id="fcf-1"></td><td id="fcf-2"></td><td id="fcf-3"></td><td id="fcf-4"></td><td id="fcf-5"></td></tr>
+          </tbody>
+        </table>
+
+        <table class="fin-table" id="ratio-table">
+          <caption>Key ratios</caption>
+          <thead>
+            <tr>
+              <th></th><th>Y1</th><th>Y2</th><th>Y3</th><th>Y4</th><th>Y5</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>EBITDA margin</td><td id="mar-1"></td><td id="mar-2"></td><td id="mar-3"></td><td id="mar-4"></td><td id="mar-5"></td></tr>
+            <tr><td>FCF / revenue</td><td id="fcm-1"></td><td id="fcm-2"></td><td id="fcm-3"></td><td id="fcm-4"></td><td id="fcm-5"></td></tr>
+            <tr><td>Capex / revenue</td><td id="cap-1"></td><td id="cap-2"></td><td id="cap-3"></td><td id="cap-4"></td><td id="cap-5"></td></tr>
+            <tr><td>Net debt / EBITDA</td><td id="lev-1"></td><td id="lev-2"></td><td id="lev-3"></td><td id="lev-4"></td><td id="lev-5"></td></tr>
+          </tbody>
+        </table>
+
+        <div class="chart-row">
+          <div class="chart-container">
+            <h4>Revenue &amp; EBITDA (USD bn)</h4>
+            <div class="canvas-wrap"><canvas id="chart-bars"></canvas></div>
+          </div>
+          <div class="chart-container">
+            <h4>Margins (%)</h4>
+            <div class="canvas-wrap"><canvas id="chart-lines"></canvas></div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin: 1.5rem 0 0.75rem; font-weight: 600; font-family: 'Inter', sans-serif;">DCF Valuation</h3>
+        <div class="dcf-summary">
+          <div class="dcf-cell">
+            <div class="label">Enterprise value</div>
+            <div class="figure" id="ev-val">&mdash;</div>
+            <span class="unit">USD billion</span>
+          </div>
+          <div class="dcf-cell">
+            <div class="label">Equity value</div>
+            <div class="figure" id="eq-val">&mdash;</div>
+            <span class="unit">USD billion</span>
+          </div>
+          <div class="dcf-cell">
+            <div class="label">Per-share value</div>
+            <div class="figure" id="ps-val">&mdash;</div>
+            <span class="unit">USD</span>
+          </div>
+          <div class="dcf-cell">
+            <div class="label">Implied FY+1 EV/EBITDA</div>
+            <div class="figure" id="mult-val">&mdash;</div>
+            <span class="unit">multiple</span>
+          </div>
+        </div>
+
+        <p style="font-size: 0.8125rem; color: var(--text-subtle); margin-top: 0.5rem;">FCFF&nbsp;=&nbsp;NOPAT&nbsp;+&nbsp;D&amp;A&nbsp;&minus;&nbsp;capex&nbsp;&minus;&nbsp;&Delta;working&nbsp;capital. Note the best retailers run <em>negative</em> working capital, so growth releases cash; this model uses a conservative +2% absorption. Interest uses 5% on average net debt (negative net debt earns interest). Terminal value via Gordon growth, discounted at WACC.</p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     SECTION 3 - COSTCO CASE STUDY
+============================================================== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 3 &middot; Case study</div>
+      <h2 class="section-title">Costco Wholesale (NASDAQ: COST)</h2>
+      <p class="section-lede">Applying the model to the canonical membership-warehouse compounder &mdash; neutral analytical stance, no recommendation.</p>
+    </div>
+
+    <div class="prose">
+      <p>Costco is the perfect case study for why a DCF and a market price can stay far apart for years. It is a thin-margin retailer &mdash; barely 3.7% operating margin &mdash; whose real economic engine is the <strong>membership fee</strong>: ~$4.8bn of high-margin, recurring, prepaid income from ~137 million cardholders renewing at ~90%. That fee is close to the entire operating profit, which means Costco essentially sells merchandise at cost-plus-logistics and earns its return on the subscription. The market pays an extraordinary multiple &mdash; well north of 30x EV/EBITDA &mdash; for the durability of that flywheel and a long runway of new-warehouse growth. A flat-deck DCF cannot easily justify it, and that is exactly the point.</p>
+
+      <p><strong>Setting the drivers.</strong> The defaults in the model above are my central case for Costco, calibrated to fiscal-2024 reported figures:</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th>Driver</th><th>Default</th><th>Source / basis</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Revenue Y0 (USD bn)</td><td>254.5</td><td>FY2024 net sales $249.6bn + membership fees $4.8bn <span class="tag tag-source">disclosure</span></td></tr>
+          <tr><td>Revenue growth</td><td>7%</td><td>Mid-single-digit LFL + ~25-30 net new warehouses a year <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>EBITDA margin</td><td>4.7%</td><td>FY2024 operating margin ~3.7% + D&amp;A ~1% <span class="tag tag-source">disclosure</span></td></tr>
+          <tr><td>D&amp;A / revenue</td><td>0.8%</td><td>Low against the (very large) revenue base <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Capex intensity</td><td>1.8%</td><td>New-warehouse build + remodels as % of revenue <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Tax rate</td><td>25%</td><td>Blended US + international effective rate <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>WACC</td><td>7.5%</td><td>Low beta, net-cash balance sheet, stable cash flows <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Terminal growth</td><td>3%</td><td>Long-run nominal growth of the franchise <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Net debt (USD bn)</td><td>&minus;5</td><td>Net cash &mdash; Costco holds more cash than debt <span class="tag tag-source">disclosure</span></td></tr>
+          <tr><td>Shares outstanding</td><td>445m</td><td>FY2024 ~444.8m diluted shares <span class="tag tag-source">disclosure</span></td></tr>
+        </tbody>
+      </table>
+
+      <p style="font-size: 0.875rem; color: var(--text-subtle); margin-top: -0.5rem;">Figures marked <span class="tag tag-source" style="margin-left:0;">disclosure</span> are drawn from Costco&rsquo;s FY2024 results (fiscal year ended 1 September 2024) and 10-K (<a href="https://investor.costco.com/" target="_blank" rel="noopener">investor.costco.com</a>). Values marked <span class="tag tag-assume" style="margin-left:0;">assumption</span> are analytical estimates. All figures rounded; this is a simplified single-segment proxy.</p>
+
+      <h3>What falls out</h3>
+      <p>At the defaults above, the model lands at:</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th></th><th>My DCF model</th><th>Market (approx.)</th><th>Comment</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Enterprise value (USD bn)</td><td>~125</td><td>~395</td><td>The wedge is the quality premium</td></tr>
+          <tr><td>Equity value (USD bn)</td><td>~130</td><td>~400</td><td>Net cash 5 in both</td></tr>
+          <tr><td>Implied per-share (USD)</td><td>~291</td><td>~900</td><td>DCF a third of the tape</td></tr>
+          <tr><td>Implied FY+1 EV/EBITDA</td><td>~9.7x</td><td>~30x+</td><td>DCF-implied vs traded premium</td></tr>
+        </tbody>
+      </table>
+
+      <p style="font-size: 0.875rem; color: var(--text-subtle); margin-top: -0.5rem;">Market figures are illustrative, drawn from recent trading levels; not point-in-time accurate.</p>
+
+      <p>This is the mirror image of the oil-and-gas result. There, a flat-deck DCF valued the equity <em>above</em> a de-rated market. Here, the same machinery values Costco at roughly <strong>a third</strong> of where it trades &mdash; about $291 a share against a market near $900, a ~9.7x implied multiple against a traded 30x-plus. The model is not broken and the market is not irrational. <strong>The gap <em>is</em> the analysis.</strong> A standard DCF capitalises five years of modest cash flow and a 3% perpetuity; it has no way to price decades of high-return reinvestment, the compounding membership flywheel, the pricing power, and the near-certainty of the renewal stream. To bridge to $900 you have to believe in either a far higher terminal growth, a materially higher through-cycle margin as the fee base scales, or simply that quality this durable deserves a multiple a DCF will never print. The exercise does not tell you Costco is overvalued; it tells you precisely how much of the price is a bet on durability rather than on the next five years of cash.</p>
+
+      <h3>Where the case study could break</h3>
+      <p><strong>Bull case &mdash; what justifies the premium:</strong> the warehouse-growth runway runs for another two decades (especially international and China); membership fees rise and the base keeps compounding at ~90% renewal; e-commerce and ancillary services (gas, pharmacy, travel) lift the blended margin. On a 6% margin and 8-9% sustained growth the DCF closes a large part of the gap &mdash; and the market is implicitly underwriting exactly that.</p>
+
+      <p><strong>Bear case &mdash; what compresses it:</strong> saturation slows new-warehouse growth; a consumer downtrade or competitive response from other clubs pressures renewals; any wobble in the membership renewal rate hits the highest-margin dollar in the business. On flat growth and a 4% margin the DCF stays far below the market, and a multiple that high becomes the entire risk &mdash; a de-rating from 30x toward 20x is a 30%+ move with no change in the business.</p>
+
+      <p><strong>Why the model and the tape disagree:</strong> they are valuing different things. The DCF values the next five years of cash plus a conservative perpetuity. The market values a multi-decade compounding machine with a recurring-revenue moat and a long reinvestment runway. The disagreement is not about this year&rsquo;s numbers &mdash; it is about how much certainty and how much runway the membership model deserves, which is a judgement no five-year model can settle.</p>
+
+      <p><strong>What I&rsquo;d do differently in a deeper write-up:</strong> model membership-fee income as its own high-margin, recurring line (subscribers &times; fee &times; renewal) separate from merchandise; split revenue into LFL and new-warehouse growth with a productivity curve for new boxes; build the negative-working-capital cycle explicitly from inventory days and payables days so growth correctly <em>releases</em> cash; and cross-check the DCF with a reverse-DCF that solves for the growth and margin the current price implies &mdash; the honest way to frame a quality compounder.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     SECTION 4 - DOWNLOADABLE EXCEL
+============================================================== -->
+<section style="background: var(--bg-elevated); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 4 &middot; Excel</div>
+      <h2 class="section-title">Take the model offline</h2>
+      <p class="section-lede">Same drivers, same math, in a properly-built workbook. Inputs in blue, formulas in black, outputs in bold &mdash; the convention every recruiter testing your modeling skill will check for.</p>
+    </div>
+
+    <div class="prose">
+      <p>The downloadable workbook mirrors the interactive model above: a clean, fully formula-linked four-sheet build &mdash; <strong>Cover</strong>, <strong>Inputs</strong>, <strong>Forecast</strong>, and <strong>Valuation</strong>. Every output cell is a formula, so you can change any blue input and watch the 5-year forecast, ratios, and DCF recompute exactly as the page does.</p>
+
+      <table class="compare-table" style="margin-top: 1.25rem;">
+        <thead>
+          <tr><th>Sheet</th><th>What it does</th><th style="width: 90px;">Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Cover</td><td>Model map, conventions, and data disclaimer</td><td><span class="status status-live">Live</span></td></tr>
+          <tr><td>Inputs</td><td>Every driver in one place &mdash; operating, financial, and balance-sheet assumptions, all in blue input cells</td><td><span class="status status-live">Live</span></td></tr>
+          <tr><td>Forecast</td><td>5-year income statement (revenue &rarr; EBITDA &rarr; EBIT &rarr; net income), FCFF build, and key ratios, fully formula-linked to Inputs</td><td><span class="status status-live">Live</span></td></tr>
+          <tr><td>Valuation</td><td>FCFF discounting, Gordon-growth terminal value, enterprise &rarr; equity &rarr; per-share, plus implied EV/EBITDA cross-check</td><td><span class="status status-live">Live</span></td></tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top: 1.25rem;">Convention: <strong>blue inputs</strong>, <strong>black formulas</strong>, <strong>bold</strong> outputs and subtotals. This is the &ldquo;Phase 1&rdquo; build &mdash; deliberately compact and auditable. The Telecom workbook shows where this goes when fully expanded to a 24-sheet three-statement model.</p>
+
+      <p style="font-size: 0.875rem; color: var(--text-subtle); margin-top: 1.25rem;">
+        Build script: <a href="build_excel.py">build_excel.py</a> (Python, openpyxl). Default values approximate Costco FY2024; balance-sheet starting positions are illustrative &mdash; replace blue input cells with audited figures before publication.
+      </p>
+
+      <p style="margin-top: 2rem;">
+        <a class="btn" href="retail-consumer-model.xlsx" download>Download Excel model (.xlsx)</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     PREV / NEXT INDUSTRY NAVIGATION
+============================================================== -->
+<div class="container">
+  <nav class="industry-nav" aria-label="Industry navigation">
+    <a href="../agriculture/index.html" class="prev">
+      <div class="direction">&larr; Previous</div>
+      <div class="label">Agriculture</div>
+    </a>
+    <div class="disabled">
+      <div class="direction">Next &rarr;</div>
+      <div class="label">&mdash;</div>
+    </div>
+  </nav>
+</div>
 
 <footer class="site-footer">
   <div class="container">
@@ -70,6 +399,254 @@
     <div>Last updated May 2026</div>
   </div>
 </footer>
+
+<!-- Chart.js for the two charts in the model -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---- Defaults ----------------------------------------------- */
+  const DEFAULTS = {
+    rev0:    254.5, // USD bn revenue Y0
+    growth:  7,     // % annual
+    ebitda:  4.7,   // % EBITDA margin
+    da:      0.8,   // % D&A / revenue
+    capex:   1.8,   // % capex / revenue
+    tax:     25,    // % tax
+    wacc:    7.5,   // % WACC
+    g:       3,     // % terminal growth
+    netdebt: -5,    // USD bn (negative = net cash)
+    shares:  445    // millions
+  };
+
+  const COST_OF_DEBT = 0.05;
+  const WC_PCT       = 0.02;
+
+  /* ---- Formatting helpers ------------------------------------- */
+  const fmtBn   = v => (v >= 0 ? '' : '−') + Math.abs(v).toFixed(1);
+  const fmtPct  = v => (v >= 0 ? '' : '−') + Math.abs(v).toFixed(1) + '%';
+  const fmtX    = v => v.toFixed(2) + 'x';
+  const fmtInt  = v => Math.round(v).toLocaleString('en-US');
+
+  function setCell(id, value, fmt, allowNegativeStyle) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = fmt(value);
+    el.classList.toggle('negative', allowNegativeStyle && value < 0);
+  }
+
+  /* ---- Compute forecast and DCF ------------------------------- */
+  function compute(p) {
+    const years = [1, 2, 3, 4, 5];
+    const g = p.growth / 100;
+    const m = p.ebitda / 100;
+    const da = p.da / 100;
+    const cx = p.capex / 100;
+    const tx = p.tax / 100;
+    const wacc = p.wacc / 100;
+    const gT = p.g / 100;
+
+    const rev = years.map(t => p.rev0 * Math.pow(1 + g, t));
+    const revPrev = years.map(t => (t === 1 ? p.rev0 : rev[t - 2]));
+
+    const ebitda = rev.map(r => r * m);
+    const dep    = rev.map(r => r * da);
+    const ebit   = ebitda.map((e, i) => e - dep[i]);
+    const interest = years.map(() => p.netdebt * COST_OF_DEBT);
+    const pretax = ebit.map((e, i) => e - interest[i]);
+    const taxp   = pretax.map(e => (e > 0 ? e * tx : 0));
+    const ni     = pretax.map((e, i) => e - taxp[i]);
+    const capex  = rev.map(r => r * cx);
+    const dwc    = rev.map((r, i) => (r - revPrev[i]) * WC_PCT);
+    const nopat  = ebit.map(e => e * (1 - tx));
+    const fcff   = nopat.map((n, i) => n + dep[i] - capex[i] - dwc[i]);
+
+    const pvFcff = fcff.map((f, i) => f / Math.pow(1 + wacc, i + 1));
+    const tv = (fcff[4] * (1 + gT)) / (wacc - gT);
+    const pvTv = tv / Math.pow(1 + wacc, 5);
+    const ev = pvFcff.reduce((a, b) => a + b, 0) + pvTv;
+    const equity = ev - p.netdebt;
+    const perShare = equity * 1000 / p.shares;
+    const impliedMult = ev / ebitda[0];
+
+    return { rev, ebitda, dep, ebit, interest, taxp, ni, capex, dwc, fcff, ev, equity, perShare, impliedMult };
+  }
+
+  /* ---- Render to the page ------------------------------------- */
+  let barsChart, linesChart;
+
+  function render(p) {
+    const r = compute(p);
+    const years = [1, 2, 3, 4, 5];
+
+    years.forEach((t, i) => {
+      setCell('rev-' + t, r.rev[i],    fmtBn);
+      setCell('ebt-' + t, r.ebitda[i], fmtBn);
+      setCell('dep-' + t, r.dep[i],    fmtBn);
+      setCell('ebi-' + t, r.ebit[i],   fmtBn);
+      setCell('int-' + t, r.interest[i], fmtBn, true);
+      setCell('txp-' + t, r.taxp[i],   fmtBn);
+      setCell('ni-'  + t, r.ni[i],     fmtBn, true);
+      setCell('cpx-' + t, r.capex[i],  fmtBn);
+      setCell('wc-'  + t, r.dwc[i],    fmtBn, true);
+      setCell('fcf-' + t, r.fcff[i],   fmtBn, true);
+
+      setCell('mar-' + t, (r.ebitda[i] / r.rev[i]) * 100, fmtPct);
+      setCell('fcm-' + t, (r.fcff[i]   / r.rev[i]) * 100, fmtPct, true);
+      setCell('cap-' + t, (r.capex[i]  / r.rev[i]) * 100, fmtPct);
+      setCell('lev-' + t, p.netdebt / r.ebitda[i],         fmtX, true);
+    });
+
+    setCell('ev-val',   r.ev,         fmtBn);
+    setCell('eq-val',   r.equity,     fmtBn);
+    setCell('ps-val',   r.perShare,   v => v.toFixed(0));
+    setCell('mult-val', r.impliedMult, fmtX);
+
+    if (barsChart)  updateBars(r);  else  initBars(r);
+    if (linesChart) updateLines(r); else  initLines(r);
+  }
+
+  /* ---- Charts ------------------------------------------------- */
+  function getColors() {
+    const styles = getComputedStyle(document.documentElement);
+    return {
+      text: styles.getPropertyValue('--text').trim(),
+      muted: styles.getPropertyValue('--text-muted').trim(),
+      accent: styles.getPropertyValue('--accent').trim(),
+      border: styles.getPropertyValue('--border').trim(),
+      navy: '#0a1828'
+    };
+  }
+  function years() { return ['Y1', 'Y2', 'Y3', 'Y4', 'Y5']; }
+
+  function initBars(r) {
+    const c = getColors();
+    barsChart = new Chart(document.getElementById('chart-bars'), {
+      type: 'bar',
+      data: {
+        labels: years(),
+        datasets: [
+          { label: 'Revenue', data: r.rev.slice(),    backgroundColor: c.navy,   borderWidth: 0 },
+          { label: 'EBITDA',  data: r.ebitda.slice(), backgroundColor: c.accent, borderWidth: 0 }
+        ]
+      },
+      options: chartOpts(false)
+    });
+  }
+  function updateBars(r) {
+    barsChart.data.datasets[0].data = r.rev.slice();
+    barsChart.data.datasets[1].data = r.ebitda.slice();
+    const c = getColors();
+    barsChart.data.datasets[0].backgroundColor = c.navy;
+    barsChart.data.datasets[1].backgroundColor = c.accent;
+    refreshAxes(barsChart);
+    barsChart.update('none');
+  }
+
+  function initLines(r) {
+    const c = getColors();
+    linesChart = new Chart(document.getElementById('chart-lines'), {
+      type: 'line',
+      data: {
+        labels: years(),
+        datasets: [
+          { label: 'EBITDA margin', data: marginSeries(r, 'ebitda'), borderColor: c.accent, backgroundColor: c.accent, tension: 0.25, borderWidth: 2, pointRadius: 3 },
+          { label: 'FCF margin',    data: marginSeries(r, 'fcff'),   borderColor: c.navy,   backgroundColor: c.navy,   tension: 0.25, borderWidth: 2, pointRadius: 3 }
+        ]
+      },
+      options: chartOpts(true)
+    });
+  }
+  function updateLines(r) {
+    linesChart.data.datasets[0].data = marginSeries(r, 'ebitda');
+    linesChart.data.datasets[1].data = marginSeries(r, 'fcff');
+    const c = getColors();
+    linesChart.data.datasets[0].borderColor = c.accent;
+    linesChart.data.datasets[1].borderColor = c.navy;
+    refreshAxes(linesChart);
+    linesChart.update('none');
+  }
+  function marginSeries(r, k) {
+    return r.rev.map((v, i) => (r[k][i] / v) * 100);
+  }
+
+  function chartOpts(isPct) {
+    const c = getColors();
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: c.muted, font: { family: 'Inter', size: 11 }, boxWidth: 10, boxHeight: 10 } },
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + (isPct ? ctx.parsed.y.toFixed(1) + '%' : ctx.parsed.y.toFixed(1)) } }
+      },
+      scales: {
+        x: { ticks: { color: c.muted, font: { family: 'Inter', size: 11 } }, grid: { display: false }, border: { color: c.border } },
+        y: { ticks: { color: c.muted, font: { family: 'Inter', size: 11 }, callback: v => isPct ? v + '%' : v }, grid: { color: c.border }, border: { display: false }, beginAtZero: isPct ? false : true }
+      }
+    };
+  }
+  function refreshAxes(chart) {
+    const c = getColors();
+    chart.options.scales.x.ticks.color = c.muted;
+    chart.options.scales.y.ticks.color = c.muted;
+    chart.options.scales.x.border.color = c.border;
+    chart.options.scales.y.grid.color = c.border;
+    chart.options.plugins.legend.labels.color = c.muted;
+  }
+
+  /* ---- Wiring ------------------------------------------------- */
+  function read() {
+    return {
+      rev0:    +document.getElementById('rev0').value,
+      growth:  +document.getElementById('growth').value,
+      ebitda:  +document.getElementById('ebitda').value,
+      da:      +document.getElementById('da').value,
+      capex:   +document.getElementById('capex').value,
+      tax:     +document.getElementById('tax').value,
+      wacc:    +document.getElementById('wacc').value,
+      g:       +document.getElementById('g').value,
+      netdebt: +document.getElementById('netdebt').value,
+      shares:  +document.getElementById('shares').value
+    };
+  }
+  function updateLabels(p) {
+    document.getElementById('rev0-val').textContent    = p.rev0.toFixed(1);
+    document.getElementById('growth-val').textContent  = p.growth.toFixed(1);
+    document.getElementById('ebitda-val').textContent  = p.ebitda.toFixed(1);
+    document.getElementById('da-val').textContent      = p.da.toFixed(1);
+    document.getElementById('capex-val').textContent   = p.capex.toFixed(1);
+    document.getElementById('tax-val').textContent     = p.tax.toFixed(1);
+    document.getElementById('wacc-val').textContent    = p.wacc.toFixed(1);
+    document.getElementById('g-val').textContent       = p.g.toFixed(1);
+    document.getElementById('netdebt-val').textContent = p.netdebt.toFixed(1);
+    document.getElementById('shares-val').textContent  = fmtInt(p.shares);
+  }
+  function tick() {
+    const p = read();
+    updateLabels(p);
+    render(p);
+  }
+  function reset() {
+    Object.keys(DEFAULTS).forEach(k => { document.getElementById(k).value = DEFAULTS[k]; });
+    tick();
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    Object.keys(DEFAULTS).forEach(k => {
+      document.getElementById(k).addEventListener('input', tick);
+    });
+    document.getElementById('reset-btn').addEventListener('click', reset);
+
+    const themeBtn = document.querySelector('.theme-toggle');
+    if (themeBtn) themeBtn.addEventListener('click', function () {
+      setTimeout(function () { if (barsChart) updateBars(compute(read())); if (linesChart) updateLines(compute(read())); }, 50);
+    });
+
+    tick();
+  });
+})();
+</script>
 
 </body>
 </html>

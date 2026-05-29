@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Banking — Coming soon | Togrul Mirzayev</title>
-  <meta name="description" content="Banking operating model — coming soon.">
+  <title>Banking — Operating Model | Togrul Mirzayev</title>
+  <meta name="description" content="Banking industry primer, interactive 5-year NIM / loan-book model, and HSBC case study by Togrul Mirzayev.">
   <link rel="stylesheet" href="../../assets/css/styles.css?v=3">
   <script src="../../assets/js/main.js?v=3"></script>
 </head>
@@ -34,30 +34,372 @@
   </div>
 </div>
 
-<section class="coming-soon">
-  <div class="container-narrow">
-    <div class="eyebrow">03 &mdash; Financials &middot; In progress</div>
-    <h1>Banking</h1>
-    <p>Net interest margin, loan book quality, fee income, and capital adequacy in a regulated balance sheet business. Full deep-dive and interactive model coming soon.</p>
-
-    <div class="scope">
-      <h3>What this page will cover</h3>
-      <ul>
-        <li>Industry primer: spread-based vs. fee-based earnings</li>
-        <li>Loan book mix, NIM mechanics, cost of risk, and provisioning</li>
-        <li>Capital adequacy (CET1, Tier 1), liquidity, and regulatory frame</li>
-        <li>Interactive 5-year model with adjustable rate and credit-loss curves</li>
-        <li>P/B and dividend-discount valuation, ROTE sensitivity</li>
-        <li>Real-company case study against FY2024 reported figures</li>
-        <li>Downloadable Excel model</li>
-      </ul>
-    </div>
-
-    <p style="margin-top: 2.5rem;">
-      <a class="btn btn-outline" href="../index.html">Back to industries</a>
-    </p>
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">03 &mdash; Financials &middot; Live</div>
+    <h1>Banking: a leveraged spread business that lives and dies on risk.</h1>
+    <p class="subtitle">How a bank actually earns, why the balance sheet <em>is</em> the business, what moves the margin, and what a defensible 5-year model looks like &mdash; applied to HSBC.</p>
   </div>
 </section>
+
+<!-- =============================================================
+     SECTION 1 - INDUSTRY PRIMER
+============================================================== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 1 &middot; Primer</div>
+      <h2 class="section-title">How the business works</h2>
+    </div>
+
+    <div class="prose">
+      <p>A bank is not an industrial company with a balance sheet attached &mdash; the balance sheet <em>is</em> the product. It borrows money (deposits, wholesale funding) at one rate and lends it (loans, securities) at a higher one, keeping the spread. Then it does this many times over its own capital: a bank funds maybe twelve to fifteen dollars of assets with one dollar of equity. That leverage is the entire point and the entire danger. A small move in the value of the assets &mdash; a wave of defaults &mdash; is a large move in the equity. Banking is a spread business wrapped around a risk-management problem, and the risk management is what separates the survivors from the headlines.</p>
+
+      <p>Because of that leverage, banks are not valued like other companies. There is no enterprise value &mdash; debt is raw material, not financing &mdash; so EV/EBITDA is meaningless. Banks are valued on <strong>equity</strong>: price-to-book (or price-to-tangible-book), return on tangible equity, and the dividend they can sustainably pay. The regulator, not the CFO, sets the ceiling on how much risk the equity can support.</p>
+
+      <h3>Revenue drivers</h3>
+      <p>Income splits into two streams. The first is <strong>net interest income (NII)</strong>:</p>
+      <div class="value-prop" style="margin: 1.5rem 0;">
+        <p>NII &asymp; average interest-earning assets &times; net interest margin (NIM)</p>
+      </div>
+      <p><strong>Earning assets</strong> is the volume lever &mdash; loans, plus the securities and central-bank balances the bank holds. <strong>NIM</strong> is the price lever &mdash; the blended yield on assets minus the blended cost of funding, typically <strong>1.2-2.0%</strong> for a large diversified bank, higher for a retail-heavy or emerging-market one. NIM is exquisitely sensitive to the rate cycle: rising rates usually widen it (assets reprice faster than deposits), falling rates compress it. The second stream is <strong>non-interest income</strong> &mdash; fees, commissions, cards, wealth management, trading. Fee income is prized because it earns a return without consuming the balance sheet or much capital.</p>
+
+      <h3>Cost structure</h3>
+      <p>Two cost lines dominate, and they behave completely differently:</p>
+      <ul>
+        <li><strong>Operating expenses</strong> &mdash; staff, technology, branches, compliance. Watched through the <strong>cost-to-income ratio</strong> (opex / total revenue); <strong>45-60%</strong> is the normal band, and the long-run direction is down as banks digitise. Quasi-fixed.</li>
+        <li><strong>Loan-loss provisions (cost of risk)</strong> &mdash; the expected-credit-loss charge for loans going bad. This is the swing factor. In benign years it is <strong>20-40 basis points</strong> of loans; in a recession it can spike to <strong>150-300bps</strong> and erase a year of profit. The whole game is pricing this risk correctly up front.</li>
+      </ul>
+      <p>Pre-provision operating profit is the clean read on the franchise; provisions are where the cycle &mdash; and management&rsquo;s underwriting discipline &mdash; show up.</p>
+
+      <h3>Capital &amp; the regulatory frame</h3>
+      <p>This is the line that has no analogue in any other sector. A bank must hold capital against its <strong>risk-weighted assets (RWA)</strong> &mdash; assets scaled by how risky the regulator deems them. The key ratio is <strong>CET1 (Common Equity Tier 1) / RWA</strong>, with regulatory minimums plus buffers putting the working floor around <strong>11-14%</strong>. CET1 is the binding constraint on everything: how much the bank can lend, how much it can pay in dividends, how much it can buy back. A bank generating capital above its target can return the surplus; one below it must rebuild, cutting distributions. Liquidity has its own ratios (LCR, NSFR). You cannot model a bank without modelling its capital.</p>
+
+      <h3>KPIs analysts watch</h3>
+      <ul>
+        <li><strong>Return on tangible equity (ROTE)</strong> &mdash; the headline; mid-teens is excellent, &lt;8% destroys value</li>
+        <li><strong>Net interest margin (NIM)</strong> &mdash; the spread, and its rate sensitivity</li>
+        <li><strong>Cost-to-income ratio</strong> &mdash; efficiency; 45-60% band</li>
+        <li><strong>Cost of risk (bps)</strong> &mdash; the credit cycle in one number</li>
+        <li><strong>CET1 ratio</strong> &mdash; capital headroom for growth and distributions</li>
+        <li><strong>Loan / deposit ratio</strong> &mdash; funding self-sufficiency</li>
+        <li><strong>NPL ratio &amp; coverage</strong> &mdash; asset-quality stress and provisioning adequacy</li>
+      </ul>
+
+      <h3>Valuation</h3>
+      <p>The master relationship is the <strong>justified price-to-tangible-book</strong> identity: P/TBV = (ROTE &minus; g) / (CoE &minus; g). A bank earning a ROTE above its cost of equity is worth more than book; one earning below trades at a discount. That single equation explains most of why bank multiples differ. The dividend-discount and residual-income models are the formal cross-checks; CoE typically sits at <strong>9-12%</strong>. Banks rarely trade above <strong>1.5-2.0x TBV</strong> (only the very highest-ROTE franchises) and frequently below 1.0x when ROTE lags CoE. Dividend yield matters because well-capitalised banks return a lot of capital.</p>
+
+      <h3>Common analyst pitfalls</h3>
+      <ol>
+        <li><strong>Valuing a bank on EV/EBITDA or a DCF of operating cash flow.</strong> Leverage is the business; equity-based methods (P/TBV, ROTE, DDM) are the only correct frame.</li>
+        <li><strong>Straight-lining the cost of risk.</strong> Provisions are cyclical and the single biggest swing factor &mdash; a model with flat provisions is a model that has never seen a recession.</li>
+        <li><strong>Ignoring the capital constraint.</strong> Growth, dividends and buybacks are all gated by CET1. A forecast that grows the loan book without funding the RWA is internally inconsistent.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     SECTION 2 - INTERACTIVE OPERATING MODEL
+============================================================== -->
+<section style="background: var(--bg-elevated); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 2 &middot; Interactive model</div>
+      <h2 class="section-title">5-year forecast &amp; P/TBV valuation</h2>
+      <p class="section-lede">Move the sliders. Every number on the right recalculates live. Defaults are calibrated to roughly approximate HSBC; change them to flex the model to any bank. Note the valuation is equity-based (P/TBV &amp; ROTE), not a DCF &mdash; that is the correct frame for a bank.</p>
+    </div>
+
+    <div class="model">
+
+      <aside class="model-inputs">
+        <h3>Drivers</h3>
+
+        <div class="input-section-label">Balance sheet &amp; margin</div>
+
+        <div class="input-group">
+          <label for="assets0">Earning assets (Y0) <span class="value-display" id="assets0-val">2,300</span></label>
+          <input type="range" id="assets0" min="200" max="3000" step="10" value="2300">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">USD billion</div>
+        </div>
+
+        <div class="input-group">
+          <label for="growth">Asset growth <span class="value-display"><span id="growth-val">3.0</span>%</span></label>
+          <input type="range" id="growth" min="-5" max="15" step="0.1" value="3">
+        </div>
+
+        <div class="input-group">
+          <label for="nim">Net interest margin <span class="value-display"><span id="nim-val">1.60</span>%</span></label>
+          <input type="range" id="nim" min="0.5" max="4" step="0.01" value="1.6">
+        </div>
+
+        <div class="input-group">
+          <label for="fee0">Fee &amp; other income (Y0) <span class="value-display" id="fee0-val">22.0</span></label>
+          <input type="range" id="fee0" min="0" max="60" step="0.5" value="22">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">USD billion</div>
+        </div>
+
+        <div class="input-divider"></div>
+        <div class="input-section-label">Costs &amp; risk</div>
+
+        <div class="input-group">
+          <label for="cir">Cost-to-income ratio <span class="value-display"><span id="cir-val">48.0</span>%</span></label>
+          <input type="range" id="cir" min="30" max="75" step="0.5" value="48">
+        </div>
+
+        <div class="input-group">
+          <label for="cor">Cost of risk <span class="value-display"><span id="cor-val">20</span>bps</span></label>
+          <input type="range" id="cor" min="0" max="200" step="1" value="20">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">basis points of earning assets</div>
+        </div>
+
+        <div class="input-group">
+          <label for="tax">Tax rate <span class="value-display"><span id="tax-val">22.0</span>%</span></label>
+          <input type="range" id="tax" min="0" max="40" step="0.5" value="22">
+        </div>
+
+        <div class="input-divider"></div>
+        <div class="input-section-label">Capital &amp; valuation</div>
+
+        <div class="input-group">
+          <label for="equity0">Tangible equity (Y0) <span class="value-display" id="equity0-val">155.0</span></label>
+          <input type="range" id="equity0" min="20" max="300" step="1" value="155">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">USD billion</div>
+        </div>
+
+        <div class="input-group">
+          <label for="payout">Dividend payout <span class="value-display"><span id="payout-val">50.0</span>%</span></label>
+          <input type="range" id="payout" min="0" max="100" step="1" value="50">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">share of net income</div>
+        </div>
+
+        <div class="input-group">
+          <label for="coe">Cost of equity <span class="value-display"><span id="coe-val">10.5</span>%</span></label>
+          <input type="range" id="coe" min="7" max="16" step="0.1" value="10.5">
+        </div>
+
+        <div class="input-group">
+          <label for="g">Terminal growth <span class="value-display"><span id="g-val">3.0</span>%</span></label>
+          <input type="range" id="g" min="0" max="5" step="0.1" value="3">
+        </div>
+
+        <div class="input-group">
+          <label for="shares">Shares outstanding <span class="value-display" id="shares-val">17,800</span></label>
+          <input type="range" id="shares" min="2000" max="25000" step="100" value="17800">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">millions</div>
+        </div>
+
+        <button type="button" class="btn-reset" id="reset-btn">Reset to defaults</button>
+      </aside>
+
+      <div class="model-outputs">
+
+        <table class="fin-table" id="forecast-table">
+          <caption>5-year forecast &mdash; USD billion</caption>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Y1</th>
+              <th>Y2</th>
+              <th>Y3</th>
+              <th>Y4</th>
+              <th>Y5</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Net interest income</td><td id="nii-1"></td><td id="nii-2"></td><td id="nii-3"></td><td id="nii-4"></td><td id="nii-5"></td></tr>
+            <tr><td>Fee &amp; other income</td><td id="fee-1"></td><td id="fee-2"></td><td id="fee-3"></td><td id="fee-4"></td><td id="fee-5"></td></tr>
+            <tr class="subtotal"><td>Total revenue</td><td id="rev-1"></td><td id="rev-2"></td><td id="rev-3"></td><td id="rev-4"></td><td id="rev-5"></td></tr>
+            <tr><td>Operating expenses</td><td id="opx-1"></td><td id="opx-2"></td><td id="opx-3"></td><td id="opx-4"></td><td id="opx-5"></td></tr>
+            <tr class="subtotal"><td>Pre-provision profit</td><td id="ppp-1"></td><td id="ppp-2"></td><td id="ppp-3"></td><td id="ppp-4"></td><td id="ppp-5"></td></tr>
+            <tr><td>Loan-loss provisions</td><td id="prov-1"></td><td id="prov-2"></td><td id="prov-3"></td><td id="prov-4"></td><td id="prov-5"></td></tr>
+            <tr class="subtotal"><td>Pre-tax profit</td><td id="pbt-1"></td><td id="pbt-2"></td><td id="pbt-3"></td><td id="pbt-4"></td><td id="pbt-5"></td></tr>
+            <tr><td>Tax</td><td id="txp-1"></td><td id="txp-2"></td><td id="txp-3"></td><td id="txp-4"></td><td id="txp-5"></td></tr>
+            <tr class="subtotal"><td>Net income</td><td id="ni-1"></td><td id="ni-2"></td><td id="ni-3"></td><td id="ni-4"></td><td id="ni-5"></td></tr>
+            <tr><td>Tangible equity (closing)</td><td id="eq-1"></td><td id="eq-2"></td><td id="eq-3"></td><td id="eq-4"></td><td id="eq-5"></td></tr>
+          </tbody>
+        </table>
+
+        <table class="fin-table" id="ratio-table">
+          <caption>Key ratios</caption>
+          <thead>
+            <tr>
+              <th></th><th>Y1</th><th>Y2</th><th>Y3</th><th>Y4</th><th>Y5</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>ROTE</td><td id="rote-1"></td><td id="rote-2"></td><td id="rote-3"></td><td id="rote-4"></td><td id="rote-5"></td></tr>
+            <tr><td>Cost-to-income</td><td id="cir-1"></td><td id="cir-2"></td><td id="cir-3"></td><td id="cir-4"></td><td id="cir-5"></td></tr>
+            <tr><td>NIM</td><td id="nimr-1"></td><td id="nimr-2"></td><td id="nimr-3"></td><td id="nimr-4"></td><td id="nimr-5"></td></tr>
+            <tr><td>Cost of risk (bps)</td><td id="corr-1"></td><td id="corr-2"></td><td id="corr-3"></td><td id="corr-4"></td><td id="corr-5"></td></tr>
+          </tbody>
+        </table>
+
+        <div class="chart-row">
+          <div class="chart-container">
+            <h4>Revenue &amp; net income (USD bn)</h4>
+            <div class="canvas-wrap"><canvas id="chart-bars"></canvas></div>
+          </div>
+          <div class="chart-container">
+            <h4>ROTE vs cost of equity (%)</h4>
+            <div class="canvas-wrap"><canvas id="chart-lines"></canvas></div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin: 1.5rem 0 0.75rem; font-weight: 600; font-family: 'Inter', sans-serif;">Equity Valuation (P/TBV)</h3>
+        <div class="dcf-summary">
+          <div class="dcf-cell">
+            <div class="label">Normalized ROTE</div>
+            <div class="figure" id="rote-val">&mdash;</div>
+            <span class="unit">Y1, %</span>
+          </div>
+          <div class="dcf-cell">
+            <div class="label">Justified P/TBV</div>
+            <div class="figure" id="ptbv-val">&mdash;</div>
+            <span class="unit">multiple</span>
+          </div>
+          <div class="dcf-cell">
+            <div class="label">Implied equity value</div>
+            <div class="figure" id="eqv-val">&mdash;</div>
+            <span class="unit">USD billion</span>
+          </div>
+          <div class="dcf-cell">
+            <div class="label">Per-share value</div>
+            <div class="figure" id="ps-val">&mdash;</div>
+            <span class="unit">USD</span>
+          </div>
+        </div>
+
+        <p style="font-size: 0.8125rem; color: var(--text-subtle); margin-top: 0.5rem;">Justified P/TBV&nbsp;=&nbsp;(ROTE&nbsp;&minus;&nbsp;g)&nbsp;/&nbsp;(CoE&nbsp;&minus;&nbsp;g), using normalized Y1 ROTE on opening tangible equity. Implied equity value&nbsp;=&nbsp;P/TBV&nbsp;&times;&nbsp;Y0 tangible equity. Equity rolls forward by retained earnings (net income &times; (1&nbsp;&minus;&nbsp;payout)). This is the equity-based frame banks are valued on &mdash; deliberately <em>not</em> a DCF.</p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     SECTION 3 - HSBC CASE STUDY
+============================================================== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 3 &middot; Case study</div>
+      <h2 class="section-title">HSBC Holdings plc (LSE / HKEX: HSBA / 0005)</h2>
+      <p class="section-lede">Applying the model to a globally-systemic, Asia-anchored universal bank &mdash; neutral analytical stance, no recommendation.</p>
+    </div>
+
+    <div class="prose">
+      <p>HSBC is a clean test case for the equity-based frame because it is large, diversified, well-capitalised, and run explicitly to a ROTE target. Post-2023 it has reshaped around its Asian core &mdash; exiting Canada and Argentina, simplifying the structure, and committing to a mid-teens ROTE with heavy capital return through dividends and buybacks. That makes its disclosed metrics a good anchor for a NIM / cost-of-risk / capital model.</p>
+
+      <p><strong>Setting the drivers.</strong> The defaults in the model above are my central case for HSBC, calibrated to FY2024 reported figures:</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th>Driver</th><th>Default</th><th>Source / basis</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Earning assets Y0 (USD bn)</td><td>2,300</td><td>Approx. average interest-earning assets (loans + securities + central-bank balances) <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Asset growth</td><td>3%</td><td>Low-single-digit, Asia-led loan and balance growth <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Net interest margin</td><td>1.60%</td><td>Approx. HSBC FY2024 banking NIM <span class="tag tag-source">disclosure</span></td></tr>
+          <tr><td>Fee &amp; other income (USD bn)</td><td>22</td><td>Wealth, transaction banking, cards, trading; tuned so total revenue &asymp; FY2024 ~$65bn <span class="tag tag-source">disclosure</span></td></tr>
+          <tr><td>Cost-to-income ratio</td><td>48%</td><td>HSBC FY2024 reported efficiency range <span class="tag tag-source">disclosure</span></td></tr>
+          <tr><td>Cost of risk</td><td>20bps</td><td>Benign-cycle ECL charge; HSBC has guided ~30-40bps through the cycle <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Tax rate</td><td>22%</td><td>Blended effective rate across jurisdictions; simplified <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Tangible equity Y0 (USD bn)</td><td>155</td><td>Approx. HSBC FY2024 tangible shareholders&rsquo; equity <span class="tag tag-source">disclosure</span></td></tr>
+          <tr><td>Dividend payout</td><td>50%</td><td>HSBC ~50% payout target, plus buybacks on top <span class="tag tag-source">disclosure</span></td></tr>
+          <tr><td>Cost of equity</td><td>10.5%</td><td>USD risk-free + equity risk premium + bank beta <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Terminal growth</td><td>3%</td><td>Long-run nominal growth of the franchise <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Shares outstanding</td><td>17,800m</td><td>Approx. FY2024 ordinary shares in issue, falling via buyback <span class="tag tag-source">disclosure</span></td></tr>
+        </tbody>
+      </table>
+
+      <p style="font-size: 0.875rem; color: var(--text-subtle); margin-top: -0.5rem;">Figures marked <span class="tag tag-source" style="margin-left:0;">disclosure</span> are drawn from HSBC&rsquo;s Annual Results 2024 release dated 19 February 2025 (<a href="https://www.hsbc.com/investors/results-and-announcements/annual-report" target="_blank" rel="noopener">hsbc.com</a>). Values marked <span class="tag tag-assume" style="margin-left:0;">assumption</span> are analytical estimates &mdash; HSBC does not disclose them in the form used here. All figures rounded; this is a simplified single-entity proxy, not HSBC&rsquo;s reported segment build.</p>
+
+      <h3>What falls out</h3>
+      <p>At the defaults above, the model lands at:</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th></th><th>My model</th><th>Market (approx.)</th><th>Comment</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Normalized ROTE</td><td>~13.5%</td><td>~14-15%</td><td>HSBC targets mid-teens excl. notable items</td></tr>
+          <tr><td>Justified P/TBV</td><td>~1.40x</td><td>~1.0-1.1x</td><td>Model implies a premium to current book</td></tr>
+          <tr><td>Implied equity value (USD bn)</td><td>~217</td><td>~170</td><td>Justified value above traded book</td></tr>
+          <tr><td>Implied per-share (USD)</td><td>~12.2</td><td>~9.5</td><td>Ordinary share, not the 1:5 ADS</td></tr>
+        </tbody>
+      </table>
+
+      <p style="font-size: 0.875rem; color: var(--text-subtle); margin-top: -0.5rem;">Market figures are illustrative, drawn from recent trading levels; not point-in-time accurate. HSBC&rsquo;s US ADS represents five ordinary shares, so the ADS trades at roughly 5&times; the per-share figures above.</p>
+
+      <p>The result is the textbook bank story in one line. With a normalized ROTE of ~13.5% sitting comfortably above a 10.5% cost of equity, the justified-P/TBV identity says the equity is worth more than its tangible book &mdash; about 1.4x &mdash; because the bank is compounding capital at a return above what shareholders require. The market trades it closer to 1.0-1.1x, applying a haircut for the things the formula cannot see: geopolitical concentration in Hong Kong and mainland China, the through-cycle reality that cost of risk will not stay at 20bps, and the discount global investors attach to a bank whose fate is tied to one region&rsquo;s property and policy cycle. The gap between ~1.4x justified and ~1.05x traded <em>is</em> the China-risk discount, quantified.</p>
+
+      <h3>Where the case study could break</h3>
+      <p><strong>Bull case &mdash; what re-rates it:</strong> rates stay higher-for-longer and NIM holds near 1.7%; Asian wealth and transaction-banking fees compound at high-single digits; cost discipline pushes the cost-to-income ratio below 45%; buybacks keep shrinking the share count against a rising ROTE. Sustainable ROTE pushes toward 15-16%, justified P/TBV toward 1.6x, and the China discount narrows.</p>
+
+      <p><strong>Bear case &mdash; what compresses it:</strong> rate cuts compress NIM toward 1.3%; a mainland China property and credit downturn lifts cost of risk to 60-80bps and dents fee income; a higher cost of equity on geopolitical stress. ROTE slips toward 9-10%, the justified multiple falls below 1.0x, and the stock trades at a discount to tangible book. Equity value 25-35% lower.</p>
+
+      <p><strong>Why the model and the tape disagree:</strong> the justified-P/TBV identity is brutally sensitive to two inputs &mdash; the sustainable ROTE and the cost of equity &mdash; and the entire valuation debate for HSBC is whether the through-cycle ROTE really clears the cost of capital once a normalised cost of risk and a fair geopolitical risk premium are applied. The model, fed benign-cycle inputs, says yes and prices a premium. The market, pricing the tail, says &ldquo;show me,&rdquo; and holds it near book. Neither is wrong; the disagreement is entirely about the right cost of risk and the right CoE.</p>
+
+      <p><strong>What I&rsquo;d do differently in a deeper write-up:</strong> build the balance sheet from loans / deposits / securities separately with their own yields and funding costs rather than a single NIM; carry an explicit RWA and CET1 schedule so growth, dividends and buybacks are capital-constrained; model cost of risk with an explicit through-cycle path and a stress scenario; and split the franchise by region (Asia / UK / rest) given how concentrated the value and the risk both are.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     SECTION 4 - DOWNLOADABLE EXCEL
+============================================================== -->
+<section style="background: var(--bg-elevated); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 4 &middot; Excel</div>
+      <h2 class="section-title">Take the model offline</h2>
+      <p class="section-lede">Same drivers, same math, in a properly-built workbook. Inputs in blue, formulas in black, outputs in bold &mdash; the convention every recruiter testing your modeling skill will check for.</p>
+    </div>
+
+    <div class="prose">
+      <p>The downloadable workbook mirrors the interactive model above: a clean, fully formula-linked four-sheet build &mdash; <strong>Cover</strong>, <strong>Inputs</strong>, <strong>Forecast</strong>, and <strong>Valuation</strong>. Every output cell is a formula, so you can change any blue input and watch the 5-year P&amp;L, ROTE, and P/TBV valuation recompute exactly as the page does.</p>
+
+      <table class="compare-table" style="margin-top: 1.25rem;">
+        <thead>
+          <tr><th>Sheet</th><th>What it does</th><th style="width: 90px;">Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Cover</td><td>Model map, conventions, and data disclaimer</td><td><span class="status status-live">Live</span></td></tr>
+          <tr><td>Inputs</td><td>Every driver in one place &mdash; balance sheet &amp; margin, costs &amp; risk, capital &amp; valuation, all in blue input cells</td><td><span class="status status-live">Live</span></td></tr>
+          <tr><td>Forecast</td><td>5-year bank P&amp;L (NII + fees &rarr; revenue &rarr; pre-provision profit &rarr; provisions &rarr; net income), tangible-equity rollforward, and key ratios</td><td><span class="status status-live">Live</span></td></tr>
+          <tr><td>Valuation</td><td>Justified P/TBV = (ROTE &minus; g)/(CoE &minus; g), implied equity value and per-share &mdash; the equity-based frame, not a DCF</td><td><span class="status status-live">Live</span></td></tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top: 1.25rem;">Convention: <strong>blue inputs</strong>, <strong>black formulas</strong>, <strong>bold</strong> outputs and subtotals. This is the &ldquo;Phase 1&rdquo; build &mdash; deliberately compact and auditable. The Telecom workbook shows where this goes when fully expanded to a 24-sheet model.</p>
+
+      <p style="font-size: 0.875rem; color: var(--text-subtle); margin-top: 1.25rem;">
+        Build script: <a href="build_excel.py">build_excel.py</a> (Python, openpyxl). Default values approximate HSBC FY2024; starting positions are illustrative &mdash; replace blue input cells with audited figures before publication.
+      </p>
+
+      <p style="margin-top: 2rem;">
+        <a class="btn" href="banking-model.xlsx" download>Download Excel model (.xlsx)</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     PREV / NEXT INDUSTRY NAVIGATION
+============================================================== -->
+<div class="container">
+  <nav class="industry-nav" aria-label="Industry navigation">
+    <a href="../oil-gas/index.html" class="prev">
+      <div class="direction">&larr; Previous</div>
+      <div class="label">Oil &amp; Gas</div>
+    </a>
+    <a href="../agriculture/index.html" class="next">
+      <div class="direction">Next &rarr;</div>
+      <div class="label">Agriculture</div>
+    </a>
+  </nav>
+</div>
 
 <footer class="site-footer">
   <div class="container">
@@ -70,6 +412,265 @@
     <div>Last updated May 2026</div>
   </div>
 </footer>
+
+<!-- Chart.js for the two charts in the model -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---- Defaults ----------------------------------------------- */
+  const DEFAULTS = {
+    assets0: 2300,  // USD bn earning assets Y0
+    growth:  3,     // % asset growth
+    nim:     1.6,   // % net interest margin
+    fee0:    22,    // USD bn fee & other income Y0
+    cir:     48,    // % cost-to-income
+    cor:     20,    // bps cost of risk
+    tax:     22,    // % tax
+    equity0: 155,   // USD bn tangible equity Y0
+    payout:  50,    // % dividend payout
+    coe:     10.5,  // % cost of equity
+    g:       3,     // % terminal growth
+    shares:  17800  // millions
+  };
+
+  /* ---- Formatting helpers ------------------------------------- */
+  const fmtBn   = v => (v >= 0 ? '' : '−') + Math.abs(v).toFixed(1);
+  const fmtPct  = v => (v >= 0 ? '' : '−') + Math.abs(v).toFixed(1) + '%';
+  const fmtPct2 = v => (v >= 0 ? '' : '−') + Math.abs(v).toFixed(2) + '%';
+  const fmtX    = v => v.toFixed(2) + 'x';
+  const fmtBps  = v => Math.round(v) + 'bps';
+  const fmtInt  = v => Math.round(v).toLocaleString('en-US');
+
+  function setCell(id, value, fmt, allowNegativeStyle) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = fmt(value);
+    el.classList.toggle('negative', allowNegativeStyle && value < 0);
+  }
+
+  /* ---- Compute forecast and valuation ------------------------- */
+  function compute(p) {
+    const years = [1, 2, 3, 4, 5];
+    const gr = p.growth / 100;
+    const nim = p.nim / 100;
+    const cir = p.cir / 100;
+    const cor = p.cor / 10000;     // bps -> decimal
+    const tx = p.tax / 100;
+    const payout = p.payout / 100;
+    const coe = p.coe / 100;
+    const gT = p.g / 100;
+
+    const assets = years.map(t => p.assets0 * Math.pow(1 + gr, t));
+    const fees   = years.map(t => p.fee0 * Math.pow(1 + gr, t));
+    const nii    = assets.map(a => a * nim);
+    const rev    = nii.map((n, i) => n + fees[i]);
+    const opex   = rev.map(r => r * cir);
+    const ppp    = rev.map((r, i) => r - opex[i]);
+    const prov   = assets.map(a => a * cor);
+    const pbt    = ppp.map((v, i) => v - prov[i]);
+    const taxp   = pbt.map(v => (v > 0 ? v * tx : 0));
+    const ni     = pbt.map((v, i) => v - taxp[i]);
+
+    // tangible equity rollforward (opening / closing)
+    const eqOpen = [];
+    const eqClose = [];
+    let prevEq = p.equity0;
+    years.forEach((t, i) => {
+      eqOpen[i] = prevEq;
+      eqClose[i] = prevEq + ni[i] * (1 - payout);
+      prevEq = eqClose[i];
+    });
+    const rote = ni.map((n, i) => n / eqOpen[i]);
+
+    // Valuation: justified P/TBV on normalized (Y1) ROTE.
+    // Y1 ROTE is the cleanest "normalized current return" — later-year ROTE
+    // drifts down purely as an artifact of earnings retention, not franchise quality.
+    const susRote = rote[0];
+    const ptbv = (susRote - gT) / (coe - gT);
+    const eqVal = ptbv * p.equity0;
+    const perShare = eqVal * 1000 / p.shares;
+
+    return { assets, fees, nii, rev, opex, ppp, prov, pbt, taxp, ni, eqClose, rote, cir, nim, cor,
+             susRote, ptbv, eqVal, perShare };
+  }
+
+  /* ---- Render to the page ------------------------------------- */
+  let barsChart, linesChart;
+
+  function render(p) {
+    const r = compute(p);
+    const years = [1, 2, 3, 4, 5];
+
+    years.forEach((t, i) => {
+      setCell('nii-' + t, r.nii[i],  fmtBn);
+      setCell('fee-' + t, r.fees[i], fmtBn);
+      setCell('rev-' + t, r.rev[i],  fmtBn);
+      setCell('opx-' + t, r.opex[i], fmtBn);
+      setCell('ppp-' + t, r.ppp[i],  fmtBn);
+      setCell('prov-'+ t, r.prov[i], fmtBn);
+      setCell('pbt-' + t, r.pbt[i],  fmtBn);
+      setCell('txp-' + t, r.taxp[i], fmtBn);
+      setCell('ni-'  + t, r.ni[i],   fmtBn, true);
+      setCell('eq-'  + t, r.eqClose[i], fmtBn);
+
+      setCell('rote-' + t, r.rote[i] * 100, fmtPct, true);
+      setCell('cir-'  + t, p.cir,           fmtPct);
+      setCell('nimr-' + t, p.nim,           fmtPct2);
+      setCell('corr-' + t, p.cor,           fmtBps);
+    });
+
+    setCell('rote-val', r.susRote * 100, fmtPct);
+    setCell('ptbv-val', r.ptbv,          v => (v > 0 ? '' : '−') + Math.abs(v).toFixed(2) + 'x');
+    setCell('eqv-val',  r.eqVal,         fmtBn);
+    setCell('ps-val',   r.perShare,      v => v.toFixed(1));
+
+    if (barsChart)  updateBars(r);  else  initBars(r);
+    if (linesChart) updateLines(r, p); else  initLines(r, p);
+  }
+
+  /* ---- Charts ------------------------------------------------- */
+  function getColors() {
+    const styles = getComputedStyle(document.documentElement);
+    return {
+      text: styles.getPropertyValue('--text').trim(),
+      muted: styles.getPropertyValue('--text-muted').trim(),
+      accent: styles.getPropertyValue('--accent').trim(),
+      border: styles.getPropertyValue('--border').trim(),
+      navy: '#0a1828'
+    };
+  }
+  function years() { return ['Y1', 'Y2', 'Y3', 'Y4', 'Y5']; }
+
+  function initBars(r) {
+    const c = getColors();
+    barsChart = new Chart(document.getElementById('chart-bars'), {
+      type: 'bar',
+      data: {
+        labels: years(),
+        datasets: [
+          { label: 'Revenue',    data: r.rev.slice(), backgroundColor: c.navy,   borderWidth: 0 },
+          { label: 'Net income', data: r.ni.slice(),  backgroundColor: c.accent, borderWidth: 0 }
+        ]
+      },
+      options: chartOpts(false)
+    });
+  }
+  function updateBars(r) {
+    barsChart.data.datasets[0].data = r.rev.slice();
+    barsChart.data.datasets[1].data = r.ni.slice();
+    const c = getColors();
+    barsChart.data.datasets[0].backgroundColor = c.navy;
+    barsChart.data.datasets[1].backgroundColor = c.accent;
+    refreshAxes(barsChart);
+    barsChart.update('none');
+  }
+
+  function initLines(r, p) {
+    const c = getColors();
+    linesChart = new Chart(document.getElementById('chart-lines'), {
+      type: 'line',
+      data: {
+        labels: years(),
+        datasets: [
+          { label: 'ROTE',           data: r.rote.map(v => v * 100), borderColor: c.accent, backgroundColor: c.accent, tension: 0.25, borderWidth: 2, pointRadius: 3 },
+          { label: 'Cost of equity', data: years().map(() => p.coe), borderColor: c.navy, backgroundColor: c.navy, borderDash: [5, 4], tension: 0, borderWidth: 2, pointRadius: 0 }
+        ]
+      },
+      options: chartOpts(true)
+    });
+  }
+  function updateLines(r, p) {
+    linesChart.data.datasets[0].data = r.rote.map(v => v * 100);
+    linesChart.data.datasets[1].data = years().map(() => p.coe);
+    const c = getColors();
+    linesChart.data.datasets[0].borderColor = c.accent;
+    linesChart.data.datasets[1].borderColor = c.navy;
+    refreshAxes(linesChart);
+    linesChart.update('none');
+  }
+
+  function chartOpts(isPct) {
+    const c = getColors();
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: c.muted, font: { family: 'Inter', size: 11 }, boxWidth: 10, boxHeight: 10 } },
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + (isPct ? ctx.parsed.y.toFixed(1) + '%' : ctx.parsed.y.toFixed(1)) } }
+      },
+      scales: {
+        x: { ticks: { color: c.muted, font: { family: 'Inter', size: 11 } }, grid: { display: false }, border: { color: c.border } },
+        y: { ticks: { color: c.muted, font: { family: 'Inter', size: 11 }, callback: v => isPct ? v + '%' : v }, grid: { color: c.border }, border: { display: false }, beginAtZero: isPct ? false : true }
+      }
+    };
+  }
+  function refreshAxes(chart) {
+    const c = getColors();
+    chart.options.scales.x.ticks.color = c.muted;
+    chart.options.scales.y.ticks.color = c.muted;
+    chart.options.scales.x.border.color = c.border;
+    chart.options.scales.y.grid.color = c.border;
+    chart.options.plugins.legend.labels.color = c.muted;
+  }
+
+  /* ---- Wiring ------------------------------------------------- */
+  function read() {
+    return {
+      assets0: +document.getElementById('assets0').value,
+      growth:  +document.getElementById('growth').value,
+      nim:     +document.getElementById('nim').value,
+      fee0:    +document.getElementById('fee0').value,
+      cir:     +document.getElementById('cir').value,
+      cor:     +document.getElementById('cor').value,
+      tax:     +document.getElementById('tax').value,
+      equity0: +document.getElementById('equity0').value,
+      payout:  +document.getElementById('payout').value,
+      coe:     +document.getElementById('coe').value,
+      g:       +document.getElementById('g').value,
+      shares:  +document.getElementById('shares').value
+    };
+  }
+  function updateLabels(p) {
+    document.getElementById('assets0-val').textContent = fmtInt(p.assets0);
+    document.getElementById('growth-val').textContent  = p.growth.toFixed(1);
+    document.getElementById('nim-val').textContent     = p.nim.toFixed(2);
+    document.getElementById('fee0-val').textContent    = p.fee0.toFixed(1);
+    document.getElementById('cir-val').textContent     = p.cir.toFixed(1);
+    document.getElementById('cor-val').textContent     = Math.round(p.cor);
+    document.getElementById('tax-val').textContent     = p.tax.toFixed(1);
+    document.getElementById('equity0-val').textContent = p.equity0.toFixed(1);
+    document.getElementById('payout-val').textContent  = p.payout.toFixed(1);
+    document.getElementById('coe-val').textContent     = p.coe.toFixed(1);
+    document.getElementById('g-val').textContent       = p.g.toFixed(1);
+    document.getElementById('shares-val').textContent  = fmtInt(p.shares);
+  }
+  function tick() {
+    const p = read();
+    updateLabels(p);
+    render(p);
+  }
+  function reset() {
+    Object.keys(DEFAULTS).forEach(k => { document.getElementById(k).value = DEFAULTS[k]; });
+    tick();
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    Object.keys(DEFAULTS).forEach(k => {
+      document.getElementById(k).addEventListener('input', tick);
+    });
+    document.getElementById('reset-btn').addEventListener('click', reset);
+
+    const themeBtn = document.querySelector('.theme-toggle');
+    if (themeBtn) themeBtn.addEventListener('click', function () {
+      setTimeout(function () { var p = read(); if (barsChart) updateBars(compute(p)); if (linesChart) updateLines(compute(p), p); }, 50);
+    });
+
+    tick();
+  });
+})();
+</script>
 
 </body>
 </html>

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Oil &amp; Gas — Coming soon | Togrul Mirzayev</title>
-  <meta name="description" content="Oil &amp; Gas operating model — coming soon.">
+  <title>Oil &amp; Gas — Operating Model | Togrul Mirzayev</title>
+  <meta name="description" content="Oil &amp; Gas industry primer, interactive 5-year operating model, and Shell case study by Togrul Mirzayev.">
   <link rel="stylesheet" href="../../assets/css/styles.css?v=3">
   <script src="../../assets/js/main.js?v=3"></script>
 </head>
@@ -34,29 +34,365 @@
   </div>
 </div>
 
-<section class="coming-soon">
-  <div class="container-narrow">
-    <div class="eyebrow">02 &mdash; Energy &middot; In progress</div>
-    <h1>Oil &amp; Gas</h1>
-    <p>Upstream production, reserve life, breakeven price, and the capital cycle of an integrated major. Full deep-dive and interactive model coming soon.</p>
-
-    <div class="scope">
-      <h3>What this page will cover</h3>
-      <ul>
-        <li>Industry primer: upstream / midstream / downstream economics</li>
-        <li>Production, reserves (1P/2P/3P), and lifting cost structure</li>
-        <li>Interactive 5-year operating model with adjustable Brent / Henry Hub</li>
-        <li>DCF valuation and EV/Production sensitivity</li>
-        <li>Real-company case study against FY2024 reported figures</li>
-        <li>Downloadable Excel model</li>
-      </ul>
-    </div>
-
-    <p style="margin-top: 2.5rem;">
-      <a class="btn btn-outline" href="../index.html">Back to industries</a>
-    </p>
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">02 &mdash; Energy &middot; Live</div>
+    <h1>Oil &amp; Gas: a price-taker that prints cash &mdash; until it doesn&rsquo;t.</h1>
+    <p class="subtitle">How an integrated major actually earns, what the commodity cycle does to the P&amp;L, where the capital goes, and what a defensible 5-year model looks like &mdash; applied to Shell plc.</p>
   </div>
 </section>
+
+<!-- =============================================================
+     SECTION 1 - INDUSTRY PRIMER
+============================================================== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 1 &middot; Primer</div>
+      <h2 class="section-title">How the business works</h2>
+    </div>
+
+    <div class="prose">
+      <p>An integrated oil major is three businesses bolted together: <strong>upstream</strong> (find and lift hydrocarbons), <strong>downstream</strong> (refine, trade, and market fuels and chemicals), and increasingly <strong>low-carbon / power</strong>. The defining feature of all of them is that the company is a <strong>price-taker</strong> on a globally-traded commodity it does not control. Volume is an engineering decision made years in advance; price is set by the marginal barrel on any given day. That single fact &mdash; cost is committed, revenue is volatile &mdash; explains almost everything about how the sector behaves.</p>
+
+      <p>The cycle is the master variable. When Brent is high, the upstream segment throws off cash far in excess of its cost base, balance sheets de-lever, dividends rise and buybacks accelerate. When Brent collapses, the same fixed cost base turns the operating leverage against the company, free cash flow evaporates, and capex is the first thing cut. A model that does not stress the price deck is not a model of an oil company.</p>
+
+      <h3>Revenue drivers</h3>
+      <p>For the upstream business, the identity is close to:</p>
+      <div class="value-prop" style="margin: 1.5rem 0;">
+        <p>Upstream revenue &asymp; production (boe/d) &times; 365 &times; realised price ($/boe)</p>
+      </div>
+      <p>Two levers, very different character. <strong>Production</strong> is slow-moving and capital-determined &mdash; new barrels come from multi-year projects, and the base field declines 3-8% a year without reinvestment, so a chunk of capex just stands still. <strong>Realised price</strong> is the cycle &mdash; a blend of oil (Brent / WTI), gas (Henry Hub / TTF / JKM), and LNG, each on its own curve, discounted from the benchmark by quality and location. Downstream adds <strong>refining margins</strong> (the crack spread) and <strong>trading</strong>, which is a genuine edge for the majors and a black box to outsiders.</p>
+
+      <h3>Cost structure</h3>
+      <p>The big lines, roughly in cash-cost order:</p>
+      <ul>
+        <li><strong>Lifting / operating cost</strong> &mdash; the cash cost to produce a barrel once the field exists. $5-15/boe for a good major; the number that decides who survives a downturn.</li>
+        <li><strong>Royalties &amp; production taxes</strong> &mdash; the host government&rsquo;s take, often the largest single claim on a barrel.</li>
+        <li><strong>Purchases</strong> &mdash; crude and product bought for the refining and trading book; the largest line on the integrated P&amp;L, low-margin flow-through.</li>
+        <li><strong>DD&amp;A</strong> &mdash; depletion of capitalised wells and facilities on a unit-of-production basis; non-cash but real.</li>
+        <li><strong>Exploration &amp; write-offs</strong> &mdash; dry holes and impairments; lumpy, cycle-correlated.</li>
+      </ul>
+      <p>Upstream cash margins per barrel are enormous at high prices and negative at low ones. Downstream is the opposite &mdash; thin, steady, and a partial hedge, because cheap crude is a cost input for the refiner. Integration is the point: the segments do not peak together.</p>
+
+      <h3>Capex cycle</h3>
+      <p>Oil &amp; gas is among the most capital-intensive sectors in existence. There is <strong>maintenance capex</strong> (offset the base decline, keep facilities safe) and <strong>growth capex</strong> (new projects, multi-year, with long payback). Total intensity has run <strong>6-12% of revenue</strong> for a disciplined major, but the number that matters is capex versus operating cash flow &mdash; the post-2014 and post-2020 doctrine is capital discipline, returning the surplus to shareholders rather than chasing volume. The market now rewards restraint, not growth.</p>
+
+      <h3>Working capital &amp; the balance sheet</h3>
+      <p>Inventory (crude and product) and receivables swing hard with price, so working capital can consume or release billions in a single quarter purely on the commodity move. Net debt is managed to a target gearing band; the dividend is treated as quasi-sacred, so debt absorbs the cycle. Decommissioning provisions &mdash; the legal obligation to plug wells and remove platforms &mdash; are a large, long-dated liability that DCFs routinely under-weight.</p>
+
+      <h3>KPIs analysts watch</h3>
+      <ul>
+        <li><strong>Production (mmboe/d) and reserve replacement ratio</strong> &mdash; is the company replacing what it pumps?</li>
+        <li><strong>Reserve life (1P / 2P, years)</strong> &mdash; runway at current production</li>
+        <li><strong>Unit lifting cost ($/boe)</strong> &mdash; downturn survivability</li>
+        <li><strong>Free cash flow breakeven ($/bbl Brent)</strong> &mdash; the single most-watched number</li>
+        <li><strong>Cash flow from operations &amp; FCF</strong> &mdash; the dividend / buyback engine</li>
+        <li><strong>Gearing (net debt / total capital)</strong> &mdash; cycle headroom</li>
+        <li><strong>Shareholder distribution (% of CFFO)</strong> &mdash; the capital-discipline scorecard</li>
+      </ul>
+
+      <h3>Valuation</h3>
+      <p>EV/EBITDA and EV/DACF (debt-adjusted cash flow) are the working tools &mdash; majors trade at a low <strong>3-6x forward EV/EBITDA</strong>, structurally de-rated by the energy-transition overhang. P/CF and free-cash-flow yield are the cleaner frames for income-oriented holders. DCF is the cross-check, with WACCs of <strong>8-11%</strong> reflecting commodity and stranded-asset risk, and a price deck that should be explicit and stressed. NAV / sum-of-the-parts (value each asset on its own reserves and cost curve) is the M&amp;A frame. The dividend yield &mdash; often <strong>4-6%</strong> &mdash; sets a floor.</p>
+
+      <h3>Common analyst pitfalls</h3>
+      <ol>
+        <li><strong>Modelling a flat price deck.</strong> A single Brent assumption hides the entire risk profile. The sensitivity to price is the analysis, not a footnote to it.</li>
+        <li><strong>Ignoring the base decline.</strong> Treating maintenance capex as optional, or assuming flat production for free, overstates FCF &mdash; barrels run downhill without reinvestment.</li>
+        <li><strong>Under-weighting decommissioning and transition capex.</strong> The end-of-life cleanup bill and the cost of the low-carbon pivot are real, long-dated cash that flatters near-term FCF if left out.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     SECTION 2 - INTERACTIVE OPERATING MODEL
+============================================================== -->
+<section style="background: var(--bg-elevated); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 2 &middot; Interactive model</div>
+      <h2 class="section-title">5-year forecast &amp; DCF</h2>
+      <p class="section-lede">Move the sliders. Every number on the right recalculates live. Defaults are calibrated to roughly approximate Shell; change them to flex the model to any major.</p>
+    </div>
+
+    <div class="model">
+
+      <aside class="model-inputs">
+        <h3>Drivers</h3>
+
+        <div class="input-section-label">Operating</div>
+
+        <div class="input-group">
+          <label for="rev0">Revenue (Y0) <span class="value-display" id="rev0-val">284.0</span></label>
+          <input type="range" id="rev0" min="80" max="450" step="1" value="284">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">USD billion</div>
+        </div>
+
+        <div class="input-group">
+          <label for="growth">Revenue growth <span class="value-display"><span id="growth-val">1.0</span>%</span></label>
+          <input type="range" id="growth" min="-12" max="12" step="0.1" value="1">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">proxy for the price &times; volume deck</div>
+        </div>
+
+        <div class="input-group">
+          <label for="ebitda">EBITDA margin <span class="value-display"><span id="ebitda-val">23.0</span>%</span></label>
+          <input type="range" id="ebitda" min="10" max="40" step="0.1" value="23">
+        </div>
+
+        <div class="input-group">
+          <label for="da">DD&amp;A / revenue <span class="value-display"><span id="da-val">9.0</span>%</span></label>
+          <input type="range" id="da" min="4" max="20" step="0.1" value="9">
+        </div>
+
+        <div class="input-group">
+          <label for="capex">Capex intensity <span class="value-display"><span id="capex-val">7.5</span>%</span></label>
+          <input type="range" id="capex" min="4" max="18" step="0.1" value="7.5">
+        </div>
+
+        <div class="input-divider"></div>
+        <div class="input-section-label">Financial</div>
+
+        <div class="input-group">
+          <label for="tax">Tax rate <span class="value-display"><span id="tax-val">40.0</span>%</span></label>
+          <input type="range" id="tax" min="20" max="60" step="0.5" value="40">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">incl. production taxes / royalties blend</div>
+        </div>
+
+        <div class="input-group">
+          <label for="wacc">WACC <span class="value-display"><span id="wacc-val">8.5</span>%</span></label>
+          <input type="range" id="wacc" min="5" max="15" step="0.1" value="8.5">
+        </div>
+
+        <div class="input-group">
+          <label for="g">Terminal growth <span class="value-display"><span id="g-val">1.0</span>%</span></label>
+          <input type="range" id="g" min="-2" max="4" step="0.1" value="1">
+        </div>
+
+        <div class="input-divider"></div>
+        <div class="input-section-label">Balance sheet</div>
+
+        <div class="input-group">
+          <label for="netdebt">Net debt (Y0) <span class="value-display" id="netdebt-val">39.0</span></label>
+          <input type="range" id="netdebt" min="-20" max="120" step="1" value="39">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">USD billion</div>
+        </div>
+
+        <div class="input-group">
+          <label for="shares">Shares outstanding <span class="value-display" id="shares-val">6,100</span></label>
+          <input type="range" id="shares" min="2000" max="10000" step="50" value="6100">
+          <div style="font-size: 0.6875rem; color: var(--text-subtle); margin-top: 0.125rem;">millions</div>
+        </div>
+
+        <button type="button" class="btn-reset" id="reset-btn">Reset to defaults</button>
+      </aside>
+
+      <div class="model-outputs">
+
+        <table class="fin-table" id="forecast-table">
+          <caption>5-year forecast &mdash; USD billion</caption>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Y1</th>
+              <th>Y2</th>
+              <th>Y3</th>
+              <th>Y4</th>
+              <th>Y5</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Revenue</td><td id="rev-1"></td><td id="rev-2"></td><td id="rev-3"></td><td id="rev-4"></td><td id="rev-5"></td></tr>
+            <tr><td>EBITDA</td><td id="ebt-1"></td><td id="ebt-2"></td><td id="ebt-3"></td><td id="ebt-4"></td><td id="ebt-5"></td></tr>
+            <tr><td>DD&amp;A</td><td id="dep-1"></td><td id="dep-2"></td><td id="dep-3"></td><td id="dep-4"></td><td id="dep-5"></td></tr>
+            <tr class="subtotal"><td>EBIT</td><td id="ebi-1"></td><td id="ebi-2"></td><td id="ebi-3"></td><td id="ebi-4"></td><td id="ebi-5"></td></tr>
+            <tr><td>Interest</td><td id="int-1"></td><td id="int-2"></td><td id="int-3"></td><td id="int-4"></td><td id="int-5"></td></tr>
+            <tr><td>Tax</td><td id="txp-1"></td><td id="txp-2"></td><td id="txp-3"></td><td id="txp-4"></td><td id="txp-5"></td></tr>
+            <tr class="subtotal"><td>Net income</td><td id="ni-1"></td><td id="ni-2"></td><td id="ni-3"></td><td id="ni-4"></td><td id="ni-5"></td></tr>
+            <tr><td>Capex</td><td id="cpx-1"></td><td id="cpx-2"></td><td id="cpx-3"></td><td id="cpx-4"></td><td id="cpx-5"></td></tr>
+            <tr><td>&Delta;Working capital</td><td id="wc-1"></td><td id="wc-2"></td><td id="wc-3"></td><td id="wc-4"></td><td id="wc-5"></td></tr>
+            <tr class="subtotal"><td>FCFF</td><td id="fcf-1"></td><td id="fcf-2"></td><td id="fcf-3"></td><td id="fcf-4"></td><td id="fcf-5"></td></tr>
+          </tbody>
+        </table>
+
+        <table class="fin-table" id="ratio-table">
+          <caption>Key ratios</caption>
+          <thead>
+            <tr>
+              <th></th><th>Y1</th><th>Y2</th><th>Y3</th><th>Y4</th><th>Y5</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>EBITDA margin</td><td id="mar-1"></td><td id="mar-2"></td><td id="mar-3"></td><td id="mar-4"></td><td id="mar-5"></td></tr>
+            <tr><td>FCF / revenue</td><td id="fcm-1"></td><td id="fcm-2"></td><td id="fcm-3"></td><td id="fcm-4"></td><td id="fcm-5"></td></tr>
+            <tr><td>Capex / revenue</td><td id="cap-1"></td><td id="cap-2"></td><td id="cap-3"></td><td id="cap-4"></td><td id="cap-5"></td></tr>
+            <tr><td>Net debt / EBITDA</td><td id="lev-1"></td><td id="lev-2"></td><td id="lev-3"></td><td id="lev-4"></td><td id="lev-5"></td></tr>
+          </tbody>
+        </table>
+
+        <div class="chart-row">
+          <div class="chart-container">
+            <h4>Revenue &amp; EBITDA (USD bn)</h4>
+            <div class="canvas-wrap"><canvas id="chart-bars"></canvas></div>
+          </div>
+          <div class="chart-container">
+            <h4>Margins (%)</h4>
+            <div class="canvas-wrap"><canvas id="chart-lines"></canvas></div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin: 1.5rem 0 0.75rem; font-weight: 600; font-family: 'Inter', sans-serif;">DCF Valuation</h3>
+        <div class="dcf-summary">
+          <div class="dcf-cell">
+            <div class="label">Enterprise value</div>
+            <div class="figure" id="ev-val">&mdash;</div>
+            <span class="unit">USD billion</span>
+          </div>
+          <div class="dcf-cell">
+            <div class="label">Equity value</div>
+            <div class="figure" id="eq-val">&mdash;</div>
+            <span class="unit">USD billion</span>
+          </div>
+          <div class="dcf-cell">
+            <div class="label">Per-share value</div>
+            <div class="figure" id="ps-val">&mdash;</div>
+            <span class="unit">USD</span>
+          </div>
+          <div class="dcf-cell">
+            <div class="label">Implied FY+1 EV/EBITDA</div>
+            <div class="figure" id="mult-val">&mdash;</div>
+            <span class="unit">multiple</span>
+          </div>
+        </div>
+
+        <p style="font-size: 0.8125rem; color: var(--text-subtle); margin-top: 0.5rem;">FCFF&nbsp;=&nbsp;NOPAT&nbsp;+&nbsp;DD&amp;A&nbsp;&minus;&nbsp;capex&nbsp;&minus;&nbsp;&Delta;working&nbsp;capital. Working capital assumed to absorb 2% of incremental revenue. Interest expense uses 5% on average net debt. Terminal value via Gordon growth, discounted at WACC. &ldquo;Revenue growth&rdquo; is a proxy for the combined price&times;volume deck &mdash; in a real model these would be split.</p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     SECTION 3 - SHELL CASE STUDY
+============================================================== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 3 &middot; Case study</div>
+      <h2 class="section-title">Shell plc (LSE: SHEL)</h2>
+      <p class="section-lede">Applying the model to the most balanced of the European integrated majors &mdash; neutral analytical stance, no recommendation.</p>
+    </div>
+
+    <div class="prose">
+      <p>Shell is the right test case because it is the cleanest expression of the integrated model: a top-tier upstream portfolio, the world&rsquo;s largest LNG trading business, a deep downstream and chemicals footprint, and a low-carbon arm being managed for returns rather than scale. Post-2023 it has pursued an explicit capital-discipline doctrine &mdash; capped capex, sold non-core assets, and routed the surplus into a steady dividend and a large, sustained buyback. That makes its reported numbers a good calibration anchor for a price-taker run for cash rather than growth.</p>
+
+      <p><strong>Setting the drivers.</strong> The defaults in the model above are my central case for Shell, calibrated to FY2024 reported figures:</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th>Driver</th><th>Default</th><th>Source / basis</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Revenue Y0 (USD bn)</td><td>284</td><td>Shell FY2024 total revenue ~$284bn <span class="tag tag-source">disclosure</span></td></tr>
+          <tr><td>Revenue growth</td><td>1%</td><td>Proxy for a roughly flat mid-cycle price deck with modest LNG volume ramp <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>EBITDA margin</td><td>23%</td><td>FY2024 adjusted EBITDA ~$65.8bn / revenue ~$284bn &asymp; 23% <span class="tag tag-source">disclosure</span></td></tr>
+          <tr><td>DD&amp;A / revenue</td><td>9%</td><td>Approx. depletion run-rate on capitalised upstream + downstream base <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Capex intensity</td><td>7.5%</td><td>FY2024 cash capex ~$21.1bn / revenue ~$284bn &asymp; 7.4% <span class="tag tag-source">disclosure</span></td></tr>
+          <tr><td>Tax rate</td><td>40%</td><td>Blended corporate + production-tax / royalty rate for an upstream-weighted major; simplified <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>WACC</td><td>8.5%</td><td>USD risk-free + equity risk premium + beta, with a transition-risk uplift <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Terminal growth</td><td>1%</td><td>Below-GDP, reflecting long-run demand-plateau / transition view <span class="tag tag-assume">assumption</span></td></tr>
+          <tr><td>Net debt (USD bn)</td><td>39</td><td>Shell FY2024 net debt ~$38.8bn <span class="tag tag-source">disclosure</span></td></tr>
+          <tr><td>Shares outstanding</td><td>6,100m</td><td>Approx. FY2024 shares in issue, reducing via buyback <span class="tag tag-source">disclosure</span></td></tr>
+        </tbody>
+      </table>
+
+      <p style="font-size: 0.875rem; color: var(--text-subtle); margin-top: -0.5rem;">Figures marked <span class="tag tag-source" style="margin-left:0;">disclosure</span> are drawn from Shell&rsquo;s Q4 &amp; full-year 2024 unaudited results release dated 30 January 2025 (<a href="https://www.shell.com/investors/results-and-reporting/annual-report.html" target="_blank" rel="noopener">shell.com</a>). Values marked <span class="tag tag-assume" style="margin-left:0;">assumption</span> are analytical estimates &mdash; Shell does not disclose them in the form used here. All figures are rounded; this is a simplified single-segment proxy, not Shell&rsquo;s reported segment build.</p>
+
+      <h3>What falls out</h3>
+      <p>At the defaults above, the model lands at:</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th></th><th>My DCF model</th><th>Market (approx.)</th><th>Comment</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Enterprise value (USD bn)</td><td>~378</td><td>~240</td><td>The wedge is the transition discount</td></tr>
+          <tr><td>Equity value (USD bn)</td><td>~339</td><td>~205</td><td>Net debt 39 in both</td></tr>
+          <tr><td>Implied per-share (USD)</td><td>~55.6</td><td>~34</td><td>DCF fair value well above the tape</td></tr>
+          <tr><td>Implied FY+1 EV/EBITDA</td><td>~5.7x</td><td>~3.5x</td><td>DCF-implied vs traded de-rating</td></tr>
+        </tbody>
+      </table>
+
+      <p style="font-size: 0.875rem; color: var(--text-subtle); margin-top: -0.5rem;">Market figures are illustrative, drawn from recent trading levels; not point-in-time accurate.</p>
+
+      <p>This is the opposite of the result a well-covered telecom incumbent gives. With an entirely defensible mid-cycle set of drivers &mdash; mid-single-digit revenue, 23% EBITDA margin, disciplined 7.5% capex &mdash; the DCF says Shell is worth materially <em>more</em> than it trades for: roughly $56 a share against a market near $34, a 5.7x implied multiple against a traded 3.5x. The model is not wrong and the market is not wrong. <strong>The gap <em>is</em> the analysis.</strong> A standard DCF cannot see the energy transition; it extends today&rsquo;s cash flows into perpetuity at a positive terminal growth rate. The market, pricing in demand-plateau and stranded-asset risk, refuses to. The entire valuation debate in this sector lives in that wedge &mdash; which is why a flat-deck DCF is a starting point, not an answer.</p>
+
+      <h3>Where the case study could break</h3>
+      <p><strong>Bull case &mdash; what re-rates it:</strong> a structurally tighter oil market lifts Brent into the $90-100 band; LNG demand outruns supply through the late-2020s and Shell&rsquo;s trading book captures the spread; the buyback keeps shrinking the share count into a rising FCF base. EBITDA margin pushes toward 27-28%, FCF compounds, and the multiple closes some of the gap to the US majors at 5-6x.</p>
+
+      <p><strong>Bear case &mdash; what compresses it:</strong> demand peaks earlier than expected and Brent settles in the $60s; refining margins normalise from post-2022 highs; transition capex rises without near-term returns; a higher WACC on stranded-asset fear. EBITDA margin slips below 20%, the dividend competes with the buyback for a shrinking cash pool, and the multiple stays stuck near 3x. Equity value 25-35% lower.</p>
+
+      <p><strong>Why the DCF and the tape disagree:</strong> Shell generates cash well in excess of its committed capex at mid-cycle prices, gearing is inside its target band, and the dividend is covered with room to fund buybacks &mdash; so a cash-flow model that trusts those flows into perpetuity values the equity richly. The market does not trust them into perpetuity. It applies a transition discount: a higher effective discount rate, a sub-GDP or negative terminal growth, and a refusal to capitalise a demand-plateau business at utility multiples. Both views are internally consistent; the difference is entirely a view on long-run hydrocarbon demand. That is the honest output of this exercise &mdash; not a price target, but a measured size of the bet the market is making.</p>
+
+      <p><strong>What I&rsquo;d do differently in a deeper write-up:</strong> split upstream / downstream / LNG-trading / chemicals / low-carbon into separate segments, each on its own price deck, margin and capex profile; model production with an explicit base-decline and project-by-project ramp rather than a single growth rate; build a stated Brent / Henry Hub / TTF deck and run the FCF breakeven; and carry decommissioning provisions as an explicit long-dated cash schedule.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     SECTION 4 - DOWNLOADABLE EXCEL
+============================================================== -->
+<section style="background: var(--bg-elevated); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 4 &middot; Excel</div>
+      <h2 class="section-title">Take the model offline</h2>
+      <p class="section-lede">Same drivers, same math, in a properly-built workbook. Inputs in blue, formulas in black, outputs in bold &mdash; the convention every recruiter testing your modeling skill will check for.</p>
+    </div>
+
+    <div class="prose">
+      <p>The downloadable workbook mirrors the interactive model above: a clean, fully formula-linked four-sheet build &mdash; <strong>Cover</strong>, <strong>Inputs</strong>, <strong>Forecast</strong>, and <strong>Valuation</strong>. Every output cell is a formula, so you can change any blue input and watch the 5-year forecast, ratios, and DCF recompute exactly as the page does.</p>
+
+      <table class="compare-table" style="margin-top: 1.25rem;">
+        <thead>
+          <tr><th>Sheet</th><th>What it does</th><th style="width: 90px;">Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Cover</td><td>Model map, conventions, and data disclaimer</td><td><span class="status status-live">Live</span></td></tr>
+          <tr><td>Inputs</td><td>Every driver in one place &mdash; operating, financial, and balance-sheet assumptions, all in blue input cells</td><td><span class="status status-live">Live</span></td></tr>
+          <tr><td>Forecast</td><td>5-year income statement (revenue &rarr; EBITDA &rarr; EBIT &rarr; net income), FCFF build, and key ratios, fully formula-linked to Inputs</td><td><span class="status status-live">Live</span></td></tr>
+          <tr><td>Valuation</td><td>FCFF discounting, Gordon-growth terminal value, enterprise &rarr; equity &rarr; per-share, plus implied EV/EBITDA cross-check</td><td><span class="status status-live">Live</span></td></tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top: 1.25rem;">Convention: <strong>blue inputs</strong>, <strong>black formulas</strong>, <strong>bold</strong> outputs and subtotals. This is the &ldquo;Phase 1&rdquo; build &mdash; deliberately compact and auditable. The Telecom workbook shows where this goes when fully expanded to a 24-sheet three-statement model.</p>
+
+      <p style="font-size: 0.875rem; color: var(--text-subtle); margin-top: 1.25rem;">
+        Build script: <a href="build_excel.py">build_excel.py</a> (Python, openpyxl). Default values approximate Shell FY2024; balance-sheet starting positions are illustrative &mdash; replace blue input cells with audited figures before publication.
+      </p>
+
+      <p style="margin-top: 2rem;">
+        <a class="btn" href="oil-gas-model.xlsx" download>Download Excel model (.xlsx)</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     PREV / NEXT INDUSTRY NAVIGATION
+============================================================== -->
+<div class="container">
+  <nav class="industry-nav" aria-label="Industry navigation">
+    <a href="../telecom-it/index.html" class="prev">
+      <div class="direction">&larr; Previous</div>
+      <div class="label">Telecom &amp; IT</div>
+    </a>
+    <a href="../banking/index.html" class="next">
+      <div class="direction">Next &rarr;</div>
+      <div class="label">Banking</div>
+    </a>
+  </nav>
+</div>
 
 <footer class="site-footer">
   <div class="container">
@@ -69,6 +405,255 @@
     <div>Last updated May 2026</div>
   </div>
 </footer>
+
+<!-- Chart.js for the two charts in the model -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---- Defaults ----------------------------------------------- */
+  const DEFAULTS = {
+    rev0:    284,  // USD bn, revenue Y0
+    growth:  1,    // % annual (price x volume proxy)
+    ebitda:  23,   // % EBITDA margin
+    da:      9,    // % DD&A / revenue
+    capex:   7.5,  // % capex / revenue
+    tax:     40,   // % tax incl. production taxes
+    wacc:    8.5,  // % WACC
+    g:       1,    // % terminal growth
+    netdebt: 39,   // USD bn
+    shares:  6100  // millions
+  };
+
+  const COST_OF_DEBT = 0.05;     // assumption: 5% interest on average net debt
+  const WC_PCT       = 0.02;     // 2% of incremental revenue absorbed in WC
+
+  /* ---- Formatting helpers ------------------------------------- */
+  const fmtBn   = v => (v >= 0 ? '' : '−') + Math.abs(v).toFixed(1);
+  const fmtPct  = v => (v >= 0 ? '' : '−') + Math.abs(v).toFixed(1) + '%';
+  const fmtX    = v => v.toFixed(2) + 'x';
+  const fmtInt  = v => Math.round(v).toLocaleString('en-US');
+
+  function setCell(id, value, fmt, allowNegativeStyle) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = fmt(value);
+    el.classList.toggle('negative', allowNegativeStyle && value < 0);
+  }
+
+  /* ---- Compute forecast and DCF ------------------------------- */
+  function compute(p) {
+    const years = [1, 2, 3, 4, 5];
+    const g = p.growth / 100;
+    const m = p.ebitda / 100;
+    const da = p.da / 100;
+    const cx = p.capex / 100;
+    const tx = p.tax / 100;
+    const wacc = p.wacc / 100;
+    const gT = p.g / 100;
+
+    const rev = years.map(t => p.rev0 * Math.pow(1 + g, t));
+    const revPrev = years.map(t => (t === 1 ? p.rev0 : rev[t - 2]));
+
+    const ebitda = rev.map(r => r * m);
+    const dep    = rev.map(r => r * da);
+    const ebit   = ebitda.map((e, i) => e - dep[i]);
+    const interest = years.map(() => p.netdebt * COST_OF_DEBT);
+    const pretax = ebit.map((e, i) => e - interest[i]);
+    const taxp   = pretax.map(e => (e > 0 ? e * tx : 0));
+    const ni     = pretax.map((e, i) => e - taxp[i]);
+    const capex  = rev.map(r => r * cx);
+    const dwc    = rev.map((r, i) => (r - revPrev[i]) * WC_PCT);
+    const nopat  = ebit.map(e => e * (1 - tx));
+    const fcff   = nopat.map((n, i) => n + dep[i] - capex[i] - dwc[i]);
+
+    // DCF
+    const pvFcff = fcff.map((f, i) => f / Math.pow(1 + wacc, i + 1));
+    const tv = (fcff[4] * (1 + gT)) / (wacc - gT);
+    const pvTv = tv / Math.pow(1 + wacc, 5);
+    const ev = pvFcff.reduce((a, b) => a + b, 0) + pvTv;
+    const equity = ev - p.netdebt;
+    const perShare = equity * 1000 / p.shares;
+    const impliedMult = ev / ebitda[0];
+
+    return { rev, ebitda, dep, ebit, interest, taxp, ni, capex, dwc, fcff, ev, equity, perShare, impliedMult };
+  }
+
+  /* ---- Render to the page ------------------------------------- */
+  let barsChart, linesChart;
+
+  function render(p) {
+    const r = compute(p);
+    const years = [1, 2, 3, 4, 5];
+
+    years.forEach((t, i) => {
+      setCell('rev-' + t, r.rev[i],    fmtBn);
+      setCell('ebt-' + t, r.ebitda[i], fmtBn);
+      setCell('dep-' + t, r.dep[i],    fmtBn);
+      setCell('ebi-' + t, r.ebit[i],   fmtBn);
+      setCell('int-' + t, r.interest[i], fmtBn);
+      setCell('txp-' + t, r.taxp[i],   fmtBn);
+      setCell('ni-'  + t, r.ni[i],     fmtBn, true);
+      setCell('cpx-' + t, r.capex[i],  fmtBn);
+      setCell('wc-'  + t, r.dwc[i],    fmtBn, true);
+      setCell('fcf-' + t, r.fcff[i],   fmtBn, true);
+
+      setCell('mar-' + t, (r.ebitda[i] / r.rev[i]) * 100, fmtPct);
+      setCell('fcm-' + t, (r.fcff[i]   / r.rev[i]) * 100, fmtPct, true);
+      setCell('cap-' + t, (r.capex[i]  / r.rev[i]) * 100, fmtPct);
+      setCell('lev-' + t, p.netdebt / r.ebitda[i],         fmtX);
+    });
+
+    setCell('ev-val',   r.ev,         fmtBn);
+    setCell('eq-val',   r.equity,     fmtBn);
+    setCell('ps-val',   r.perShare,   v => v.toFixed(1));
+    setCell('mult-val', r.impliedMult, fmtX);
+
+    if (barsChart)  updateBars(r);  else  initBars(r);
+    if (linesChart) updateLines(r); else  initLines(r);
+  }
+
+  /* ---- Charts ------------------------------------------------- */
+  function getColors() {
+    const styles = getComputedStyle(document.documentElement);
+    return {
+      text: styles.getPropertyValue('--text').trim(),
+      muted: styles.getPropertyValue('--text-muted').trim(),
+      accent: styles.getPropertyValue('--accent').trim(),
+      border: styles.getPropertyValue('--border').trim(),
+      navy: '#0a1828'
+    };
+  }
+  function years() { return ['Y1', 'Y2', 'Y3', 'Y4', 'Y5']; }
+
+  function initBars(r) {
+    const c = getColors();
+    barsChart = new Chart(document.getElementById('chart-bars'), {
+      type: 'bar',
+      data: {
+        labels: years(),
+        datasets: [
+          { label: 'Revenue', data: r.rev.slice(),    backgroundColor: c.navy,   borderWidth: 0 },
+          { label: 'EBITDA',  data: r.ebitda.slice(), backgroundColor: c.accent, borderWidth: 0 }
+        ]
+      },
+      options: chartOpts(false)
+    });
+  }
+  function updateBars(r) {
+    barsChart.data.datasets[0].data = r.rev.slice();
+    barsChart.data.datasets[1].data = r.ebitda.slice();
+    const c = getColors();
+    barsChart.data.datasets[0].backgroundColor = c.navy;
+    barsChart.data.datasets[1].backgroundColor = c.accent;
+    refreshAxes(barsChart);
+    barsChart.update('none');
+  }
+
+  function initLines(r) {
+    const c = getColors();
+    linesChart = new Chart(document.getElementById('chart-lines'), {
+      type: 'line',
+      data: {
+        labels: years(),
+        datasets: [
+          { label: 'EBITDA margin', data: marginSeries(r, 'ebitda'), borderColor: c.accent, backgroundColor: c.accent, tension: 0.25, borderWidth: 2, pointRadius: 3 },
+          { label: 'FCF margin',    data: marginSeries(r, 'fcff'),   borderColor: c.navy,   backgroundColor: c.navy,   tension: 0.25, borderWidth: 2, pointRadius: 3 }
+        ]
+      },
+      options: chartOpts(true)
+    });
+  }
+  function updateLines(r) {
+    linesChart.data.datasets[0].data = marginSeries(r, 'ebitda');
+    linesChart.data.datasets[1].data = marginSeries(r, 'fcff');
+    const c = getColors();
+    linesChart.data.datasets[0].borderColor = c.accent;
+    linesChart.data.datasets[1].borderColor = c.navy;
+    refreshAxes(linesChart);
+    linesChart.update('none');
+  }
+  function marginSeries(r, k) {
+    return r.rev.map((v, i) => (r[k][i] / v) * 100);
+  }
+
+  function chartOpts(isPct) {
+    const c = getColors();
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: c.muted, font: { family: 'Inter', size: 11 }, boxWidth: 10, boxHeight: 10 } },
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + (isPct ? ctx.parsed.y.toFixed(1) + '%' : ctx.parsed.y.toFixed(1)) } }
+      },
+      scales: {
+        x: { ticks: { color: c.muted, font: { family: 'Inter', size: 11 } }, grid: { display: false }, border: { color: c.border } },
+        y: { ticks: { color: c.muted, font: { family: 'Inter', size: 11 }, callback: v => isPct ? v + '%' : v }, grid: { color: c.border }, border: { display: false }, beginAtZero: isPct ? false : true }
+      }
+    };
+  }
+  function refreshAxes(chart) {
+    const c = getColors();
+    chart.options.scales.x.ticks.color = c.muted;
+    chart.options.scales.y.ticks.color = c.muted;
+    chart.options.scales.x.border.color = c.border;
+    chart.options.scales.y.grid.color = c.border;
+    chart.options.plugins.legend.labels.color = c.muted;
+  }
+
+  /* ---- Wiring ------------------------------------------------- */
+  function read() {
+    return {
+      rev0:    +document.getElementById('rev0').value,
+      growth:  +document.getElementById('growth').value,
+      ebitda:  +document.getElementById('ebitda').value,
+      da:      +document.getElementById('da').value,
+      capex:   +document.getElementById('capex').value,
+      tax:     +document.getElementById('tax').value,
+      wacc:    +document.getElementById('wacc').value,
+      g:       +document.getElementById('g').value,
+      netdebt: +document.getElementById('netdebt').value,
+      shares:  +document.getElementById('shares').value
+    };
+  }
+  function updateLabels(p) {
+    document.getElementById('rev0-val').textContent    = p.rev0.toFixed(1);
+    document.getElementById('growth-val').textContent  = p.growth.toFixed(1);
+    document.getElementById('ebitda-val').textContent  = p.ebitda.toFixed(1);
+    document.getElementById('da-val').textContent      = p.da.toFixed(1);
+    document.getElementById('capex-val').textContent   = p.capex.toFixed(1);
+    document.getElementById('tax-val').textContent     = p.tax.toFixed(1);
+    document.getElementById('wacc-val').textContent    = p.wacc.toFixed(1);
+    document.getElementById('g-val').textContent       = p.g.toFixed(1);
+    document.getElementById('netdebt-val').textContent = p.netdebt.toFixed(1);
+    document.getElementById('shares-val').textContent  = fmtInt(p.shares);
+  }
+  function tick() {
+    const p = read();
+    updateLabels(p);
+    render(p);
+  }
+  function reset() {
+    Object.keys(DEFAULTS).forEach(k => { document.getElementById(k).value = DEFAULTS[k]; });
+    tick();
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    Object.keys(DEFAULTS).forEach(k => {
+      document.getElementById(k).addEventListener('input', tick);
+    });
+    document.getElementById('reset-btn').addEventListener('click', reset);
+
+    const themeBtn = document.querySelector('.theme-toggle');
+    if (themeBtn) themeBtn.addEventListener('click', function () {
+      setTimeout(function () { if (barsChart) updateBars(compute(read())); if (linesChart) updateLines(compute(read())); }, 50);
+    });
+
+    tick();
+  });
+})();
+</script>
 
 </body>
 </html>
